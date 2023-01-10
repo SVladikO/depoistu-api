@@ -9,7 +9,12 @@ const server = express()
 
 server.use(cors());
 
-const pool = new Pool(dbConfig);
+const pool = new Pool({
+                        connectionString: 'postgres://bpflvidbquvpdp:a7664b3b120bba81df36a108a98765925157f901cec8f0228f52533004ac96b3@ec2-63-32-248-14.eu-west-1.compute.amazonaws.com:5432/d6j0lksqcelm8h',
+                        ssl: {
+                          rejectUnauthorized: false
+                        }
+                      });
 
 server.get('/company/:companyId/menu', function (req, res) {
     const {companyId} = req.params;
