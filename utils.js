@@ -1,22 +1,40 @@
-const QUERY = require("./db/query");
-
 function dbRequest(pool, dbRequest, onSuccess, onError) {
-    console.log('!!!! NEW DB REQUEST !!!!')
+    console.log('!!!! NEW DB REQUEST !!!!', dbRequest)
 
-    pool.connect()
+    pool.connect().then(client => {
+        client.query(dbRequest)
+            .then(res => {
+                console.log('<<<<<<< DB REQUEST SUCCESS >>>>>>>')
+                console.log('DB RESPONSE: ', res.rows)
 
-    pool.query(dbRequest)
-        .then(r => {
-            console.log('DB request: ', dbRequest)
-            console.log('DB response: ', r.rows)
-            pool.end();
-            onSuccess(r.rows)
-        })
-        .catch(e => {
-            console.error('DB error: ', e.stack)
-            pool.end();
-            onError('DB error: ' + e.stack)
-        })
+                client.release()
+                onSuccess(res.rows)
+
+            })
+            .catch(e => {
+
+                console.log('??????? DB REQUEST ERROR ??????????')
+                console.log('??????? MESSAGE: ', e.message);
+                console.log('??????? STACK: ', e.stack);
+
+                client.release()
+                onError('DB Error:' + e.message)
+            })
+    })
+
+
+
+    // pool.connect()
+    // pool.query(dbRequest)
+    //     .then(r => {
+    //         console.log('DB request: ', dbRequest)
+    //         console.log('DB response: ', r.rows)
+    //         onSuccess(r.rows)
+    //     })
+    //     .catch(e => {
+    //         console.error('DB error: ', e.stack)
+    //         onError('DB error: ' + e.stack)
+    //     })
 }
 
 module.exports = dbRequest;
