@@ -1,13 +1,13 @@
 const QUERY = require("./db/query");
 
-function dbRequest(pool, dbRequest, responceCallback) {
+function dbRequest(pool, dbRequest, onSuccess, onError) {
     console.log('!!!! NEW DB REQUEST !!!!')
 
     pool.connect((err) => {
         if (err) {
-            console.error('connection error', err.stack)
+            console.error('CONNECTED WITH ERROR. WOW', err.stack)
         } else {
-            console.log('connected')
+        console.log('CONNECTED !!!')
         }
     })
 
@@ -15,11 +15,11 @@ function dbRequest(pool, dbRequest, responceCallback) {
         .then(r => {
             console.log('DB request: ', dbRequest)
             console.log('DB response: ', r.rows)
-            responceCallback(r.rows)
+            onSuccess(r.rows)
         })
         .catch(e => {
             console.error('DB error: ', e.stack)
-            responceCallback('DB error: ' + e.stack)
+            onError('DB error: ' + e.stack)
         })
 }
 
