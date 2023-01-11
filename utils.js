@@ -1,4 +1,9 @@
-function dbRequest(pool, dbRequest, onSuccess, onError) {
+const {Pool} = require("pg");
+const dbConfig = require("./db/config");
+
+const pool = new Pool(dbConfig);
+
+function dbRequest(dbRequest, onSuccess, onError) {
     console.log('!!!! NEW DB REQUEST !!!!', dbRequest)
 
     pool.connect().then(client => {
