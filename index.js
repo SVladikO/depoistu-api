@@ -19,6 +19,10 @@ server.get('/company/:companyId/menu', function (req, res) {
     dbRequest(QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID(companyId), dbResponce => res.send(dbResponce));
 })
 
+server.get('/insert', function (req, res) {
+    dbRequest(QUERY.MENU_ITEM.INSERT)
+});
+
 server.get('/company/:companyId/category', function (req, res) {
     logRequestDetails(req)
     const {companyId} = req.params;
@@ -39,7 +43,6 @@ server.get('/company/:companyId/category', function (req, res) {
 })
 
 const URL = {
-
     MENU_ITEM: '/company/:companyId/menu_item/:categoryId',
 }
 
