@@ -77,6 +77,10 @@ server.post('/sign-in', function (req, res) {
     );
 })
 
+app.post('/aa', (req, res) => {
+    res.send('POST request to the homepage')
+})
+
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
