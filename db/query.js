@@ -2,6 +2,7 @@ const schema_name = 'root'
 
 const TABLE_NAME = {
     MENU_ITEM: `${schema_name}.menu_item`,
+    CUSTOMER: `${schema_name}.guest`,
 }
 
 const QUERY = {
@@ -11,6 +12,9 @@ const QUERY = {
 
         SELECT_ALL_BY_COMPANY_ID_AND_BY_CATEGORY_ID: (companyId, categoryId) =>
             `select * from ${TABLE_NAME.MENU_ITEM} where category_id = ${categoryId} and company_id = ${companyId}`,
+        SELECT_CUSTOMER: (email, password) =>
+            `select * from ${TABLE_NAME.CUSTOMER} where email = ${email} and password = ${password}`,
+
 
         INSERT: ``
     }

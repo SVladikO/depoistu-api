@@ -16,7 +16,7 @@ server.get('/company/:companyId/menu', function (req, res) {
         return;
     }
 
-    dbRequest(QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID(companyId), dbResponce => res.send(dbResponce));
+    dbRequest(QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID(companyId), dbRes => res.send(dbRes));
 })
 
 server.get('/insert', function (req, res) {
@@ -34,19 +34,15 @@ server.get('/company/:companyId/category', function (req, res) {
 
     dbRequest(
         QUERY.MENU_ITEM.SELECT_CATEGORY_ID_BY_COMPANY_ID(companyId),
-        dbResponce => {
-            let result = [...new Set(dbResponce.map(v => v.category_id))]
+        dbRes => {
+            let result = [...new Set(dbRes.map(v => v.category_id))]
             res.send(result)
         },
-        dbResponce => res.send(dbResponce)
+        dbRes => res.send(dbRes)
     );
 })
 
-const URL = {
-    MENU_ITEM: '/company/:companyId/menu_item/:categoryId',
-}
-
-server.get(URL.MENU_ITEM, function (req, res) {
+server.get('/company/:companyId/menu_item/:categoryId', function (req, res) {
     logRequestDetails(req)
     const {companyId, categoryId} = req.params;
 
@@ -62,8 +58,22 @@ server.get(URL.MENU_ITEM, function (req, res) {
 
     dbRequest(
         QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID_AND_BY_CATEGORY_ID(companyId, categoryId),
-        dbResponce => res.send(dbResponce),
-        dbResponce => res.send(dbResponce)
+        dbRes => res.send(dbRes),
+        dbRes => res.send(dbRes)
+    );
+})
+
+server.post('/sign-in', function (req, res) {
+    console.log(1111);
+    console.log(email)
+    console.log(password)
+    logRequestDetails(req)
+    const {email, password} = req.body;
+
+    dbRequest(
+        QUERY.MENU_ITEM.SELECT_CUSTOMER(email, password),
+        dbRes => res.send(dbRes),
+        dbRes => res.send(dbRes)
     );
 })
 
