@@ -77,6 +77,20 @@ server.post('/sign-in', function (req, res) {
     );
 })
 
+server.post('/place-order', function (req, res) {
+    logRequestDetails(req)
+
+    const {guest_id, company_id, order_details} = req.body.order;
+
+    console.log('order_details', order_details);
+
+    dbRequest(
+        QUERY.MENU_ITEM.INSERT_HISTORY(guest_id, company_id, JSON.stringify(order_details), new Date().getTime()),
+        dbRes => res.send(true),
+        dbRes => res.send(dbRes)
+    );
+})
+
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
