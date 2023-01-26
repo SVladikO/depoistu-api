@@ -3,9 +3,11 @@ const dbConfig = require("./db/config");
 
 const pool = new Pool(dbConfig);
 
-function dbRequest(dbRequest, onSuccess = () => {
-}, onError = () => {
-}) {
+function dbRequest(
+    dbRequest,
+    onSuccess = () => {},
+    onError = () => {}
+) {
     console.log('!!!! NEW DB REQUEST !!!!', dbRequest)
 
     pool.connect().then(client => {
@@ -38,9 +40,8 @@ const getParamMessageRequirements = (paramName, requiredType= 'number') => {
 
 const logRequestDetails = req => {
     console.log('>>>> New request <<<<');
-    console.log(req._parsedUrl.pathname);
-    console.log(req.route.path);
-    console.log('Method: ', req.route.stack[0].method);
+    console.log(req.route?.stack[0].method.toUpperCase(), req.url);
+    req.body && console.log('Body: ', req?.body);
 }
 
 module.exports = {

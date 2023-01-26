@@ -4,7 +4,9 @@ const open = require('open'); // open browser after run
 const QUERY = require('./db/query')
 const {dbRequest, getParamMessageRequirements, logRequestDetails} = require('./utils')
 const server = express();
+
 server.use(cors());
+server.use(express.json());
 
 server.get('/company/:companyId/menu', function (req, res) {
     logRequestDetails(req)
@@ -20,7 +22,7 @@ server.get('/company/:companyId/menu', function (req, res) {
 })
 
 server.get('/insert', function (req, res) {
-    dbRequest(QUERY.MENU_ITEM.INSERT)
+    dbRequest(QUERY.MENU_ITEM.INSERT, dbRes => res.send(dbRes), dbRes => res.send(dbRes))
 });
 
 server.get('/company/:companyId/category', function (req, res) {
@@ -64,21 +66,15 @@ server.get('/company/:companyId/menu_item/:categoryId', function (req, res) {
 })
 
 server.post('/sign-in', function (req, res) {
-    console.log(1111);
-    console.log(email)
-    console.log(password)
     logRequestDetails(req)
+
     const {email, password} = req.body;
 
     dbRequest(
-        QUERY.MENU_ITEM.SELECT_CUSTOMER(email, password),
+        QUERY.MENU_ITEM.SELECT_GUEST(email, password),
         dbRes => res.send(dbRes),
         dbRes => res.send(dbRes)
     );
-})
-
-app.post('/aa', (req, res) => {
-    res.send('POST request to the homepage')
 })
 
 const PORT = process.env.PORT || 5000;
