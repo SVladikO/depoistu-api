@@ -1,99 +1,27 @@
 const express = require('express')
 const cors = require('cors');
 const open = require('open'); // open browser after run
-const QUERY = require('./db/query')
-const {dbRequest, getParamMessageRequirements, logRequestDetails} = require('./utils')
-const server = express();
 
-server.use(cors());
-server.use(express.json());
+const singInUp = require('./route/sing_in_up.js');
+const company = require('./route/company.js');
+const order = require('./route/order.js');
+const menu = require('./route/menu.js');
+const dev = require('./route/dev.js');
 
-server.get('/company/:companyId/menu', function (req, res) {
-    logRequestDetails(req)
+const app = express();
 
-    const {companyId} = req.params;
+app.use(cors());
+app.use(express.json());
 
-    if (isNaN(companyId)) {
-        res.send(getParamMessageRequirements('companyId',));
-        return;
-    }
-
-    dbRequest(QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID(companyId), dbRes => res.send(dbRes));
-})
-
-server.get('/insert', function (req, res) {
-    dbRequest(QUERY.MENU_ITEM.INSERT, dbRes => res.send(dbRes), dbRes => res.send(dbRes))
-});
-
-server.get('/company/:companyId/category', function (req, res) {
-    logRequestDetails(req)
-    const {companyId} = req.params;
-
-    if (isNaN(companyId)) {
-        res.send(getParamMessageRequirements('companyId'))
-        return;
-    }
-
-    dbRequest(
-        QUERY.MENU_ITEM.SELECT_CATEGORY_ID_BY_COMPANY_ID(companyId),
-        dbRes => {
-            let result = [...new Set(dbRes.map(v => v.category_id))]
-            res.send(result)
-        },
-        dbRes => res.send(dbRes)
-    );
-})
-
-server.get('/company/:companyId/menu_item/:categoryId', function (req, res) {
-    logRequestDetails(req)
-    const {companyId, categoryId} = req.params;
-
-    if (isNaN(companyId)) {
-        res.send(getParamMessageRequirements('companyId'))
-        return;
-    }
-
-    if (isNaN(categoryId)) {
-        res.send(getParamMessageRequirements('categoryId'))
-        return;
-    }
-
-    dbRequest(
-        QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID_AND_BY_CATEGORY_ID(companyId, categoryId),
-        dbRes => res.send(dbRes),
-        dbRes => res.send(dbRes)
-    );
-})
-
-server.post('/sign-in', function (req, res) {
-    logRequestDetails(req)
-
-    const {email, password} = req.body;
-
-    dbRequest(
-        QUERY.MENU_ITEM.SELECT_GUEST(email, password),
-        dbRes => res.send(dbRes),
-        dbRes => res.send(dbRes)
-    );
-})
-
-server.post('/place-order', function (req, res) {
-    logRequestDetails(req)
-
-    const {guest_id, company_id, order_details} = req.body.order;
-
-    console.log('order_details', order_details);
-
-    dbRequest(
-        QUERY.MENU_ITEM.INSERT_HISTORY(guest_id, company_id, JSON.stringify(order_details), new Date().getTime()),
-        dbRes => res.send(true),
-        dbRes => res.send(dbRes)
-    );
-})
+singInUp(app);
+company(app);
+order(app);
+menu(app);
+dev(app);
 
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`app running on port ${PORT}`));
 open('http://localhost:' + PORT)
 
-module.exports = server;
+module.exports = app;
