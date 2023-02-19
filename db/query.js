@@ -13,17 +13,19 @@ const QUERY = {
     },
     HISTORY: {
         INSERT:
-            (guest_id, company_id, order_details, date_time) =>
-                `INSERT INTO root.history (id, GUEST_ID, COMPANY_ID, ORDER_DETAILS, DATE_TIME, is_paid, is_prepared)
-                 VALUES (DEFAULT, ${guest_id}, ${company_id}, '${order_details}', ${date_time}, true, true);`
+            (customer_id, company_id, order_details, date_time) =>
+                `INSERT INTO root.history (id, CUSTOMER_ID, COMPANY_ID, ORDER_DETAILS, DATE_TIME, is_paid, is_prepared)
+                 VALUES (DEFAULT, ${customer_id}, ${company_id}, '${order_details}', ${date_time}, true, true);`
     },
     COMPANY: {
         SELECT_BY_CITY: city => `SELECT * from root.company WHERE city = '${city}'`,
     },
     CUSTOMER: {
-        SELECT_BY_EMAIL_AND_PASSWORD: (email, password) => `select * from root.guest where email = '${email}' and password = '${password}';`,
+        SELECT_BY_EMAIL_AND_PASSWORD: (email, password) => `select * from root.customer where email = '${email}' and password = '${password}';`,
     },
-    INSERT: ``,
+    // INSERT: ``,
+    // CREATE: ``,
+    // DELETE: `DROP TABLE IF EXISTS root.COMPANY`,
 }
 
 module.exports = QUERY;
