@@ -1,0 +1,61 @@
+[
+  {
+    "name":"Company",
+    "description":"Everything about Company",
+    "routes":[
+      {
+        "method":"get",
+        "url":"/company/by/city/:city",
+        "description":"Get companies by city. Only Ukrainian for now. Case sensitive."
+      },
+      {
+        "method":"get",
+        "url":"/company",
+        "description":"Get all companies"
+      }
+    ]
+  },
+  {
+    "name":"Menu",
+    "description":"Everything about Menu",
+    "routes":[
+      {
+        "method":"get",
+        "url":"/company/:companyId/category",
+        "description":"Get company categories by company id."
+      },
+      {
+        "method":"get",
+        "url":"/company/:companyId/menu",
+        "description":"Get company menu"
+      },
+      {
+        "method":"get",
+        "url":"/company/:companyId/menu_item/:categoryId",
+        "description":"Get company menu_item"
+      }
+    ]
+  },
+  {
+    "name":"Order",
+    "description":"Everything about Order",
+    "routes":[
+      {
+        "method":"post",
+        "url":"/place-order",
+        "description":"Save orders in db"
+      }
+    ]
+  },
+  {
+    "name":"SingIn",
+    "description":"Everything about SingIn",
+    "routes":[
+      {
+        "method":"post",
+        "url":"/sign-in",
+        "description":"Sing in"
+      }
+    ]
+  }
+]
