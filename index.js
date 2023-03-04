@@ -2,11 +2,8 @@ const express = require('express')
 const cors = require('cors');
 const open = require('open'); // open browser after run
 
-const singInUp = require('./route/sing_in_up.js');
-const company = require('./route/company.js');
-const order = require('./route/order.js');
-const menu = require('./route/menu.js');
-const dev = require('./route/dev.js');
+const {connectRoutes} = require('./utils')
+const routes = require('./route/index');
 
 const app = express();
 
@@ -15,11 +12,7 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use(express.static('route'));
 
-singInUp(app);
-company(app);
-order(app);
-menu(app);
-dev(app);
+connectRoutes(app, routes);
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');

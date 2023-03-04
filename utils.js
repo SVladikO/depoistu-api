@@ -35,6 +35,13 @@ const getParamMessageRequirements = (paramName, requiredType = 'number') => {
     return message;
 }
 
+const connectRoutes = (app, routes) => {
+    routes.forEach(
+        entity => entity.routes.forEach(
+            route => app[route.method](route.url, route.callback)
+        )
+    );
+}
 const logRequestDetails = req => {
     console.log('>>>> New request <<<<');
     console.log(req.route?.stack[0].method.toUpperCase(), req.url);
@@ -45,4 +52,5 @@ module.exports = {
     getParamMessageRequirements,
     dbRequest,
     logRequestDetails,
+    connectRoutes,
 };
