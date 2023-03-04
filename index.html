@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pizza mobile api</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="public/style.css">
+</head>
+<body>
+<div class="content">
+    <h3>Routes:</h3>
+    <div id="root"></div>
+
+    <div class="space"></div>
+    <h1>Example of possible routes</h1>
+    <div class="route">
+        <div class="entity">Company</div>
+        <div class="description">Everything about Company</div>
+    </div>
+    <div class="row row_get">
+        <div>get</div>
+        <div>/comapany</div>
+        <div class="description">Everything about Company</div>
+    </div>
+    <div class="row row_post">
+        <div>post</div>
+        <div>/comapany</div>
+        <div class="description">Everything about Company</div>
+    </div>
+    <div class="row row_delete">
+        <div>DELETE</div>
+        <div>/comapany</div>
+        <div class="description">Everything about Company</div>
+    </div>
+    <div class="row row_update">
+        <div>update</div>
+        <div>/comapany</div>
+        <div class="description">Everything about Company</div>
+    </div>
+</div>
+<script>
+    const mapper = {
+        get: "row_get",
+        post: "row_post",
+        delete: "row_delete",
+        put: "row_update"
+    }
+
+    debugger;
+    const url = window.location.origin + '/route.json'
+    fetch(url)
+        .then(res => res.json())
+        .then(routes => {
+            let domRoutes = renderRoutes(routes);
+            root.innerHTML = domRoutes;
+        })
+
+
+    function renderRoutes(rotes) {
+        return rotes.reduce((accumulator, route) =>
+            accumulator + renderRoute(route), '')
+    }
+
+    function renderRoute(route) {
+        return '<div class="route">' +
+            '<div class="entity">' + route.name + '</div>' +
+            '<div class="description">' + route.description + '</div>' +
+            '</div>' +
+            route.routes.reduce(
+                (accumulator, r) =>
+                    accumulator +
+                    '<div class="row ' + mapper[r.method] + '">' +
+                    '<div>' + r.method + '</div>' +
+                    '<div>' + r.url + '</div>' +
+                    '<div class="description">' + r.description + '</div></div>', ''
+            )
+    }
+
+</script>
+</body>
+</html>
