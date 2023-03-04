@@ -45,16 +45,13 @@
         delete: "row_delete",
         put: "row_update"
     }
-
-    debugger;
-    const url = window.location.origin + '/route.json'
+    const url = window.location.origin + '/api'
     fetch(url)
         .then(res => res.json())
         .then(routes => {
             let domRoutes = renderRoutes(routes);
             root.innerHTML = domRoutes;
         })
-
 
     function renderRoutes(rotes) {
         return rotes.reduce((accumulator, route) =>
