@@ -35,6 +35,21 @@ const getParamMessageRequirements = (paramName, requiredType = 'number') => {
     return message;
 }
 
+const provideBEApi = (app, routes) => {
+    const api = routes.map(
+        ({name, description, routes}) =>
+            ({
+                name,
+                description,
+                routes: routes.map(({method, url, description}) => ({method, url, description}))
+            })
+    );
+
+    app.get('/api', function (req, res) {
+        res.json(api);
+    })
+}
+
 const connectRoutes = (app, routes) => {
     routes.forEach(
         entity => entity.routes.forEach(
@@ -53,4 +68,5 @@ module.exports = {
     dbRequest,
     logRequestDetails,
     connectRoutes,
+    provideBEApi,
 };

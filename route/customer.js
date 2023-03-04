@@ -2,7 +2,7 @@ const {logRequestDetails, dbRequest} = require("../utils");
 const QUERY = require("../db/query");
 
 const routes = {
-    "name":"SingIn",
+    "name":"Customer",
     "description":"Everything about SingIn",
     "routes":[
         {
