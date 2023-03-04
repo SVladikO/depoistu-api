@@ -1,38 +1,35 @@
-const {Pool} = require("pg");
+const mysql = require('mysql2');
 const dbConfig = require("./db/config");
 
-const pool = new Pool(dbConfig);
+const connection = mysql.createConnection(dbConfig);
 
-function dbRequest(
-    dbRequest,
-    onSuccess = () => {},
-    onError = () => {}
-) {
-    console.log('!!!! NEW DB REQUEST !!!!', dbRequest)
+const prefix = '---->'
 
-    pool.connect().then(client => {
-        client.query(dbRequest)
-            .then(res => {
-                console.log('!!!! DB REQUEST SUCCESS !!!!')
-                console.log('DB RESPONSE: ', res.rows)
+function dbRequest(query, resSuccess, resError) {
+    connection.query(query, function (err, results, fields) {
+        requestDetails(query);
 
-                client.release()
-                onSuccess(res.rows)
+        if (err) return errorHandler(err, resError);
 
-            })
-            .catch(e => {
-
-                console.log('???? DB REQUEST ERROR ????')
-                console.log('???? MESSAGE: ', e.message);
-                console.log('???? STACK: ', e.stack);
-
-                client.release()
-                onError('DB Error:' + e.message)
-            })
+        successHandler(results, resSuccess);
     })
 }
 
-const getParamMessageRequirements = (paramName, requiredType= 'number') => {
+function requestDetails(query) {
+    console.log(prefix, 'DB request: ', query)
+}
+
+function successHandler(results, resSuccess) {
+    console.log(prefix, 'DB request success: ', results)
+    resSuccess(results)
+}
+
+function errorHandler(err, resError) {
+    console.log(prefix, 'DB request error: ', err.message, err.stack);
+    resError('DB Request error:' + err.message)
+}
+
+const getParamMessageRequirements = (paramName, requiredType = 'number') => {
     const message = `Error: Param ${paramName} should be ${requiredType}`;
     console.log('???? ' + message)
     return message;

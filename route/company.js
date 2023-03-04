@@ -9,4 +9,12 @@ module.exports = function(app) {
 
         dbRequest(QUERY.COMPANY.SELECT_BY_CITY(city), dbRes => res.send(dbRes));
     })
+
+    app.get('/company', function (req, res) {
+        logRequestDetails(req)
+
+        const {city} = req.params;
+
+        dbRequest(QUERY.COMPANY.SELECT_ALL(), dbRes => res.send(dbRes));
+    })
 }

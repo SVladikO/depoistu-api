@@ -12,12 +12,18 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public'));
+app.use(express.static('route'));
 
 singInUp(app);
 company(app);
 order(app);
 menu(app);
 dev(app);
+
+app.get('/', function (req, res) {
+    res.sendFile(__dirname + '/index.html');
+})
 
 const PORT = process.env.PORT || 5000;
 
