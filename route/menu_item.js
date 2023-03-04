@@ -3,12 +3,29 @@ const QUERY = require("../db/query");
 
 const routes = {
     "name":"Menu",
-    "description":"Everything about Menu",
+    "description":"For menu items.",
     "routes":[
         {
             "method":"get",
-            "url":"/company/:companyId/category",
-            "description":"Get company categories by company id.",
+            "url":"/menu/:companyId",
+            "description":"Get company menu.",
+            callback: function (req, res) {
+                logRequestDetails(req)
+
+                const {companyId} = req.params;
+
+                if (isNaN(companyId)) {
+                    res.send(getParamMessageRequirements('companyId',));
+                    return;
+                }
+
+                dbRequest(QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID(companyId), dbRes => res.send(dbRes));
+            }
+        },
+        {
+            "method":"get",
+            "url":"/categories/:companyId",
+            "description":"Get menu categories by company id.",
             callback: function (req, res) {
                 logRequestDetails(req)
                 const {companyId} = req.params;
@@ -30,25 +47,8 @@ const routes = {
         },
         {
             "method":"get",
-            "url":"/company/:companyId/menu",
-            "description":"Get company menu",
-            callback: function (req, res) {
-                logRequestDetails(req)
-
-                const {companyId} = req.params;
-
-                if (isNaN(companyId)) {
-                    res.send(getParamMessageRequirements('companyId',));
-                    return;
-                }
-
-                dbRequest(QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID(companyId), dbRes => res.send(dbRes));
-            }
-        },
-        {
-            "method":"get",
-            "url":"/company/:companyId/menu_item/:categoryId",
-            "description":"Get company menu_item",
+            "url":"/menu/:companyId/:categoryId",
+            "description":"Get menu for specific company and category.",
             callback: function (req, res) {
                 logRequestDetails(req)
                 const {companyId, categoryId} = req.params;

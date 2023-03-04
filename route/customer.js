@@ -3,12 +3,12 @@ const QUERY = require("../db/query");
 
 const routes = {
     "name":"Customer",
-    "description":"Everything about SingIn",
+    "description":"For users(guests) and business owners.",
     "routes":[
         {
             "method":"post",
             "url":"/sign-in",
-            "description":"Sing in",
+            "description":"User sing in.",
             callback: function (req, res) {
                 logRequestDetails(req)
 

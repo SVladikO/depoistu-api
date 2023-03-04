@@ -3,4 +3,4 @@ const customerEntity = require('./customer.js');
 const companyEntity = require('./company.js');
 const orderEntity = require('./order.js');
 
-module.exports = [menuItemEntity, customerEntity, companyEntity, orderEntity]
+module.exports = [menuItemEntity, companyEntity, customerEntity, orderEntity]

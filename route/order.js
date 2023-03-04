@@ -3,11 +3,11 @@ const QUERY = require("../db/query");
 
 const routes = {
     "name":"Order",
-    "description":"Everything about Order",
+    "description":"History of all user orders.",
     "routes":[
         {
             "method":"post",
-            "url":"/place-order",
+            "url":"/order",
             "description":"Save orders in db",
             callback: function (req, res) {
                 logRequestDetails(req)
