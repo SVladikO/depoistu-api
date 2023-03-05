@@ -5,6 +5,7 @@ const routes = {
     "name": "Company",
     "description": "For company data.",
     "routes": [
+
         {
             "method": "get",
             "url": "/companies",
@@ -21,7 +22,20 @@ const routes = {
             callback: function (req, res) {
                 logRequestDetails(req)
                 const {city} = req.params;
-                dbRequest(QUERY.COMPANY.SELECT_BY_CITY(city), dbRes => res.send(dbRes));
+                dbRequest(QUERY.COMPANY.SELECT_BY_CITY(city), dbRes => res.send(dbRes), message => res.send(message));
+            }
+        },
+        {
+            "method": "post",
+            "url": "/companies",
+            "description": "Create company.",
+            callback: function (req, res) {
+                logRequestDetails(req);
+                const {name, phones, email, city, street, schedule, photos} = req.body;
+                const join_date = '' + new Date().getTime()
+                console.log(1111, name, phones, email, city, street, join_date, schedule, photos)
+                const company = {name, phones, email, city, street, join_date, schedule, photos};
+                dbRequest(QUERY.COMPANY.INSERT(company), dbRes => res.send(dbRes), message => res.send(message));
             }
         }
     ]

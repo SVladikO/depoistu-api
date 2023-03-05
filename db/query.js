@@ -18,11 +18,19 @@ const QUERY = {
                  VALUES (DEFAULT, ${customer_id}, ${company_id}, '${order_details}', ${date_time}, true, true);`
     },
     COMPANY: {
-        SELECT_BY_CITY: city => `SELECT * from COMPANY WHERE city = '${city}'`,
+        SELECT_BY_CITY: city => `SELECT *
+                                 from COMPANY
+                                 WHERE city = '${city}'`,
         SELECT_ALL: () => `SELECT * FROM COMPANY;`,
+        INSERT: c => `INSERT INTO COMPANY 
+         (id, name, phones, email, city, street, join_date, schedule, photos) 
+          VALUES (DEFAULT, '${c.name}', '${c.phones}', '${c.email}', '${c.city}', '${c.street}', '${c.join_date}', '${c.schedule}', '${c.photos}' );`,
     },
     CUSTOMER: {
-        SELECT_BY_EMAIL_AND_PASSWORD: (email, password) => `select * from CUSTOMER where email = '${email}' and password = '${password}';`,
+        SELECT_BY_EMAIL_AND_PASSWORD: (email, password) => `select *
+                                                            from CUSTOMER
+                                                            where email = '${email}'
+                                                              and password = '${password}';`,
     },
     // INSERT: ``,
     // CREATE: ``,
