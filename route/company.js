@@ -17,7 +17,7 @@ const routes = {
         },
         {
             "method": "get",
-            "url": "/companies/:city",
+            "url": "/companies/?x=:city",
             "description": "Get companies by city. Only Ukrainian for now. Case sensitive.",
             callback: function (req, res) {
                 logRequestDetails(req)
