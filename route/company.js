@@ -17,6 +17,16 @@ const routes = {
         },
         {
             "method": "get",
+            "url": "/companies/:companyId",
+            "description": "Get company by companyId.",
+            callback: function (req, res) {
+                logRequestDetails(req);
+                const {companyId} = req.params;
+                dbRequest(QUERY.COMPANY.SELECT_BY_ID(companyId), dbRes => res.send(dbRes), message => res.send(message));
+            }
+        },
+        {
+            "method": "get",
             "url": "/companies/:city",
             "description": "Get companies by city. Only Ukrainian for now. Case sensitive.",
             callback: function (req, res) {

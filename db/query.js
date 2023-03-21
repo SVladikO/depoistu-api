@@ -20,6 +20,8 @@ const QUERY = {
     COMPANY: {
         SELECT_BY_CITY:
                 city => `SELECT * from COMPANY WHERE city = '${city}'`,
+        SELECT_BY_ID:
+                companyId => `SELECT * from COMPANY WHERE id = '${companyId}'`,
         SELECT_ALL:
             () => `SELECT * FROM COMPANY;`,
         INSERT:
