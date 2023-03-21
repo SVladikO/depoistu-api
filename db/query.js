@@ -18,10 +18,8 @@ const QUERY = {
                  (DEFAULT, ${customer_id}, ${company_id}, '${order_details}', ${date_time}, true, true);`
     },
     COMPANY: {
-        SELECT_BY_CITY:
-                city => `SELECT * from COMPANY WHERE city = '${city}'`,
-        SELECT_BY_ID:
-                companyId => `SELECT * from COMPANY WHERE id = '${companyId}'`,
+        SELECT_BY_CITY: city => `SELECT * from COMPANY WHERE city = '${city}';`,
+        SELECT_BY_COMPANY_ID: companyId => `SELECT *from COMPANY WHERE id = '${companyId}';`,
         SELECT_ALL:
             () => `SELECT * FROM COMPANY;`,
         INSERT:
