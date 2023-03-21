@@ -17,17 +17,17 @@ const routes = {
         },
         {
             "method": "get",
-            "url": "/companies/:companyId",
+            "url": "/companies/by/id/:companyId",
             "description": "Get company by companyId.",
             callback: function (req, res) {
                 logRequestDetails(req);
                 const {companyId} = req.params;
-                dbRequest(QUERY.COMPANY.SELECT_BY_ID(companyId), dbRes => res.send(dbRes), message => res.send(message));
+                dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId), dbRes => res.send(dbRes), message => res.send(message));
             }
         },
         {
             "method": "get",
-            "url": "/companies/:city",
+            "url": "/companies/by/city/:city",
             "description": "Get companies by city. Only Ukrainian for now. Case sensitive.",
             callback: function (req, res) {
                 logRequestDetails(req)
