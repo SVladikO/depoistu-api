@@ -36,6 +36,16 @@ const routes = {
             }
         },
         {
+            "method": "get",
+            "url": "/companies/by/customer/:customerId",
+            "description": "Get companies by customer id.",
+            callback: function (req, res) {
+                logRequestDetails(req)
+                const {customerId} = req.params;
+                dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId), dbRes => res.send(dbRes), message => res.send(message));
+            }
+        },
+        {
             "method": "post",
             "url": "/companies",
             "description": "Create company.",
