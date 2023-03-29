@@ -18,6 +18,7 @@ const QUERY = {
                  (DEFAULT, ${customer_id}, ${company_id}, '${order_details}', ${date_time}, true, true);`
     },
     COMPANY: {
+        SELECT_BY_CUSTOMER_ID: customerId => `SELECT * from COMPANY WHERE customer_id = '${customerId}';`,
         SELECT_BY_CITY: city => `SELECT * from COMPANY WHERE city = '${city}';`,
         SELECT_BY_COMPANY_ID: companyId => `SELECT *from COMPANY WHERE id = '${companyId}';`,
         SELECT_ALL:
