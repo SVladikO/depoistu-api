@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors');
 const open = require('open'); // open browser after run
 
-const {connectRoutes, provideBEApi} = require('./utils')
+const {connectRoutes, provideBEApi, logRequestDetails} = require('./utils')
 const routes = require('./route/index');
 
 const app = express();
@@ -10,6 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+app.use(logRequestDetails);
 
 connectRoutes(app, routes);
 provideBEApi(app, routes);
