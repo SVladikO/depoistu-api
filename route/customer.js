@@ -14,7 +14,17 @@ const routes = {
 
                 dbRequest(
                     QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password),
-                    dbRes => res.send(dbRes),
+                    customers => {
+                        if (customers.length > 0) {
+                            res.send(customers[0])
+                            console.log('Exist')
+                            return;
+                        }
+                        console.log('Not found')
+                        res.status(400).send({
+                            message: 'Bad request.'
+                        })
+                    },
                     errorMessage => res.send(errorMessage)
                 );
             }
