@@ -6,27 +6,22 @@ const connection = mysql.createConnection(dbConfig);
 const prefix = '---->'
 
 function dbRequest(query, resSuccess, resError) {
-    connection.query(query, function (err, results, fields) {
+    connection.query(query, function (err, results) {
         requestDetails(query);
 
-        if (err) return errorHandler(err, resError);
+        if (err) {
+            console.log(prefix, 'DB request error: ', err.message, err.stack);
+            resError('DB Request error:' + err.message)
+            return;
+        }
 
-        successHandler(results, resSuccess);
+        console.log(prefix, 'DB request success: ', results)
+        resSuccess(results)
     })
 }
 
 function requestDetails(query) {
     console.log(prefix, 'DB request: ', query)
-}
-
-function successHandler(results, resSuccess) {
-    console.log(prefix, 'DB request success: ', results)
-    resSuccess(results)
-}
-
-function errorHandler(err, resError) {
-    console.log(prefix, 'DB request error: ', err.message, err.stack);
-    resError('DB Request error:' + err.message)
 }
 
 const getParamMessageRequirements = (paramName, requiredType = 'number') => {
@@ -57,10 +52,11 @@ const connectRoutes = (app, routes) => {
         )
     );
 }
-const logRequestDetails = req => {
+const logRequestDetails = (req, res, next) => {
     console.log('>>>> New request <<<<');
-    console.log(req.route?.stack[0].method.toUpperCase(), req.url);
+    console.log(req.method, req.url);
     req.body && console.log('Body: ', req?.body);
+    next();
 }
 
 module.exports = {
