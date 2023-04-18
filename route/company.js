@@ -38,6 +38,16 @@ const routes = {
         },
         {
             "method": "get",
+            "url": "/companies/by/id/:companyId",
+            "description": "Get company by companyId.",
+            callback: function (req, res) {
+                logRequestDetails(req);
+                const {companyId} = req.params;
+                dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId), dbRes => res.send(dbRes), message => res.send(message));
+            }
+        },
+        {
+            "method": "get",
             "url": "/companies/by/city/:city",
             "description": "Get companies by city. Only Ukrainian for now. Case sensitive.",
             callback: function (req, res) {
@@ -72,6 +82,16 @@ const routes = {
                     dbRes => res.send(dbRes),
                     errorMessage => res.send(errorMessage)
                 );
+            }
+        },
+        {
+            "method": "get",
+            "url": "/companies/by/customer/:customerId",
+            "description": "Get companies by customer id.",
+            callback: function (req, res) {
+                logRequestDetails(req)
+                const {customerId} = req.params;
+                dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId), dbRes => res.send(dbRes), message => res.send(message));
             }
         },
         {
