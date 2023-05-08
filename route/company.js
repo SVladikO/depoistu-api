@@ -1,5 +1,7 @@
 const {dbRequest} = require("../utils");
 const QUERY = require("../db/query");
+const {validateCompany} = require("../utils/validation")
+const {responseError, responseSuccess} = require("../utils/responce")
 
 const routes = {
     "name": "Company",
@@ -99,14 +101,22 @@ const routes = {
             "url": "/companies",
             "description": "Create company.",
             callback: function (req, res) {
-                const {name, phones, email, city, street, schedule, photos} = req.body;
-                const join_date = '' + new Date().getTime()
-                // console.log('Create company', {name, phones, email, city, street, join_date, schedule, photos})
-                const company = {name, phones, email, city, street, join_date, schedule, photos};
-                dbRequest(QUERY.COMPANY.INSERT(company),
-                    dbRes => res.send(dbRes),
-                    errorMessage => res.send(errorMessage)
-                );
+                const {customer_id, name, city, street, phone, schedule} = req.body;
+                const join_date = '' + new Date().getTime();
+                const company = {customer_id, name, phone, city, street, join_date, schedule};
+
+                validateCompany(company)
+                    .then(e => {
+                        console.log('Create company validation success', company);
+                        dbRequest(QUERY.COMPANY.INSERT(company),
+                            successMessage => responseSuccess(res, successMessage),
+                            errorMessage => responseError(res, 500, errorMessage)
+                        );
+                    })
+                    .catch(e => {
+                        console.log('Create company validation error', e.message, company)
+                        responseError(res, 400, e.message);
+                    })
             }
         }
     ]

@@ -24,8 +24,8 @@ const QUERY = {
         SELECT_ALL:
             () => `SELECT * FROM COMPANY;`,
         INSERT:
-                c => `INSERT INTO COMPANY (id, name, phones, email, city, street, join_date, schedule, photos) VALUES
-                      (DEFAULT, '${c.name}', '${c.phones}', '${c.email}', '${c.city}', '${c.street}', '${c.join_date}', '${c.schedule}', '${c.photos}' );`,
+                c => `INSERT INTO COMPANY (id, customer_id, name, phone, city, street, join_date, schedule) VALUES
+                      (DEFAULT, '${c.customer_id}', '${c.name}', '${c.phone}', '${c.city}', '${c.street}', '${c.join_date}', '${c.schedule}');`,
     },
     CUSTOMER: {
         SELECT_BY_EMAIL_AND_PASSWORD:
