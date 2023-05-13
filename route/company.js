@@ -43,7 +43,6 @@ const routes = {
             "url": "/companies/by/id/:companyId",
             "description": "Get company by companyId.",
             callback: function (req, res) {
-                logRequestDetails(req);
                 const {companyId} = req.params;
                 dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId), dbRes => res.send(dbRes), message => res.send(message));
             }
@@ -91,7 +90,6 @@ const routes = {
             "url": "/companies/by/customer/:customerId",
             "description": "Get companies by customer id.",
             callback: function (req, res) {
-                logRequestDetails(req)
                 const {customerId} = req.params;
                 dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId), dbRes => res.send(dbRes), message => res.send(message));
             }

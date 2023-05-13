@@ -93,8 +93,6 @@ const routes = {
             "url": "/menu",
             "description": "Create menu item.",
             callback: function (req, res) {
-                logRequestDetails(req);
-
                 const {category_id, company_id, name, description, cooking_time, price, size, image_url} = req.body;
 
                 dbRequest(
