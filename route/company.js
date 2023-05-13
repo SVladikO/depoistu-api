@@ -98,6 +98,25 @@ const routes = {
                     })
             }
         },
+        {
+            "method": "delete",
+            "url": "/companies/:companyId",
+            "description": "Delete company by companyId.",
+            callback: function (req, res) {
+                const companyId = +req.params.companyId;
+
+                if (!companyId) {
+                    return res.status(400).send({
+                        message: 'Bad request.'
+                    })
+                }
+
+                dbRequest(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId),
+                    dbRes => res.send(dbRes),
+                    errorMessage => res.send(errorMessage)
+                );
+            }
+        },
     ]
 };
 
