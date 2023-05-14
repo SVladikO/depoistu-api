@@ -1,9 +1,11 @@
 const mysql = require('mysql2');
 const dbConfig = require("./db/config");
 
-const connection = mysql.createConnection(dbConfig);
+const getMode = () => process.env.MODE || 'develop';
+const connection = mysql.createConnection(dbConfig[getMode()]);
 
 const prefix = '---->'
+console.log(prefix, 'DB environment: ', getMode());
 
 function dbRequest(query, resSuccess, resError) {
     connection.query(query, function (err, results) {
@@ -60,6 +62,7 @@ const logRequestDetails = (req, res, next) => {
 }
 
 module.exports = {
+    getMode,
     getParamMessageRequirements,
     dbRequest,
     logRequestDetails,
