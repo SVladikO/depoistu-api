@@ -25,7 +25,16 @@ const QUERY = {
             () => `SELECT * FROM COMPANY;`,
         INSERT:
                 c => `INSERT INTO COMPANY (id, customer_id, name, phone, city, street, join_date, schedule) VALUES
-                      (DEFAULT, '${c.customer_id}', '${c.name}', '${c.phone}', '${c.city}', '${c.street}', '${c.join_date}', '${c.schedule}');`,
+                      (
+                        DEFAULT, 
+                        '${c.customer_id}', 
+                        '${c.name}', '${c.phone}', 
+                        '${c.city}', '${c.street}', 
+                        '${c.join_date}', 
+                        '${c.schedule}'
+                       );`,
+        DELETE_BY_COMPANY_ID: id => `DELETE FROM COMPANY WHERE ID = ${id}`,
+
     },
     CUSTOMER: {
         SELECT_BY_EMAIL_AND_PASSWORD:
