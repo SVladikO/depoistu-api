@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors');
 const open = require('open'); // open browser after run
 
-const {connectRoutes, provideBEApi, logRequestDetails} = require('./utils')
+const {connectRoutes, provideBEApi, logRequestDetails, getMode} = require('./utils')
 const routes = require('./route/index');
 
 const app = express();
@@ -17,6 +17,10 @@ provideBEApi(app, routes);
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
+})
+
+app.get('/db-mode', function (req, res) {
+    res.send({mode: getMode()})
 })
 
 const PORT = process.env.PORT || 4000;

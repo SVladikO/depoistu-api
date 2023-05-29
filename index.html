@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <title>Pizza mobile api</title>
     <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="public/style.css">
 </head>
 <body>
 <div class="content">
+    <h3>
+        <div style='text-align : right'>
+            DB server - <span id="db" style="text-transform: uppercase"></span>
+        </div>
+    </h3>
+
     <h3>Routes:</h3>
     <div id="root"></div>
 
@@ -45,12 +50,17 @@
         delete: "row_delete",
         put: "row_update"
     }
-    const url = window.location.origin + '/api'
-    fetch(url)
+
+    fetch(window.location.origin + '/db-mode')
+        .then(res => res.json())
+        .then(res => {
+            db.innerHTML = res.mode;
+        })
+
+    fetch(window.location.origin + '/api')
         .then(res => res.json())
         .then(routes => {
-            let domRoutes = renderRoutes(routes);
-            root.innerHTML = domRoutes;
+            root.innerHTML = renderRoutes(routes);
         })
 
     function renderRoutes(rotes) {
