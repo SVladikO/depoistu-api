@@ -1,6 +1,7 @@
 const {dbRequest} = require("../utils");
 const QUERY = require("../db/query");
-const {validateCompany} = require("../utils/validation")
+const {companyUpdateValidation, companyCreateValidation} = require("../utils/validation")
+
 const {responseError, responseSuccess} = require("../utils/responce")
 
 const routes = {
@@ -84,13 +85,43 @@ const routes = {
                 const join_date = '' + new Date().getTime();
                 const company = {customer_id, name, phone, city, street, join_date, schedule};
 
-                validateCompany(company)
+                companyCreateValidation(company)
                     .then(e => {
                         console.log('Create company validation success', company);
                         dbRequest(QUERY.COMPANY.INSERT(company),
                             successMessage => responseSuccess(res, successMessage),
                             errorMessage => responseError(res, 500, errorMessage)
                         );
+                    })
+                    .catch(e => {
+                        console.log('Create company validation error', e.message, company)
+                        responseError(res, 400, e.message);
+                    })
+            }
+        },
+        {
+            "method": "put",
+            "url": "/companies",
+            "description": "Update company.",
+            callback: function (req, res) {
+                const {id, name, phone, city, street, schedule} = req.body;
+                const company = {id, name, phone, city, street, schedule};
+                console.log(2222, company)
+                console.log(3333, QUERY.COMPANY.UPDATE(company))
+
+                companyUpdateValidation(company)
+                    .then(e => {
+                        console.log('Update company validation success', company);
+                        dbRequest(QUERY.COMPANY.UPDATE(company),
+                            () => {
+                                dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id),
+                                    dbRes => res.send(dbRes),
+                                    errorMessage => res.send(errorMessage)
+                                );
+                            },
+                            errorMessage => responseError(res, 500, errorMessage)
+                        );
+
                     })
                     .catch(e => {
                         console.log('Create company validation error', e.message, company)

@@ -104,7 +104,7 @@ const COMPANY = {
     },
 };
 
-const company_validation = Yup.object().shape({
+const company_validation = {
     customer_id: Yup.number().required(),
     name: Yup.string()
         .required()
@@ -122,13 +122,23 @@ const company_validation = Yup.object().shape({
     schedule: Yup.string()
         .required()
         .min(COMPANY.SCHEDULE.MIN, 'Schedule should not be empty. Minimum one day should be scheduled.')
-})
+}
 
-const validateCompany = (company) => {
-    const c = company_validation.validate(company)
-    return c;
+const companyUpdateValidation = company => {
+    const {name, city, street, phone, schedule} = company_validation;
+    const validator = Yup.object().shape({name, city, street, phone, schedule});
+
+    return validator.validate(company);
+};
+
+const companyCreateValidation = company => {
+    const {customer_id, name, city, street, phone, schedule} = company_validation;
+    const validator = Yup.object().shape({customer_id, name, city, street, phone, schedule})
+
+    return validator.validate(company)
 }
 
 module.exports = {
-    validateCompany
+    companyUpdateValidation,
+    companyCreateValidation
 }
