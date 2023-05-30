@@ -28,11 +28,22 @@ const QUERY = {
                       (
                         DEFAULT, 
                         '${c.customer_id}', 
-                        '${c.name}', '${c.phone}', 
-                        '${c.city}', '${c.street}', 
+                        '${c.name}',
+                        '${c.phone}', 
+                        '${c.city}',
+                        '${c.street}', 
                         '${c.join_date}', 
                         '${c.schedule}'
-                       );`,
+                      )
+                    ;`,
+        UPDATE: c => `UPDATE COMPANY SET
+                          name = '${c.name}',
+                          phone = '${c.phone}',
+                          city = '${c.city}',
+                          street = '${c.street}',
+                          schedule = '${c.schedule}'
+                      WHERE id = ${c.id}
+                ;`,
         DELETE_BY_COMPANY_ID: id => `DELETE FROM COMPANY WHERE ID = ${id}`,
 
     },
