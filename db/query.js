@@ -7,7 +7,8 @@ const QUERY = {
         SELECT_ALL_BY_COMPANY_ID_AND_BY_CATEGORY_ID:
             (companyId, categoryId) =>  `select * from MENU_ITEM where category_id = ${categoryId} and company_id = ${companyId};`,
         INSERT: mi => `INSERT INTO MENU_ITEM (id, category_id, company_id, name, description, cooking_time, price, size, image_url) VALUES
-              (default, '${mi.category_id}', '${mi.company_id}', '${mi.name}', '${mi.description}', '${mi.cookingTime}', '${mi.price}', '${mi.size}', '${mi.image_url}');`
+              (default, '${mi.category_id}', '${mi.company_id}', '${mi.name}', '${mi.description}', '${mi.cookingTime}', '${mi.price}', '${mi.size}', '${mi.image_url}');`,
+        DELETE_BY_MENU_ITEM_ID: id => `DELETE FROM MENU_ITEM WHERE ID = ${id}`,
     },
     HISTORY: {
         INSERT: (customer_id, company_id, order_details, date_time) =>
