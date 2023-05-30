@@ -57,10 +57,10 @@ const routes = {
             "url": "/menu",
             "description": "Create menu item.",
             callback: function (req, res) {
-                const {category_id, company_id, name, description, cooking_time, price, size, image_url} = req.body;
+                const {category_id, company_id, name, description, cookingTime, price, size, image_url} = req.body;
 
                 dbRequest(
-                    QUERY.MENU_ITEM.INSERT(category_id, company_id, name, description, cooking_time, price, size, image_url),
+                    QUERY.MENU_ITEM.INSERT({category_id, company_id, name, description, cookingTime, price, size, image_url}),
                     dbRes => res.send(dbRes),
                     errorMessage => res.send(errorMessage)
                 );
