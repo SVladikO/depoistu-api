@@ -1,5 +1,7 @@
 const {getParamMessageRequirements, dbRequest} = require("../utils");
 const QUERY = require("../db/query");
+const VALIDATOR = require("../utils/validation");
+const {responseError} = require("../utils/responce");
 
 const routes = {
     "name": "Menu",
@@ -57,13 +59,59 @@ const routes = {
             "url": "/menu",
             "description": "Create menu item.",
             callback: function (req, res) {
-                const {category_id, company_id, name, description, cookingTime, price, size, image_url} = req.body;
+                const {id, category_id, company_id, name, description, cookingTime, price, size, image_url} = req.body;
+                const menuItem = {id, category_id, company_id, name, description, cookingTime, price, size, image_url};
 
-                dbRequest(
-                    QUERY.MENU_ITEM.INSERT({category_id, company_id, name, description, cookingTime, price, size, image_url}),
-                    dbRes => res.send(dbRes),
-                    errorMessage => res.send(errorMessage)
-                );
+                VALIDATOR.MENU_ITEM.CREATE(menuItem)
+                    .then(() => {
+                        dbRequest(
+                            QUERY.MENU_ITEM.INSERT({
+                                category_id,
+                                company_id,
+                                name,
+                                description,
+                                cookingTime,
+                                price,
+                                size,
+                                image_url
+                            }),
+                            dbRes => res.send(dbRes),
+                            errorMessage => res.send(errorMessage)
+                        );
+                    })
+                    .catch(e => {
+                        console.log('Update menuItem validation error', e.message, menuItem)
+                        responseError(res, 400, e.message);
+                    })
+            }
+        },
+        {
+            "method": "put",
+            "url": "/menu",
+            "description": "Update menu item.",
+            callback: function (req, res) {
+                const {id, name, description, cookingTime, price, size, image_url} = req.body;
+                const menuItem = {id, name, description, cookingTime, price, size, image_url};
+                console.log(8888, menuItem);
+                VALIDATOR.MENU_ITEM.UPDATE(menuItem)
+                    .then(() => {
+                        dbRequest(
+                            QUERY.MENU_ITEM.UPDATE({id, name, description, cookingTime, price, size, image_url}),
+                            () => {
+                                dbRequest(
+                                    QUERY.MENU_ITEM.SELECT_BY_ID(id),
+                                    dbRes => res.send(dbRes),
+                                    errorMessage => res.send(errorMessage)
+                                );
+                            },
+                            errorMessage => res.send(errorMessage)
+                        );
+                    })
+                    .catch(e => {
+                        console.log('Update menuItem validation error', e.message, menuItem)
+                        responseError(res, 400, e.message);
+                    })
+
             }
         },
         {
