@@ -66,6 +66,20 @@ const routes = {
                 );
             }
         },
+        {
+            "method": "delete",
+            "url": "/menu",
+            "description": "Delete menu item.",
+            callback: function (req, res) {
+                const {id} = req.body;
+
+                dbRequest(
+                    QUERY.MENU_ITEM.DELETE_BY_MENU_ITEM_ID(id),
+                    dbRes => res.send(dbRes),
+                    errorMessage => res.send(errorMessage)
+                );
+            }
+        },
 
     ]
 }
