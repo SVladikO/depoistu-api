@@ -1,6 +1,6 @@
 const {dbRequest} = require("../utils");
 const QUERY = require("../db/query");
-const {companyUpdateValidation, companyCreateValidation} = require("../utils/validation")
+const VALIDATOR = require("../utils/validation")
 
 const {responseError, responseSuccess} = require("../utils/responce")
 
@@ -85,18 +85,22 @@ const routes = {
                 const join_date = '' + new Date().getTime();
                 const company = {customer_id, name, phone, city, street, join_date, schedule};
 
-                companyCreateValidation(company)
-                    .then(e => {
-                        console.log('Create company validation success', company);
-                        dbRequest(QUERY.COMPANY.INSERT(company),
-                            successMessage => responseSuccess(res, successMessage),
-                            errorMessage => responseError(res, 500, errorMessage)
-                        );
-                    })
-                    .catch(e => {
-                        console.log('Create company validation error', e.message, company)
-                        responseError(res, 400, e.message);
-                    })
+                VALIDATOR.COMPANY.CREATE(company)
+                    .then(
+                        e => {
+                            console.log('Create company validation success', company);
+                            dbRequest(QUERY.COMPANY.INSERT(company),
+                                successMessage => responseSuccess(res, successMessage),
+                                errorMessage => responseError(res, 500, errorMessage)
+                            );
+                        }
+                    )
+                    .catch(
+                        e => {
+                            console.log('Create company validation error', e.message, company)
+                            responseError(res, 400, e.message);
+                        }
+                    )
             }
         },
         {
@@ -109,7 +113,7 @@ const routes = {
                 console.log(2222, company)
                 console.log(3333, QUERY.COMPANY.UPDATE(company))
 
-                companyUpdateValidation(company)
+                VALIDATOR.COMPANY.UPDATE(company)
                     .then(e => {
                         console.log('Update company validation success', company);
                         dbRequest(QUERY.COMPANY.UPDATE(company),
@@ -124,7 +128,7 @@ const routes = {
 
                     })
                     .catch(e => {
-                        console.log('Create company validation error', e.message, company)
+                        console.log('Update company validation error', e.message, company)
                         responseError(res, 400, e.message);
                     })
             }
