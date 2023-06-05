@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "private": true,
   "scripts": {
     "build": "npm i",
@@ -13,6 +13,7 @@
     "mysql2": "^3.2.0",
     "node-tls": "^0.10.2",
     "open": "^8.4.0",
-    "pg": "^8.8.0"
+    "pg": "^8.8.0",
+    "yup": "^1.1.1"
   }
 }

@@ -24,7 +24,7 @@ app.get('/db-mode', function (req, res) {
     res.send({mode: getMode()})
 })
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => console.log(`app running on port ${PORT}`));
 open('http://localhost:' + PORT)
