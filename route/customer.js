@@ -17,12 +17,13 @@ const routes = {
                     customers => {
                         if (customers.length > 0) {
                             res.send(customers[0])
-                            console.log('Exist')
+                            console.log('Sing in. successfully.', email, password)
                             return;
                         }
+
                         const errorMessage = 'Wrong credentials.';
 
-                        console.log(errorMessage)
+                        console.log('Sing in.', errorMessage, email, password)
                         res.status(400).send({message: errorMessage})
                     },
                     errorMessage => res.send(errorMessage)
