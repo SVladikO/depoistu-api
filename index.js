@@ -32,7 +32,12 @@ open('http://localhost:' + PORT)
 module.exports = app;
 
 function corsOptionsDelegate(req, callback) {
-    const allowlist = ['https://pma-master.onrender.com', 'https://pma-develop.onrender.com', 'http://localhost:3000'];
+    const allowlist = [
+        'https://pma-master.onrender.com',
+        'https://pma-develop.onrender.com',
+        'https://qa-1-pma-ig1a.onrender.com',
+        'http://localhost:3000'
+    ];
     let corsOptions;
 
     if (allowlist.indexOf(req.header('Origin')) !== -1) {
