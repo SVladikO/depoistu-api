@@ -20,10 +20,10 @@ const routes = {
                             console.log('Exist')
                             return;
                         }
-                        console.log('Not found')
-                        res.status(400).send({
-                            message: 'Bad request.'
-                        })
+                        const errorMessage = 'Wrong credentials.';
+
+                        console.log(errorMessage)
+                        res.status(400).send({message: errorMessage})
                     },
                     errorMessage => res.send(errorMessage)
                 );
