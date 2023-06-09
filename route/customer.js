@@ -1,7 +1,8 @@
 const {dbRequest} = require("../utils");
 const QUERY = require("../db/query");
 const VALIDATOR = require("../utils/validation");
-const {responseError} = require("../utils/responce");
+const {catchHandler} = require("../utils/responce");
+const DESCRIPTION = require("../utils/description");
 
 const getFirstCustomer = customers => {
     if (customers.length > 0) {
@@ -15,12 +16,12 @@ const getFirstCustomer = customers => {
 
 const routes = {
     "name": "Customer",
-    "description": "For customer and business owners.",
+    "description": "For customers and business owners",
     "routes": [
         {
             "method": "post",
             "url": "/sign-in",
-            "description": "User sing in.",
+            "description": DESCRIPTION.CUSTOMER.SING_IN,
             callback: function (req, res) {
                 const {email, password} = req.body;
 
@@ -28,16 +29,13 @@ const routes = {
                 dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))
                     .then(getFirstCustomer)
                     .then(customer => res.send(customer))
-                    .catch(e => {
-                        console.log('Sing up error', e.message, customer)
-                        responseError(res, 400, e.message);
-                    })
+                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_IN, {email, password}))
             }
         },
         {
             "method": "post",
             "url": "/sign-up",
-            "description": "User sing up.",
+            "description": DESCRIPTION.CUSTOMER.SING_UP,
             callback: function (req, res) {
                 const {name, phone, password, email} = req.body;
                 const join_date = new Date().getTime();
@@ -55,10 +53,7 @@ const routes = {
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
                     .then(getFirstCustomer)
                     .then(customer => res.send(customer))
-                    .catch(e => {
-                        console.log('Sing up error', e.message, customer)
-                        responseError(res, 400, e.message);
-                    })
+                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_UP, customer))
             }
         }
     ]
