@@ -10,7 +10,7 @@ const routes = {
         {
             "method": "get",
             "url": "/menu/:companyId",
-            "description": "Get company menu.",
+            "description": "Get menu by companyId",
             callback: function (req, res) {
                 const companyId = +req.params.companyId;
 
@@ -25,35 +25,14 @@ const routes = {
                     return;
                 }
 
-                dbRequest(QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID(companyId),
-                    dbRes => res.send(dbRes),
-                    errorMessage => res.send(errorMessage));
+                dbRequest(QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID(companyId))
+                    .then(dbRes => res.send(dbRes))
+                    .catch(e => {
+                        console.log('Get menu by companyId error', e.message, companyId)
+                        responseError(res, 400, e.message);
+                    })
             }
         },
-        // {
-        //     "method": "get",
-        //     "url": "/menu/:companyId/:categoryId",
-        //     "description": "Get menu for specific company and category.",
-        //     callback: function (req, res) {
-        //         const {companyId, categoryId} = req.params;
-        //
-        //         if (isNaN(companyId)) {
-        //             res.send(getParamMessageRequirements('companyId'))
-        //             return;
-        //         }
-        //
-        //         if (isNaN(categoryId)) {
-        //             res.send(getParamMessageRequirements('categoryId'))
-        //             return;
-        //         }
-        //
-        //         dbRequest(
-        //             QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID_AND_BY_CATEGORY_ID(companyId, categoryId),
-        //             dbRes => res.send(dbRes),
-        //             errorMessage => res.send(errorMessage)
-        //         );
-        //     }
-        // },
         {
             "method": "post",
             "url": "/menu",
@@ -63,7 +42,7 @@ const routes = {
                 const menuItem = {id, category_id, company_id, name, description, cookingTime, price, size, image_url};
 
                 VALIDATOR.MENU_ITEM.CREATE(menuItem)
-                    .then(() => {
+                    .then(() =>
                         dbRequest(
                             QUERY.MENU_ITEM.INSERT({
                                 category_id,
@@ -74,13 +53,10 @@ const routes = {
                                 price,
                                 size,
                                 image_url
-                            }),
-                            dbRes => res.send(dbRes),
-                            errorMessage => res.send(errorMessage)
-                        );
-                    })
+                            })))
+                    .then(dbRes => res.send(dbRes))
                     .catch(e => {
-                        console.log('Update menuItem validation error', e.message, menuItem)
+                        console.log('Create menu item error', e.message, menuItem)
                         responseError(res, 400, e.message);
                     })
             }
@@ -92,23 +68,21 @@ const routes = {
             callback: function (req, res) {
                 const {id, name, description, cookingTime, price, size, image_url} = req.body;
                 const menuItem = {id, name, description, cookingTime, price, size, image_url};
-                console.log(8888, menuItem);
+
                 VALIDATOR.MENU_ITEM.UPDATE(menuItem)
-                    .then(() => {
-                        dbRequest(
-                            QUERY.MENU_ITEM.UPDATE({id, name, description, cookingTime, price, size, image_url}),
-                            () => {
-                                dbRequest(
-                                    QUERY.MENU_ITEM.SELECT_BY_ID(id),
-                                    dbRes => res.send(dbRes),
-                                    errorMessage => res.send(errorMessage)
-                                );
-                            },
-                            errorMessage => res.send(errorMessage)
-                        );
-                    })
+                    .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE({
+                        id,
+                        name,
+                        description,
+                        cookingTime,
+                        price,
+                        size,
+                        image_url
+                    })))
+                    .then(() => dbRequest(QUERY.MENU_ITEM.SELECT_BY_ID(id)))
+                    .then(updatedMenuItem => res.send(updatedMenuItem))
                     .catch(e => {
-                        console.log('Update menuItem validation error', e.message, menuItem)
+                        console.log('Update menuItem error', e.message, menuItem)
                         responseError(res, 400, e.message);
                     })
 
@@ -121,11 +95,12 @@ const routes = {
             callback: function (req, res) {
                 const {id} = req.body;
 
-                dbRequest(
-                    QUERY.MENU_ITEM.DELETE_BY_MENU_ITEM_ID(id),
-                    dbRes => res.send(dbRes),
-                    errorMessage => res.send(errorMessage)
-                );
+                dbRequest(QUERY.MENU_ITEM.DELETE_BY_MENU_ITEM_ID(id))
+                    .then(message => res.send(message))
+                    .catch(e => {
+                        console.log('Delete menu item error', e.message, id)
+                        responseError(res, 400, e.message);
+                    })
             }
         },
 

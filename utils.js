@@ -15,9 +15,8 @@ function dbRequest(query) {
                 console.log(prefix, 'DB request: ', query);
 
                 if (err) {
-                    console.log(prefix, 'DB request error: ', err.message, err.stack);
-                    reject('DB Request error:' + err.message)
-                    return;
+                    console.log(prefix, 'DB request error: ', err);
+                    reject(err)
                 }
 
                 console.log(prefix, 'DB request success: ', results)

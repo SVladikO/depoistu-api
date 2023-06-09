@@ -34,7 +34,11 @@ const routes = {
 
                 dbRequest(QUERY.COMPANY.SELECT_BY_CITY(city))
                     .then(dbRes => res.send(dbRes))
-                    .catch(errorMessage => res.send(errorMessage)
+                    .catch(
+                        e => {
+                            console.log('Get company by companyId error', e.message, company)
+                            responseError(res, 400, e.message);
+                        }
                     );
             }
         },
@@ -53,7 +57,11 @@ const routes = {
 
                 dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId))
                     .then(dbRes => res.send(dbRes))
-                    .catch(errorMessage => res.send(errorMessage)
+                    .catch(
+                        e => {
+                            console.log('Get company by companyId error', e.message, company)
+                            responseError(res, 400, e.message);
+                        }
                     );
             }
         },
