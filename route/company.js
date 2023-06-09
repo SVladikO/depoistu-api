@@ -32,10 +32,10 @@ const routes = {
                     })
                 }
 
-                dbRequest(QUERY.COMPANY.SELECT_BY_CITY(city),
-                    dbRes => res.send(dbRes),
-                    errorMessage => res.send(errorMessage)
-                );
+                dbRequest(QUERY.COMPANY.SELECT_BY_CITY(city))
+                    .then(dbRes => res.send(dbRes))
+                    .catch(errorMessage => res.send(errorMessage)
+                    );
             }
         },
         {
@@ -51,10 +51,10 @@ const routes = {
                     })
                 }
 
-                dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId),
-                    dbRes => res.send(dbRes),
-                    errorMessage => res.send(errorMessage)
-                );
+                dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId))
+                    .then(dbRes => res.send(dbRes))
+                    .catch(errorMessage => res.send(errorMessage)
+                    );
             }
         },
         {
@@ -70,10 +70,14 @@ const routes = {
                     })
                 }
 
-                dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId),
-                    dbRes => res.send(dbRes),
-                    errorMessage => res.send(errorMessage)
-                );
+                dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId))
+                    .then(dbRes => res.send(dbRes))
+                    .catch(
+                        e => {
+                            console.log('Get companies by customer id error', e.message, company)
+                            responseError(res, 400, e.message);
+                        }
+                    );
             }
         },
         {
@@ -86,18 +90,11 @@ const routes = {
                 const company = {customer_id, name, phone, city, street, join_date, schedule};
 
                 VALIDATOR.COMPANY.CREATE(company)
-                    .then(
-                        e => {
-                            console.log('Create company validation success', company);
-                            dbRequest(QUERY.COMPANY.INSERT(company),
-                                successMessage => responseSuccess(res, successMessage),
-                                errorMessage => responseError(res, 500, errorMessage)
-                            );
-                        }
-                    )
+                    .then(() => dbRequest(QUERY.COMPANY.INSERT(company)))
+                    .then(message => responseSuccess(res, message))
                     .catch(
                         e => {
-                            console.log('Create company validation error', e.message, company)
+                            console.log('Create company error', e.message, company)
                             responseError(res, 400, e.message);
                         }
                     )
@@ -110,25 +107,13 @@ const routes = {
             callback: function (req, res) {
                 const {id, name, phone, city, street, schedule} = req.body;
                 const company = {id, name, phone, city, street, schedule};
-                console.log(2222, company)
-                console.log(3333, QUERY.COMPANY.UPDATE(company))
 
                 VALIDATOR.COMPANY.UPDATE(company)
-                    .then(e => {
-                        console.log('Update company validation success', company);
-                        dbRequest(QUERY.COMPANY.UPDATE(company),
-                            () => {
-                                dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id),
-                                    dbRes => res.send(dbRes),
-                                    errorMessage => res.send(errorMessage)
-                                );
-                            },
-                            errorMessage => responseError(res, 500, errorMessage)
-                        );
-
-                    })
+                    .then(() => dbRequest(QUERY.COMPANY.UPDATE(company)))
+                    .then(() => dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id)))
+                    .then(updatedCompany => res.send(updatedCompany))
                     .catch(e => {
-                        console.log('Update company validation error', e.message, company)
+                        console.log('Update company error', e.message, company)
                         responseError(res, 400, e.message);
                     })
             }
@@ -146,10 +131,13 @@ const routes = {
                     })
                 }
 
-                dbRequest(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId),
-                    dbRes => res.send(dbRes),
-                    errorMessage => res.send(errorMessage)
-                );
+                dbRequest(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId))
+                    .then(message => responseSuccess(res, message))
+                    .catch(e => {
+                            console.log('Delete company error', e.message, companyId)
+                            responseError(res, 400, e.message);
+                        }
+                    );
             }
         },
     ]

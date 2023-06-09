@@ -24,9 +24,8 @@ const routes = {
             callback: function (req, res) {
                 const {email, password} = req.body;
 
-                new Promise((resolve, reject) =>
-                    dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password), resolve, reject)
-                )
+
+                dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))
                     .then(getFirstCustomer)
                     .then(customer => res.send(customer))
                     .catch(e => {
@@ -45,15 +44,15 @@ const routes = {
                 const customer = {name, phone, password, email, join_date};
 
                 VALIDATOR.CUSTOMER.SING_UP(customer)
-                    .then(() => new Promise((resolve, reject) => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL(email), resolve, reject)))
+                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL(email)))
                     .then(response => {
                             if (response.length) {
                                 throw new Error('This email is already used.')
                             }
                         }
                     )
-                    .then(() => new Promise((resolve, reject) => dbRequest(QUERY.CUSTOMER.INSERT(customer), resolve, reject)))
-                    .then(() => new Promise((resolve, reject) => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password), resolve, reject)))
+                    .then(() => dbRequest(QUERY.CUSTOMER.INSERT(customer)))
+                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
                     .then(getFirstCustomer)
                     .then(customer => res.send(customer))
                     .catch(e => {
