@@ -11,8 +11,8 @@ const FIELD_REQUIREMENTS_FOR = {
             MAX: 12
         },
         PHONE: {
-            MIN: 13,
-            MAX: 13
+            MIN: 12,
+            MAX: 12
         },
         EMAIL: {
             MAX: 30
@@ -61,30 +61,23 @@ const FIELD_REQUIREMENTS_FOR = {
 };
 
 const VALIDATION = {
-    USER: {
+    CUSTOMER: {
         name: Yup.string()
             .min(FIELD_REQUIREMENTS_FOR.USER.NAME.MIN, `Too Short! Min length ${FIELD_REQUIREMENTS_FOR.USER.NAME.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.USER.NAME.MAX, `Too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.NAME.MAX}`)
             .required(`Required!`),
-        password: Yup.string()
-            .min(FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MIN, `Too Short! Min length ${FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MIN}`)
-            .max(FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MAX, `Too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MAX}`)
-            .required(`Required`),
         email: Yup.string()
             .email(`Invalid email`)
             .max(FIELD_REQUIREMENTS_FOR.USER.EMAIL.MAX, `Too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.EMAIL.MAX}`)
             .required(`Required`),
         phone: Yup.string()
-            .min(FIELD_REQUIREMENTS_FOR.USER.PHONE.MIN, `Example: +380971234567`)
-            .max(FIELD_REQUIREMENTS_FOR.USER.PHONE.MAX, `Example: +380971234567`)
+            .min(FIELD_REQUIREMENTS_FOR.USER.PHONE.MIN, `Example: 380971234567`)
+            .max(FIELD_REQUIREMENTS_FOR.USER.PHONE.MAX, `Example: 380971234567`)
             .required(`Required!`),
-        confirmedPassword: Yup.string()
-            .required(`Required!`)
+        password: Yup.string()
             .min(FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MIN, `Too Short! Min length ${FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MAX, `Too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MAX}`)
-            .test(`passwords-match`, `Passwords must match`, function (value) {
-                return this.parent.newPassword === value
-            })
+            .required(`Required`)
     },
     MENU_ITEM: {
         category_id: Yup.string().required(`Required!`),
@@ -127,6 +120,12 @@ const VALIDATION = {
 }
 
 const VALIDATOR = {
+    CUSTOMER: {
+        SING_UP: customer => {
+            const validator = Yup.object().shape(VALIDATION.CUSTOMER)
+            return validator.validate(customer)
+        }
+    },
     COMPANY: {
         CREATE: company => {
             const validator = Yup.object().shape(VALIDATION.COMPANY)
