@@ -1,7 +1,8 @@
 const {getParamMessageRequirements, dbRequest} = require("../utils");
 const QUERY = require("../db/query");
 const VALIDATOR = require("../utils/validation");
-const {responseError} = require("../utils/responce");
+const {catchHandler} = require("../utils/responce");
+const DESCRIPTION = require("../utils/description");
 
 const routes = {
     "name": "Menu",
@@ -10,7 +11,7 @@ const routes = {
         {
             "method": "get",
             "url": "/menu/:companyId",
-            "description": "Get menu by companyId",
+            "description": DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID,
             callback: function (req, res) {
                 const companyId = +req.params.companyId;
 
@@ -27,80 +28,49 @@ const routes = {
 
                 dbRequest(QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID(companyId))
                     .then(dbRes => res.send(dbRes))
-                    .catch(e => {
-                        console.log('Get menu by companyId error', e.message, companyId)
-                        responseError(res, 400, e.message);
-                    })
+                    .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID, companyId))
             }
         },
         {
             "method": "post",
             "url": "/menu",
-            "description": "Create menu item.",
+            "description": DESCRIPTION.MENU_ITEM.CREATE,
             callback: function (req, res) {
                 const {id, category_id, company_id, name, description, cookingTime, price, size, image_url} = req.body;
                 const menuItem = {id, category_id, company_id, name, description, cookingTime, price, size, image_url};
 
                 VALIDATOR.MENU_ITEM.CREATE(menuItem)
-                    .then(() =>
-                        dbRequest(
-                            QUERY.MENU_ITEM.INSERT({
-                                category_id,
-                                company_id,
-                                name,
-                                description,
-                                cookingTime,
-                                price,
-                                size,
-                                image_url
-                            })))
+                    .then(() => dbRequest(QUERY.MENU_ITEM.INSERT(menuItem)))
                     .then(dbRes => res.send(dbRes))
-                    .catch(e => {
-                        console.log('Create menu item error', e.message, menuItem)
-                        responseError(res, 400, e.message);
-                    })
+                    .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.CREATE, menuItem))
             }
         },
         {
             "method": "put",
             "url": "/menu",
-            "description": "Update menu item.",
+            "description": DESCRIPTION.MENU_ITEM.UPDATE,
             callback: function (req, res) {
                 const {id, name, description, cookingTime, price, size, image_url} = req.body;
                 const menuItem = {id, name, description, cookingTime, price, size, image_url};
 
                 VALIDATOR.MENU_ITEM.UPDATE(menuItem)
-                    .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE({
-                        id,
-                        name,
-                        description,
-                        cookingTime,
-                        price,
-                        size,
-                        image_url
-                    })))
+                    .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE(menuItem)))
                     .then(() => dbRequest(QUERY.MENU_ITEM.SELECT_BY_ID(id)))
                     .then(updatedMenuItem => res.send(updatedMenuItem))
-                    .catch(e => {
-                        console.log('Update menuItem error', e.message, menuItem)
-                        responseError(res, 400, e.message);
-                    })
+                    .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.UPDATE, id))
 
             }
         },
         {
             "method": "delete",
             "url": "/menu",
-            "description": "Delete menu item.",
+            "description": DESCRIPTION.MENU_ITEM.DELETE,
             callback: function (req, res) {
                 const {id} = req.body;
 
                 dbRequest(QUERY.MENU_ITEM.DELETE_BY_MENU_ITEM_ID(id))
                     .then(message => res.send(message))
-                    .catch(e => {
-                        console.log('Delete menu item error', e.message, id)
-                        responseError(res, 400, e.message);
-                    })
+                    .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.DELETE, id))
             }
         },
 

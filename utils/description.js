@@ -11,7 +11,12 @@ const DESCRIPTION = {
         UPDATE: "Update company.",
         DELETE: "Delete company by companyId.",
     },
-    MENU_ITEM: {},
+    MENU_ITEM: {
+        GET_BY_COMPANY_ID: "Get menu by companyId",
+        CREATE: "Create menu item.",
+        UPDATE: "Update menu item.",
+        DELETE: "Delete menu item.",
+    },
 }
 
 module.exports = DESCRIPTION;

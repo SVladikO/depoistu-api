@@ -9,17 +9,6 @@ const routes = {
     "name": "Company",
     "description": "For company data.",
     "routes": [
-        // {
-        //     "method": "get",
-        //     "url": "/companies",
-        //     "description": "Get all companies.",
-        //     callback: function (req, res) {
-        //         dbRequest(QUERY.COMPANY.SELECT_ALL(),
-        //             dbRes => res.send(dbRes),
-        //             errorMessage => res.send(errorMessage)
-        //         );
-        //     }
-        // },
         {
             "method": "get",
             "url": "/companies/by/city/:city",
@@ -124,12 +113,5 @@ const routes = {
         },
     ]
 };
-
-
-// .then(r => {
-//     if (1<2) {
-//         throw new Error('Ups.')
-//     }
-// })
 
 module.exports = routes;
