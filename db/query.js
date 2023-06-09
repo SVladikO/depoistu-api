@@ -1,8 +1,8 @@
 const QUERY = {
     MENU_ITEM: {
         SELECT_BY_ID: companyId => `SELECT *
-                                            from MENU_ITEM
-                                            WHERE id = '${companyId}';`,
+                                    from MENU_ITEM
+                                    WHERE id = '${companyId}';`,
         SELECT_ALL_BY_COMPANY_ID:
             companyId => `select *
                           from MENU_ITEM
@@ -74,12 +74,24 @@ const QUERY = {
 
     },
     CUSTOMER: {
-        SELECT_BY_EMAIL_AND_PASSWORD:
-            (email, password) =>
-                `select *
-                 from CUSTOMER
-                 where email = '${email}'
-                   and password = '${password}';`,
+        SELECT_BY_EMAIL_AND_PASSWORD: (email, password) =>
+            `select *
+             from CUSTOMER
+             where email = '${email}'
+               and password = '${password}';`,
+
+        SELECT_BY_EMAIL: email => `select *
+                                   from CUSTOMER
+                                   where email = '${email}';`,
+
+        INSERT: c => `INSERT INTO CUSTOMER (id, name, phone, password, email, join_date)
+                      VALUES (DEFAULT,
+                              '${c.name}',
+                              '${c.phone}',
+                              '${c.password}',
+                              '${c.email}',
+                              '${c.join_date}')
+        ;`,
     },
     // INSERT: ``,
     // CREATE: ``,

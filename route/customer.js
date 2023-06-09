@@ -1,5 +1,6 @@
 const {dbRequest} = require("../utils");
 const QUERY = require("../db/query");
+const VALIDATOR = require("../utils/validation");
 
 const routes = {
     "name": "Customer",
@@ -25,6 +26,38 @@ const routes = {
 
                         console.log('Sing in.', errorMessage, email, password)
                         res.status(400).send({message: errorMessage})
+                    },
+                    errorMessage => res.send(errorMessage)
+                );
+            }
+        },
+        {
+            "method": "post",
+            "url": "/sign-up",
+            "description": "User sing up.",
+            callback: function (req, res) {
+                const {name, phone, password, email} = req.body;
+                const join_date = new Date().getTime();
+                const customer = {name, phone, password, email, join_date};
+
+                VALIDATOR.CUSTOMER.SING_UP(customer)
+                dbRequest(
+                    QUERY.CUSTOMER.SELECT_BY_EMAIL(email),
+                    message => {
+                        if (message.length) {
+                            const errorMessage = 'This email already used.';
+                            console.log('Sing up.', errorMessage, email)
+                            res.status(400).send({message: errorMessage})
+                            return;
+                        }
+
+                        console.log('Sing up. ', customer);
+
+                        dbRequest(
+                            QUERY.CUSTOMER.INSERT(customer),
+                            dbRes => res.send(dbRes),
+                            errorMessage => res.send(errorMessage)
+                        );
                     },
                     errorMessage => res.send(errorMessage)
                 );
