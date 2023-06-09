@@ -1,8 +1,9 @@
 const {dbRequest} = require("../utils");
 const QUERY = require("../db/query");
 const VALIDATOR = require("../utils/validation")
+const DESCRIPTION = require("../utils/description");
 
-const {responseError, responseSuccess} = require("../utils/responce")
+const {responseSuccess, catchHandler} = require("../utils/responce")
 
 const routes = {
     "name": "Company",
@@ -22,7 +23,7 @@ const routes = {
         {
             "method": "get",
             "url": "/companies/by/city/:city",
-            "description": "Get companies by city. Only Ukrainian for now. Case sensitive.",
+            "description": DESCRIPTION.COMPANY.GET_BY_CITY,
             callback: function (req, res) {
                 const {city} = req.params;
 
@@ -34,18 +35,13 @@ const routes = {
 
                 dbRequest(QUERY.COMPANY.SELECT_BY_CITY(city))
                     .then(dbRes => res.send(dbRes))
-                    .catch(
-                        e => {
-                            console.log('Get company by companyId error', e.message, company)
-                            responseError(res, 400, e.message);
-                        }
-                    );
+                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CITY, city))
             }
         },
         {
             "method": "get",
             "url": "/companies/by/id/:companyId",
-            "description": "Get company by companyId.",
+            "description": DESCRIPTION.COMPANY.GET_BY_COMPANY_ID,
             callback: function (req, res) {
                 const companyId = +req.params.companyId;
 
@@ -57,18 +53,13 @@ const routes = {
 
                 dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId))
                     .then(dbRes => res.send(dbRes))
-                    .catch(
-                        e => {
-                            console.log('Get company by companyId error', e.message, company)
-                            responseError(res, 400, e.message);
-                        }
-                    );
+                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_COMPANY_ID, companyId));
             }
         },
         {
             "method": "get",
             "url": "/companies/by/customer/:customerId",
-            "description": "Get companies by customer id.",
+            "description": DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID,
             callback: function (req, res) {
                 const customerId = +req.params.customerId;
 
@@ -80,18 +71,13 @@ const routes = {
 
                 dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId))
                     .then(dbRes => res.send(dbRes))
-                    .catch(
-                        e => {
-                            console.log('Get companies by customer id error', e.message, company)
-                            responseError(res, 400, e.message);
-                        }
-                    );
+                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID, customerId));
             }
         },
         {
             "method": "post",
             "url": "/companies",
-            "description": "Create company.",
+            "description": DESCRIPTION.COMPANY.CREATE,
             callback: function (req, res) {
                 const {customer_id, name, city, street, phone, schedule} = req.body;
                 const join_date = '' + new Date().getTime();
@@ -100,18 +86,13 @@ const routes = {
                 VALIDATOR.COMPANY.CREATE(company)
                     .then(() => dbRequest(QUERY.COMPANY.INSERT(company)))
                     .then(message => responseSuccess(res, message))
-                    .catch(
-                        e => {
-                            console.log('Create company error', e.message, company)
-                            responseError(res, 400, e.message);
-                        }
-                    )
+                    .catch(catchHandler(res, DESCRIPTION.COMPANY.CREATE, company));
             }
         },
         {
             "method": "put",
             "url": "/companies",
-            "description": "Update company.",
+            "description": DESCRIPTION.COMPANY.UPDATE,
             callback: function (req, res) {
                 const {id, name, phone, city, street, schedule} = req.body;
                 const company = {id, name, phone, city, street, schedule};
@@ -120,16 +101,13 @@ const routes = {
                     .then(() => dbRequest(QUERY.COMPANY.UPDATE(company)))
                     .then(() => dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id)))
                     .then(updatedCompany => res.send(updatedCompany))
-                    .catch(e => {
-                        console.log('Update company error', e.message, company)
-                        responseError(res, 400, e.message);
-                    })
+                    .catch(catchHandler(res, DESCRIPTION.COMPANY.UPDATE, company))
             }
         },
         {
             "method": "delete",
             "url": "/companies/:companyId",
-            "description": "Delete company by companyId.",
+            "description": DESCRIPTION.COMPANY.DELETE,
             callback: function (req, res) {
                 const companyId = +req.params.companyId;
 
@@ -141,15 +119,17 @@ const routes = {
 
                 dbRequest(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId))
                     .then(message => responseSuccess(res, message))
-                    .catch(e => {
-                            console.log('Delete company error', e.message, companyId)
-                            responseError(res, 400, e.message);
-                        }
-                    );
+                    .catch(catchHandler(res, DESCRIPTION.COMPANY.DELETE, companyId));
             }
         },
     ]
 };
 
+
+// .then(r => {
+//     if (1<2) {
+//         throw new Error('Ups.')
+//     }
+// })
 
 module.exports = routes;
