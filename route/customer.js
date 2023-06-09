@@ -3,6 +3,21 @@ const QUERY = require("../db/query");
 const VALIDATOR = require("../utils/validation");
 const {responseError} = require("../utils/responce");
 
+function CUSTOMET_GET_BY_EMAIL_AND_PASSWORD_onSuccess({email, password, res}) {
+    return customers => {
+        if (customers.length > 0) {
+            res.send(customers[0])
+            console.log('Sing in. successfully.', email, password)
+            return;
+        }
+
+        const errorMessage = 'Wrong credentials.';
+
+        console.log('Sing in.', errorMessage, email, password)
+        res.status(400).send({message: errorMessage})
+    }
+}
+
 const routes = {
     "name": "Customer",
     "description": "For customer and business owners.",
@@ -16,18 +31,7 @@ const routes = {
 
                 dbRequest(
                     QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password),
-                    customers => {
-                        if (customers.length > 0) {
-                            res.send(customers[0])
-                            console.log('Sing in. successfully.', email, password)
-                            return;
-                        }
-
-                        const errorMessage = 'Wrong credentials.';
-
-                        console.log('Sing in.', errorMessage, email, password)
-                        res.status(400).send({message: errorMessage})
-                    },
+                    CUSTOMET_GET_BY_EMAIL_AND_PASSWORD_onSuccess({res, email, password}),
                     errorMessage => res.send(errorMessage)
                 );
             }
@@ -42,9 +46,9 @@ const routes = {
                 const customer = {name, phone, password, email, join_date};
 
                 VALIDATOR.CUSTOMER.SING_UP(customer)
-                    .then(e => {
+                    .then(validationResponse => {
                         dbRequest(
-                            // Check email duplication
+                            ////
                             QUERY.CUSTOMER.SELECT_BY_EMAIL(email),
                             message => {
                                 if (message.length) {
@@ -57,8 +61,14 @@ const routes = {
                                 console.log('Sing up. ', customer);
 
                                 dbRequest(
+                                    ///
                                     QUERY.CUSTOMER.INSERT(customer),
-                                    dbRes => res.send(dbRes),
+                                    () => dbRequest(
+                                        ///
+                                        QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password),
+                                        CUSTOMET_GET_BY_EMAIL_AND_PASSWORD_onSuccess({res, email, password}),
+                                        errorMessage => res.send(errorMessage)
+                                    ),
                                     errorMessage => res.send(errorMessage)
                                 );
                             },
