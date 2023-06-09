@@ -3,7 +3,7 @@ const QUERY = require("../db/query");
 const VALIDATOR = require("../utils/validation")
 const DESCRIPTION = require("../utils/description");
 
-const {responseSuccess, catchHandler} = require("../utils/responce")
+const {sendHandler, catchHandler} = require("../utils/responce")
 
 const routes = {
     "name": "Company",
@@ -23,7 +23,7 @@ const routes = {
                 }
 
                 dbRequest(QUERY.COMPANY.SELECT_BY_CITY(city))
-                    .then(dbRes => res.send(dbRes))
+                    .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CITY, city))
             }
         },
@@ -41,7 +41,7 @@ const routes = {
                 }
 
                 dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId))
-                    .then(dbRes => res.send(dbRes))
+                    .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_COMPANY_ID, companyId));
             }
         },
@@ -59,7 +59,7 @@ const routes = {
                 }
 
                 dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId))
-                    .then(dbRes => res.send(dbRes))
+                    .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID, customerId));
             }
         },
@@ -74,7 +74,7 @@ const routes = {
 
                 VALIDATOR.COMPANY.CREATE(company)
                     .then(() => dbRequest(QUERY.COMPANY.INSERT(company)))
-                    .then(message => responseSuccess(res, message))
+                    .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.CREATE, company));
             }
         },
@@ -89,7 +89,7 @@ const routes = {
                 VALIDATOR.COMPANY.UPDATE(company)
                     .then(() => dbRequest(QUERY.COMPANY.UPDATE(company)))
                     .then(() => dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id)))
-                    .then(updatedCompany => res.send(updatedCompany))
+                    .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.UPDATE, company))
             }
         },
@@ -107,7 +107,7 @@ const routes = {
                 }
 
                 dbRequest(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId))
-                    .then(message => responseSuccess(res, message))
+                    .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.DELETE, companyId));
             }
         },

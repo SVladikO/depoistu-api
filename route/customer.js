@@ -1,7 +1,7 @@
 const {dbRequest} = require("../utils");
 const QUERY = require("../db/query");
 const VALIDATOR = require("../utils/validation");
-const {catchHandler} = require("../utils/responce");
+const {catchHandler, sendHandler} = require("../utils/responce");
 const DESCRIPTION = require("../utils/description");
 
 const getFirstCustomer = customers => {
@@ -28,7 +28,7 @@ const routes = {
 
                 dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))
                     .then(getFirstCustomer)
-                    .then(customer => res.send(customer))
+                    .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_IN, {email, password}))
             }
         },
@@ -52,7 +52,7 @@ const routes = {
                     .then(() => dbRequest(QUERY.CUSTOMER.INSERT(customer)))
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
                     .then(getFirstCustomer)
-                    .then(customer => res.send(customer))
+                    .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_UP, customer))
             }
         }
