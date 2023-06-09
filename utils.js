@@ -7,23 +7,19 @@ const connection = mysql.createConnection(dbConfig[getMode()]);
 const prefix = '---->'
 console.log(prefix, 'DB environment: ', getMode());
 
-function dbRequest(query, resSuccess, resError) {
-    connection.query(query, function (err, results) {
-        requestDetails(query);
+function dbRequest(query, resolve, reject) {
+    connection.query(query, (err, results) => {
+        console.log(prefix, 'DB request: ', query);
 
         if (err) {
             console.log(prefix, 'DB request error: ', err.message, err.stack);
-            resError('DB Request error:' + err.message)
+            reject('DB Request error:' + err.message)
             return;
         }
 
         console.log(prefix, 'DB request success: ', results)
-        resSuccess(results)
+        resolve(results)
     })
-}
-
-function requestDetails(query) {
-    console.log(prefix, 'DB request: ', query)
 }
 
 const getParamMessageRequirements = (paramName, requiredType = 'number') => {

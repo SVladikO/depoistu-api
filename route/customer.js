@@ -3,19 +3,14 @@ const QUERY = require("../db/query");
 const VALIDATOR = require("../utils/validation");
 const {responseError} = require("../utils/responce");
 
-function CUSTOMET_GET_BY_EMAIL_AND_PASSWORD_onSuccess({email, password, res}) {
-    return customers => {
-        if (customers.length > 0) {
-            res.send(customers[0])
-            console.log('Sing in. successfully.', email, password)
-            return;
-        }
+const getFirstCustomer = customers => {
+    if (customers.length > 0) {
+        const {ID, NAME, EMAIL, PHONE} = customers[0];
 
-        const errorMessage = 'Wrong credentials.';
-
-        console.log('Sing in.', errorMessage, email, password)
-        res.status(400).send({message: errorMessage})
+        return {ID, NAME, EMAIL, PHONE};
     }
+
+    throw new Error('Wrong credentials.');
 }
 
 const routes = {
@@ -29,11 +24,15 @@ const routes = {
             callback: function (req, res) {
                 const {email, password} = req.body;
 
-                dbRequest(
-                    QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password),
-                    CUSTOMET_GET_BY_EMAIL_AND_PASSWORD_onSuccess({res, email, password}),
-                    errorMessage => res.send(errorMessage)
-                );
+                new Promise((resolve, reject) =>
+                    dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password), resolve, reject)
+                )
+                    .then(getFirstCustomer)
+                    .then(customer => res.send(customer))
+                    .catch(e => {
+                        console.log('Sing up error', e.message, customer)
+                        responseError(res, 400, e.message);
+                    })
             }
         },
         {
@@ -46,37 +45,19 @@ const routes = {
                 const customer = {name, phone, password, email, join_date};
 
                 VALIDATOR.CUSTOMER.SING_UP(customer)
-                    .then(validationResponse => {
-                        dbRequest(
-                            ////
-                            QUERY.CUSTOMER.SELECT_BY_EMAIL(email),
-                            message => {
-                                if (message.length) {
-                                    const errorMessage = 'This email already used.';
-                                    console.log('Sing up.', errorMessage, email)
-                                    res.status(400).send({message: errorMessage})
-                                    return;
-                                }
-
-                                console.log('Sing up. ', customer);
-
-                                dbRequest(
-                                    ///
-                                    QUERY.CUSTOMER.INSERT(customer),
-                                    () => dbRequest(
-                                        ///
-                                        QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password),
-                                        CUSTOMET_GET_BY_EMAIL_AND_PASSWORD_onSuccess({res, email, password}),
-                                        errorMessage => res.send(errorMessage)
-                                    ),
-                                    errorMessage => res.send(errorMessage)
-                                );
-                            },
-                            errorMessage => res.send(errorMessage)
-                        )
-                    })
+                    .then(() => new Promise((resolve, reject) => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL(email), resolve, reject)))
+                    .then(response => {
+                            if (response.length) {
+                                throw new Error('This email is already used.')
+                            }
+                        }
+                    )
+                    .then(() => new Promise((resolve, reject) => dbRequest(QUERY.CUSTOMER.INSERT(customer), resolve, reject)))
+                    .then(() => new Promise((resolve, reject) => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password), resolve, reject)))
+                    .then(getFirstCustomer)
+                    .then(customer => res.send(customer))
                     .catch(e => {
-                        console.log('Sing up validation error', e.message, customer)
+                        console.log('Sing up error', e.message, customer)
                         responseError(res, 400, e.message);
                     })
             }
