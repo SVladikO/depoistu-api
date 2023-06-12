@@ -51,8 +51,8 @@ const FIELD_REQUIREMENTS_FOR = {
             MAX: 30
         },
         PHONE: {
-            MIN: 10,
-            MAX: 10
+            MIN: 12,
+            MAX: 12
         },
         SCHEDULE: {
             MIN: 7 //length 6 equal ',,,,,,'
@@ -111,8 +111,8 @@ const VALIDATION = {
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX}`),
         phone: Yup.string()
             .required()
-            .min(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MIN, `Example: 0971234567`)
-            .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Example: 0971234567`),
+            .min(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MIN, `Example: 380971234567`)
+            .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Example: 380971234567`),
         schedule: Yup.string()
             .required()
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.SCHEDULE.MIN, 'Schedule should not be empty. Minimum one day should be scheduled.')

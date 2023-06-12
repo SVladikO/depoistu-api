@@ -1,84 +1,59 @@
 const {dbRequest} = require("../utils");
 const QUERY = require("../db/query");
 const VALIDATOR = require("../utils/validation");
-const {responseError} = require("../utils/responce");
+const {catchHandler, sendHandler} = require("../utils/responce");
+const DESCRIPTION = require("../utils/description");
 
-function CUSTOMET_GET_BY_EMAIL_AND_PASSWORD_onSuccess({email, password, res}) {
-    return customers => {
-        if (customers.length > 0) {
-            res.send(customers[0])
-            console.log('Sing in. successfully.', email, password)
-            return;
-        }
+const getFirstCustomer = customers => {
+    if (customers.length > 0) {
+        const {ID, NAME, EMAIL, PHONE} = customers[0];
 
-        const errorMessage = 'Wrong credentials.';
-
-        console.log('Sing in.', errorMessage, email, password)
-        res.status(400).send({message: errorMessage})
+        return {ID, NAME, EMAIL, PHONE};
     }
+
+    throw new Error('Wrong credentials.');
 }
 
 const routes = {
     "name": "Customer",
-    "description": "For customer and business owners.",
+    "description": "For customers and business owners",
     "routes": [
         {
             "method": "post",
             "url": "/sign-in",
-            "description": "User sing in.",
+            "description": DESCRIPTION.CUSTOMER.SING_IN,
             callback: function (req, res) {
                 const {email, password} = req.body;
 
-                dbRequest(
-                    QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password),
-                    CUSTOMET_GET_BY_EMAIL_AND_PASSWORD_onSuccess({res, email, password}),
-                    errorMessage => res.send(errorMessage)
-                );
+
+                dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))
+                    .then(getFirstCustomer)
+                    .then(sendHandler(res))
+                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_IN, {email, password}))
             }
         },
         {
             "method": "post",
             "url": "/sign-up",
-            "description": "User sing up.",
+            "description": DESCRIPTION.CUSTOMER.SING_UP,
             callback: function (req, res) {
                 const {name, phone, password, email} = req.body;
                 const join_date = new Date().getTime();
                 const customer = {name, phone, password, email, join_date};
 
                 VALIDATOR.CUSTOMER.SING_UP(customer)
-                    .then(validationResponse => {
-                        dbRequest(
-                            ////
-                            QUERY.CUSTOMER.SELECT_BY_EMAIL(email),
-                            message => {
-                                if (message.length) {
-                                    const errorMessage = 'This email already used.';
-                                    console.log('Sing up.', errorMessage, email)
-                                    res.status(400).send({message: errorMessage})
-                                    return;
-                                }
-
-                                console.log('Sing up. ', customer);
-
-                                dbRequest(
-                                    ///
-                                    QUERY.CUSTOMER.INSERT(customer),
-                                    () => dbRequest(
-                                        ///
-                                        QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password),
-                                        CUSTOMET_GET_BY_EMAIL_AND_PASSWORD_onSuccess({res, email, password}),
-                                        errorMessage => res.send(errorMessage)
-                                    ),
-                                    errorMessage => res.send(errorMessage)
-                                );
-                            },
-                            errorMessage => res.send(errorMessage)
-                        )
-                    })
-                    .catch(e => {
-                        console.log('Sing up validation error', e.message, customer)
-                        responseError(res, 400, e.message);
-                    })
+                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL(email)))
+                    .then(response => {
+                            if (response.length) {
+                                throw new Error('This email is already used.')
+                            }
+                        }
+                    )
+                    .then(() => dbRequest(QUERY.CUSTOMER.INSERT(customer)))
+                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
+                    .then(getFirstCustomer)
+                    .then(sendHandler(res))
+                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_UP, customer))
             }
         }
     ]
