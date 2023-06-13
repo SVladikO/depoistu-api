@@ -6,9 +6,8 @@ const DESCRIPTION = require("../utils/description");
 
 const getFirstCustomer = customers => {
     if (customers.length > 0) {
-        const {ID, NAME, EMAIL, PHONE} = customers[0];
-
-        return {ID, NAME, EMAIL, PHONE};
+        const {ID, NAME, EMAIL, PHONE, PASSWORD} = customers[0];
+        return {ID, NAME, EMAIL, PHONE, PASSWORD};
     }
 
     throw new Error('Wrong credentials.');
@@ -54,6 +53,29 @@ const routes = {
                     .then(getFirstCustomer)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_UP, customer))
+            }
+        },
+        {
+            "method": "post",
+            "url": "/change-password",
+            "description": DESCRIPTION.CUSTOMER.CHANGE_PASSWORD,
+            callback: function (req, res) {
+                const {password, email, newPassword} = req.body;
+                const customer = {password, email, newPassword};
+
+                VALIDATOR.CUSTOMER.CHANGE_PASSWORD(customer)
+                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
+                    .then(response => {
+                            if (!response.length) {
+                                throw new Error('Wrong old password.')
+                            }
+                        }
+                    )
+                    .then(() => dbRequest(QUERY.CUSTOMER.UPDATE_PASSWORD(customer)))
+                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, newPassword)))
+                    .then(getFirstCustomer)
+                    .then(sendHandler(res))
+                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.CHANGE_PASSWORD, customer))
             }
         }
     ]

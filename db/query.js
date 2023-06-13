@@ -92,6 +92,10 @@ const QUERY = {
                               '${c.email}',
                               '${c.join_date}')
         ;`,
+        UPDATE_PASSWORD: c => `UPDATE CUSTOMER
+                      SET password = '${c.newPassword}' 
+                      WHERE email = '${c.email}'
+        ;`,
     },
     // INSERT: ``,
     // CREATE: ``,
