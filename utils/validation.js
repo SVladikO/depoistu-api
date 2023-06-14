@@ -124,6 +124,12 @@ const VALIDATOR = {
         SING_UP: customer => {
             const validator = Yup.object().shape(VALIDATION.CUSTOMER)
             return validator.validate(customer)
+        },
+        CHANGE_PASSWORD: customer => {
+            const {password, email} = VALIDATION.CUSTOMER;
+
+            const validator = Yup.object().shape({password, email, newPassword: password})
+            return validator.validate(customer)
         }
     },
     COMPANY: {

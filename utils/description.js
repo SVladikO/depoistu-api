@@ -2,6 +2,7 @@ const DESCRIPTION = {
     CUSTOMER: {
         SING_IN: "Customer Sing IN.",
         SING_UP: "Customer Sing UP.",
+        CHANGE_PASSWORD: "Customer change password.",
     },
     COMPANY: {
         GET_BY_CITY: "Get companies by city. Only Ukrainian for now. Case sensitive.",
