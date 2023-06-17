@@ -11,8 +11,8 @@ const FIELD_REQUIREMENTS_FOR = {
             MAX: 12
         },
         PHONE: {
-            MIN: 13,
-            MAX: 13
+            MIN: 12,
+            MAX: 12
         },
         EMAIL: {
             MAX: 30
@@ -51,8 +51,8 @@ const FIELD_REQUIREMENTS_FOR = {
             MAX: 30
         },
         PHONE: {
-            MIN: 10,
-            MAX: 10
+            MIN: 12,
+            MAX: 12
         },
         SCHEDULE: {
             MIN: 7 //length 6 equal ',,,,,,'
@@ -61,30 +61,23 @@ const FIELD_REQUIREMENTS_FOR = {
 };
 
 const VALIDATION = {
-    USER: {
+    CUSTOMER: {
         name: Yup.string()
             .min(FIELD_REQUIREMENTS_FOR.USER.NAME.MIN, `Too Short! Min length ${FIELD_REQUIREMENTS_FOR.USER.NAME.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.USER.NAME.MAX, `Too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.NAME.MAX}`)
             .required(`Required!`),
-        password: Yup.string()
-            .min(FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MIN, `Too Short! Min length ${FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MIN}`)
-            .max(FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MAX, `Too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MAX}`)
-            .required(`Required`),
         email: Yup.string()
             .email(`Invalid email`)
             .max(FIELD_REQUIREMENTS_FOR.USER.EMAIL.MAX, `Too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.EMAIL.MAX}`)
             .required(`Required`),
         phone: Yup.string()
-            .min(FIELD_REQUIREMENTS_FOR.USER.PHONE.MIN, `Example: +380971234567`)
-            .max(FIELD_REQUIREMENTS_FOR.USER.PHONE.MAX, `Example: +380971234567`)
+            .min(FIELD_REQUIREMENTS_FOR.USER.PHONE.MIN, `Example: 380971234567`)
+            .max(FIELD_REQUIREMENTS_FOR.USER.PHONE.MAX, `Example: 380971234567`)
             .required(`Required!`),
-        confirmedPassword: Yup.string()
-            .required(`Required!`)
+        password: Yup.string()
             .min(FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MIN, `Too Short! Min length ${FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MAX, `Too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MAX}`)
-            .test(`passwords-match`, `Passwords must match`, function (value) {
-                return this.parent.newPassword === value
-            })
+            .required(`Required`)
     },
     MENU_ITEM: {
         category_id: Yup.string().required(`Required!`),
@@ -118,8 +111,8 @@ const VALIDATION = {
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX}`),
         phone: Yup.string()
             .required()
-            .min(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MIN, `Example: 0971234567`)
-            .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Example: 0971234567`),
+            .min(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MIN, `Example: 380971234567`)
+            .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Example: 380971234567`),
         schedule: Yup.string()
             .required()
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.SCHEDULE.MIN, 'Schedule should not be empty. Minimum one day should be scheduled.')
@@ -127,6 +120,18 @@ const VALIDATION = {
 }
 
 const VALIDATOR = {
+    CUSTOMER: {
+        SING_UP: customer => {
+            const validator = Yup.object().shape(VALIDATION.CUSTOMER)
+            return validator.validate(customer)
+        },
+        CHANGE_PASSWORD: customer => {
+            const {password, email} = VALIDATION.CUSTOMER;
+
+            const validator = Yup.object().shape({password, email, newPassword: password})
+            return validator.validate(customer)
+        }
+    },
     COMPANY: {
         CREATE: company => {
             const validator = Yup.object().shape(VALIDATION.COMPANY)

@@ -1,13 +1,11 @@
-const responseSuccess = (res, successMessage) => {
-    res.status(200).send({successMessage})
-}
+const sendHandler = res => data => res.status(200).send(data);
 
-const responseError = (res, status, errorMessage) => {
-    const message = JSON.stringify({errorMessage});
-    res.status(status).send(message)
+const catchHandler = (res, description, data) => ({message}) => {
+    console.log('Error !!! ', description, data || ' ', message);
+    res.status(400).send(JSON.stringify({message}))
 }
 
 module.exports = {
-    responseError,
-    responseSuccess,
+    sendHandler,
+    catchHandler
 }
