@@ -42,6 +42,7 @@ const QUERY = {
         SELECT_BY_CUSTOMER_ID: customerId => `SELECT *
                                               from COMPANY
                                               WHERE customer_id = '${customerId}';`,
+        SELECT_AVAILABLE_CITIES: () => `SELECT DISTINCT CITY FROM COMPANY;`,
         SELECT_BY_CITY: city => `SELECT *
                                  from COMPANY
                                  WHERE city = '${city}';`,
