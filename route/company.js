@@ -16,7 +16,7 @@ const routes = {
             callback: function (req, res) {
                 const {city} = req.params;
 
-                if (city === 'undefined' || Number.isInteger(+city)) {
+                if (city === 'undefined') {
                     return res.status(400).send({
                         message: 'Bad request.'
                     })
