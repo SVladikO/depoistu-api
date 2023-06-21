@@ -64,6 +64,17 @@ const routes = {
             }
         },
         {
+            "method": "get",
+            "url": "/companies/cities",
+            "description": DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES,
+            callback: function (req, res) {
+                dbRequest(QUERY.COMPANY.SELECT_AVAILABLE_CITIES())
+                    .then(r => r.map(o => o.CITY) || [])
+                    .then(sendHandler(res))
+                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES));
+            }
+        },
+        {
             "method": "post",
             "url": "/companies",
             "description": DESCRIPTION.COMPANY.CREATE,
