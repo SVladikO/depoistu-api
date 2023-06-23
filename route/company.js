@@ -11,7 +11,7 @@ const routes = {
     "routes": [
         {
             "method": "get",
-            "url": "/companies/by/city/:city_id",
+            "url": "/companies/by/city_id/:city_id",
             "description": DESCRIPTION.COMPANY.GET_BY_CITY_ID,
             callback: function (req, res) {
                 const {city_id} = req.params;
