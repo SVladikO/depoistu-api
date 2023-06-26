@@ -11,20 +11,20 @@ const routes = {
     "routes": [
         {
             "method": "get",
-            "url": "/companies/by/city/:city",
-            "description": DESCRIPTION.COMPANY.GET_BY_CITY,
+            "url": "/companies/by/city_id/:city_id",
+            "description": DESCRIPTION.COMPANY.GET_BY_CITY_ID,
             callback: function (req, res) {
-                const {city} = req.params;
+                const {city_id} = req.params;
 
-                if (city === 'undefined') {
+                if (city_id === 'undefined') {
                     return res.status(400).send({
                         message: 'Bad request.'
                     })
                 }
 
-                dbRequest(QUERY.COMPANY.SELECT_BY_CITY(city))
+                dbRequest(QUERY.COMPANY.SELECT_BY_CITY_ID(city_id))
                     .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CITY, city))
+                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CITY_ID, city_id))
             }
         },
         {
@@ -69,7 +69,7 @@ const routes = {
             "description": DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES,
             callback: function (req, res) {
                 dbRequest(QUERY.COMPANY.SELECT_AVAILABLE_CITIES())
-                    .then(r => r.map(o => o.CITY) || [])
+                    .then(r => r.map(o => o.CITY_ID) || [])
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES));
             }
@@ -79,9 +79,9 @@ const routes = {
             "url": "/companies",
             "description": DESCRIPTION.COMPANY.CREATE,
             callback: function (req, res) {
-                const {customer_id, name, city, street, phone, schedule} = req.body;
+                const {customer_id, name, city_id, street, phone, schedule} = req.body;
                 const join_date = '' + new Date().getTime();
-                const company = {customer_id, name, phone, city, street, join_date, schedule};
+                const company = {customer_id, name, phone, city_id, street, join_date, schedule};
 
                 VALIDATOR.COMPANY.CREATE(company)
                     .then(() => dbRequest(QUERY.COMPANY.INSERT(company)))
@@ -94,8 +94,8 @@ const routes = {
             "url": "/companies",
             "description": DESCRIPTION.COMPANY.UPDATE,
             callback: function (req, res) {
-                const {id, name, phone, city, street, schedule} = req.body;
-                const company = {id, name, phone, city, street, schedule};
+                const {id, name, phone, city_id, street, schedule} = req.body;
+                const company = {id, name, phone, city_id, street, schedule};
 
                 VALIDATOR.COMPANY.UPDATE(company)
                     .then(() => dbRequest(QUERY.COMPANY.UPDATE(company)))

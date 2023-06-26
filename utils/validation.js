@@ -104,7 +104,7 @@ const VALIDATION = {
             .required()
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MAX}`),
-        city: Yup.string().required(),
+        city_id: Yup.string().required(),
         street: Yup.string()
             .required()
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN}`)
@@ -138,8 +138,8 @@ const VALIDATOR = {
             return validator.validate(company)
         },
         UPDATE: company => {
-            const {name, city, street, phone, schedule} = VALIDATION.COMPANY;
-            const validator = Yup.object().shape({name, city, street, phone, schedule});
+            const {name, city_id, street, phone, schedule} = VALIDATION.COMPANY;
+            const validator = Yup.object().shape({name, city_id, street, phone, schedule});
 
             return validator.validate(company);
         },

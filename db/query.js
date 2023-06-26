@@ -42,21 +42,21 @@ const QUERY = {
         SELECT_BY_CUSTOMER_ID: customerId => `SELECT *
                                               from COMPANY
                                               WHERE customer_id = '${customerId}';`,
-        SELECT_AVAILABLE_CITIES: () => `SELECT DISTINCT CITY FROM COMPANY;`,
-        SELECT_BY_CITY: city => `SELECT *
-                                 from COMPANY
-                                 WHERE city = '${city}';`,
+        SELECT_AVAILABLE_CITIES: () => `SELECT DISTINCT CITY_ID FROM COMPANY;`,
+        SELECT_BY_CITY_ID: city_id => `SELECT *
+                                    from COMPANY
+                                    WHERE CITY_ID = '${city_id}';`,
         SELECT_BY_COMPANY_ID: companyId => `SELECT *
                                             from COMPANY
                                             WHERE id = '${companyId}';`,
         SELECT_ALL: () => `SELECT *
                            FROM COMPANY;`,
-        INSERT: c => `INSERT INTO COMPANY (id, customer_id, name, phone, city, street, join_date, schedule)
+        INSERT: c => `INSERT INTO COMPANY (id, customer_id, name, phone, city_id, street, join_date, schedule)
                       VALUES (DEFAULT,
                               '${c.customer_id}',
                               '${c.name}',
                               '${c.phone}',
-                              '${c.city}',
+                              '${c.city_id}',
                               '${c.street}',
                               '${c.join_date}',
                               '${c.schedule}')
@@ -64,7 +64,7 @@ const QUERY = {
         UPDATE: c => `UPDATE COMPANY
                       SET name     = '${c.name}',
                           phone    = '${c.phone}',
-                          city     = '${c.city}',
+                          city_id     = '${c.city_id}',
                           street   = '${c.street}',
                           schedule = '${c.schedule}'
                       WHERE id = ${c.id}
