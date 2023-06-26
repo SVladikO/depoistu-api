@@ -5,6 +5,7 @@ const DESCRIPTION = {
         CHANGE_PASSWORD: "Customer change password.",
     },
     COMPANY: {
+        GET_BY_CITY: "Get companies by city uniq identifier.",
         GET_BY_CITY_ID: "Get companies by city id.",
         GET_BY_COMPANY_ID: "Get company by companyId.",
         GET_BY_CUSTOMER_ID: "Get companies by customer id.",
