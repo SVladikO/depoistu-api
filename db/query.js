@@ -18,7 +18,7 @@ const QUERY = {
                                           and company_id = ${companyId};`,
         INSERT: mi => `INSERT INTO MENU_ITEM (id, category_id, company_id, name, description, cooking_time, price, size,
                                               image_url)
-                       VALUES (default, '${mi.category_id}', '${mi.company_id}', '${mi.name}', '${mi.description}',
+                       VALUES (default, '${mi.categoryId}', '${mi.company_id}', '${mi.name}', '${mi.description}',
                                '${mi.cookingTime}', '${mi.price}', '${mi.size}', '${mi.image_url}');`,
         UPDATE: mi => `UPDATE MENU_ITEM
                        SET name         = '${mi.name}',

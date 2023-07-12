@@ -36,8 +36,8 @@ const routes = {
             "url": "/menu",
             "description": DESCRIPTION.MENU_ITEM.CREATE,
             callback: function (req, res) {
-                const {id, category_id, company_id, name, description, cookingTime, price, size, image_url} = req.body;
-                const menuItem = {id, category_id, company_id, name, description, cookingTime, price, size, image_url};
+                const {id, categoryId, company_id, name, description, cookingTime, price, size, image_url} = req.body;
+                const menuItem = {id, categoryId, company_id, name, description, cookingTime, price, size, image_url};
 
                 VALIDATOR.MENU_ITEM.CREATE(menuItem)
                     .then(() => dbRequest(QUERY.MENU_ITEM.INSERT(menuItem)))
