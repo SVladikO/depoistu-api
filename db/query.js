@@ -23,6 +23,7 @@ const QUERY = {
         UPDATE: mi => `UPDATE MENU_ITEM
                        SET name         = '${mi.name}',
                            description  = '${mi.description}',
+                           category_id  = '${mi.category_id}',
                            cooking_time = '${mi.cookingTime}',
                            price        = '${mi.price}',
                            size         = '${mi.size}',

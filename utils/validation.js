@@ -80,14 +80,14 @@ const VALIDATION = {
             .required(`Required`)
     },
     MENU_ITEM: {
-        category_id: Yup.string().required(`Required!`),
-        company_id: Yup.string().required(`Required!`),
+        category_id: Yup.string().required(`Category id is required!`),
+        company_id: Yup.string().required(`Company id is equired!`),
         name: Yup.string()
-            .required(`Required!`)
+            .required(`Name required!`)
             .min(FIELD_REQUIREMENTS_FOR.MENU_ITEM.NAME.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.NAME.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.NAME.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.NAME.MAX}`),
         price: Yup.string()
-            .required(`Required!`)
+            .required(`Price is required!`)
             .min(FIELD_REQUIREMENTS_FOR.MENU_ITEM.PRICE.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.PRICE.MIN}`),
         description: Yup.string()
             .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.DESCRIPTION.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.DESCRIPTION.MAX}`),
@@ -150,8 +150,8 @@ const VALIDATOR = {
             return validator.validate(menuItem);
         },
         UPDATE: menuItem => {
-            const {name, price, description, cookingTime, size} = VALIDATION.MENU_ITEM;
-            const validator = Yup.object().shape({name, price, description, cookingTime, size});
+            const {name, category_id, price, description, cookingTime, size} = VALIDATION.MENU_ITEM;
+            const validator = Yup.object().shape({name, category_id, price, description, cookingTime, size});
             return validator.validate(menuItem);
         },
     }
