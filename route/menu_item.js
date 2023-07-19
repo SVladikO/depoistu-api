@@ -50,8 +50,8 @@ const routes = {
             "url": "/menu",
             "description": DESCRIPTION.MENU_ITEM.UPDATE,
             callback: function (req, res) {
-                const {id, name, description, cookingTime, price, size, image_url} = req.body;
-                const menuItem = {id, name, description, cookingTime, price, size, image_url};
+                const {id, name, category_id, description, cookingTime, price, size, image_url} = req.body;
+                const menuItem = {id, name, category_id, description, cookingTime, price, size, image_url};
 
                 VALIDATOR.MENU_ITEM.UPDATE(menuItem)
                     .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE(menuItem)))
