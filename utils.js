@@ -50,10 +50,7 @@ const provideBEApi = (app, routes) => {
 const connectRoutes = (app, routes) => {
     routes.forEach(
         entity => entity.routes.forEach(
-            route => {
-                console.log(route.url);
-                return app[route.method](route.url, ...route.callbacks)
-            }
+            route => app[route.method](route.url, ...route.callbacks)
         )
     );
 }
