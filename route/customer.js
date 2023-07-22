@@ -65,6 +65,7 @@ const routes = {
                     .then(() => dbRequest(QUERY.CUSTOMER.INSERT(customer)))
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
                     .then(getFirstCustomer)
+                    .then(addToken)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_UP, customer))
             }]
