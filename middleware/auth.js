@@ -5,7 +5,7 @@ const TOKEN_KEY = process.env.TOKEN_KEY || 'secret-key'
 
 class Token {
 }
-
+// Example: https://www.section.io/engineering-education/how-to-build-authentication-api-with-jwt-token-in-nodejs/
 Token.encode = (email, password) => jwt.sign({email, password}, TOKEN_KEY);
 Token.decode = token => jwt.verify(token, TOKEN_KEY);
 
