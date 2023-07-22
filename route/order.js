@@ -9,7 +9,7 @@ const routes = {
             "method": "post",
             "url": "/order",
             "description": "Save orders in db",
-            callback: function (req, res) {
+            callbacks: [ function (req, res) {
                 const {customer_id, company_id, order_details} = req.body.order;
 
                 console.log('order_details', order_details);
@@ -19,7 +19,7 @@ const routes = {
                     () => res.send(true),
                     errorMessage => res.send(errorMessage)
                 );
-            }
+            }]
         }
     ]
 }
