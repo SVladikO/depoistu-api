@@ -3,6 +3,7 @@ const QUERY = require("../db/query");
 const VALIDATOR = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/responce");
 const DESCRIPTION = require("../utils/description");
+const {Token} = require("../middleware/auth");
 
 const getFirstCustomer = customers => {
     if (customers.length > 0) {
@@ -13,6 +14,13 @@ const getFirstCustomer = customers => {
     throw new Error('Wrong credentials.');
 }
 
+const addToken = customer => {
+    const {EMAIL, PASSWORD} = customer;
+    const token = Token.encode({EMAIL, PASSWORD});
+
+    return {...customer, token};
+}
+
 const routes = {
     "name": "Customer",
     "description": "For customers and business owners",
@@ -21,21 +29,27 @@ const routes = {
             "method": "post",
             "url": "/sign-in",
             "description": DESCRIPTION.CUSTOMER.SING_IN,
-            callback: function (req, res) {
+            callbacks: [ function (req, res) {
                 const {email, password} = req.body;
 
 
                 dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))
                     .then(getFirstCustomer)
+                    .then(addToken)
+                    .then(response => {
+                        console.log(11111111, response)
+
+                        return response;
+                    })
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_IN, {email, password}))
-            }
+            }]
         },
         {
             "method": "post",
             "url": "/sign-up",
             "description": DESCRIPTION.CUSTOMER.SING_UP,
-            callback: function (req, res) {
+            callbacks: [ function (req, res) {
                 const {name, phone, password, email} = req.body;
                 const join_date = new Date().getTime();
                 const customer = {name, phone, password, email, join_date};
@@ -44,22 +58,23 @@ const routes = {
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL(email)))
                     .then(response => {
                             if (response.length) {
-                                throw new Error('This email is already used.')
+                                throw new Error('This email is already used. Please login.')
                             }
                         }
                     )
                     .then(() => dbRequest(QUERY.CUSTOMER.INSERT(customer)))
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
                     .then(getFirstCustomer)
+                    .then(addToken)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_UP, customer))
-            }
+            }]
         },
         {
             "method": "post",
             "url": "/change-password",
             "description": DESCRIPTION.CUSTOMER.CHANGE_PASSWORD,
-            callback: function (req, res) {
+            callbacks: [ function (req, res) {
                 const {password, email, newPassword} = req.body;
                 const customer = {password, email, newPassword};
 
@@ -76,7 +91,7 @@ const routes = {
                     .then(getFirstCustomer)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.CHANGE_PASSWORD, customer))
-            }
+            }]
         }
     ]
 }

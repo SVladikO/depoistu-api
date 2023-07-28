@@ -79,8 +79,8 @@ const QUERY = {
         SELECT_BY_EMAIL_AND_PASSWORD: (email, password) =>
             `select *
              from CUSTOMER
-             where email = '${email}'
-               and password = '${password}';`,
+             where email='${email}'
+               and password='${password}';`,
 
         SELECT_BY_EMAIL: email => `select *
                                    from CUSTOMER
