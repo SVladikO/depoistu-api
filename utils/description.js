@@ -17,6 +17,7 @@ const DESCRIPTION = {
     MENU_ITEM: {
         GET_BY_COMPANY_ID: "Get menu by companyId",
         CREATE: "Create menu item.",
+        UPDATE_IS_VISIBLE: "Update menu item visibility.",
         UPDATE: "Update menu item.",
         DELETE: "Delete menu item.",
     },

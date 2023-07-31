@@ -80,6 +80,8 @@ const VALIDATION = {
             .required(`Required`)
     },
     MENU_ITEM: {
+        id: Yup.string().required(`Id is required!`),
+        is_visible: Yup.bool().required(`is_visible is required!`),
         category_id: Yup.string().required(`Category id is required!`),
         company_id: Yup.string().required(`Company id is equired!`),
         name: Yup.string()
@@ -146,12 +148,18 @@ const VALIDATOR = {
     },
     MENU_ITEM: {
         CREATE: menuItem => {
-            const validator = Yup.object().shape(VALIDATION.MENU_ITEM);
+            const {category_id, company_id, name, price, description, cookingTime, size} = VALIDATION.MENU_ITEM;
+            const validator = Yup.object().shape({category_id, company_id, name, price, description, cookingTime, size});
             return validator.validate(menuItem);
         },
         UPDATE: menuItem => {
             const {name, category_id, price, description, cookingTime, size} = VALIDATION.MENU_ITEM;
             const validator = Yup.object().shape({name, category_id, price, description, cookingTime, size});
+            return validator.validate(menuItem);
+        },
+        UPDATE_IS_VISIBLE: menuItem => {
+            const {id, is_visible} = VALIDATION.MENU_ITEM;
+            const validator = Yup.object().shape({id, is_visible});
             return validator.validate(menuItem);
         },
     }
