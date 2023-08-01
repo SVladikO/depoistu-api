@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const {catchHandler} = require('../utils/responce')
 
+const TOKEN_NAME = "x-access-token";
+
 const TOKEN_KEY = process.env.TOKEN_KEY || 'secret-key'
 
 class Token {
@@ -10,7 +12,7 @@ Token.encode = (email, password) => jwt.sign({email, password}, TOKEN_KEY);
 Token.decode = token => jwt.verify(token, TOKEN_KEY);
 
 const verifyToken = (req, res, next) => {
-    const token = req.headers["x-access-token"];
+    const token = req.headers[TOKEN_NAME];
 
     if (!token) {
         return catchHandler(res)({message: "A token is required for authentication"})
@@ -27,5 +29,6 @@ const verifyToken = (req, res, next) => {
 
 module.exports = {
     verifyToken,
-    Token
+    Token,
+    TOKEN_NAME
 };

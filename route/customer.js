@@ -1,8 +1,8 @@
 const {dbRequest} = require("../utils");
 const QUERY = require("../db/query");
-const VALIDATOR = require("../utils/validation");
+const {VALIDATOR} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/responce");
-const DESCRIPTION = require("../utils/description");
+const {DESCRIPTION} = require("../utils/description");
 const {Token} = require("../middleware/auth");
 
 const getFirstCustomer = customers => {

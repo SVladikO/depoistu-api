@@ -37,8 +37,9 @@ const provideBEApi = (app, routes) => {
         ({name, description, routes}) =>
             ({
                 name,
+
                 description,
-                routes: routes.map(({method, url, description}) => ({method, url, description}))
+                routes: routes.map(({method, url, description, details}) => ({method, details, url, description}))
             })
     );
 

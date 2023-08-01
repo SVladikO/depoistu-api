@@ -1,3 +1,5 @@
+const {TOKEN_NAME} = require("../middleware/auth");
+
 const DESCRIPTION = {
     CUSTOMER: {
         SING_IN: "Customer Sing IN.",
@@ -22,4 +24,9 @@ const DESCRIPTION = {
     },
 }
 
-module.exports = DESCRIPTION;
+const PERMISSION = {"permission": `Check headers[${TOKEN_NAME}]: secret token key`};
+
+module.exports = {
+    DESCRIPTION,
+    PERMISSION,
+};
