@@ -117,13 +117,13 @@ const routes = {
                     .then(getFirstCustomer)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.CHANGE_PASSWORD, customer))
-            }
+            }]
         },
         {
             "method": "put",
             "url": "/verify-email",
             "description": DESCRIPTION.CUSTOMER.VERIFY_EMAIL,
-            callback: function (req, res) {
+            callbacks: [function (req, res) {
                 const {email, emailVerificationCode} = req.body;
                 console.log(1111, {email, emailVerificationCode})
 
@@ -139,7 +139,7 @@ const routes = {
                     .then(() => ({isEmailVerified: true}))
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.CHANGE_PASSWORD, {email, emailVerificationCode}))
-            }
+            }]
         }
     ]
 }
