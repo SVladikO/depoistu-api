@@ -95,13 +95,20 @@ const routes = {
             }]
         },
         {
-            "method": "put",
-            "url": "/menu/visible",
-            "description": DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE,
+            method: "put",
+            url: "/menu/visible",
+            url_example: "/menu/visible",
+            description: DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE,
+            details: {
+                ...PERMISSION,
+                requestBody: {
+                    id: VALIDATION.MENU_ITEM.id.type,
+                    is_visible: VALIDATION.MENU_ITEM.is_visible.type,
+                }
+            },
             callbacks: [verifyToken, function (req, res) {
                 const {id, is_visible} = req.body;
                 const menuItem = {id, is_visible};
-                console.log(1111, id, is_visible)
                 VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
                     .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)))
                     .then(() => ({success: true}))
