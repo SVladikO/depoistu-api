@@ -30,6 +30,10 @@ const QUERY = {
                            image_url    = '${mi.image_url}'
                        WHERE id = ${mi.id}
         `,
+        UPDATE_IS_VISIBLE: mi => `UPDATE MENU_ITEM
+                       SET is_visible   = '${+mi.is_visible}'
+                       WHERE id = ${mi.id}
+        `,
         DELETE_BY_MENU_ITEM_ID: id => `DELETE
                                        FROM MENU_ITEM
                                        WHERE ID = ${id}`,
