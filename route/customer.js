@@ -1,6 +1,6 @@
 const {dbRequest} = require("../utils");
 const QUERY = require("../db/query");
-const {VALIDATOR} = require("../utils/validation");
+const {VALIDATOR, VALIDATION} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/responce");
 const {DESCRIPTION} = require("../utils/description");
 const {Token} = require("../middleware/auth");
@@ -29,6 +29,13 @@ const routes = {
             method: "post",
             url: "/sign-in",
             url_example: "/sign-in",
+            details: {
+                validation: true,
+                requestBody: {
+                    email: VALIDATION.CUSTOMER.email.type,
+                    password: VALIDATION.CUSTOMER.password.type
+                }
+            },
             description: DESCRIPTION.CUSTOMER.SING_IN,
             callbacks: [ function (req, res) {
                 const {email, password} = req.body;
@@ -49,6 +56,15 @@ const routes = {
             method: "post",
             url: "/sign-up",
             url_example: "/sign-up",
+            details: {
+                validation: true,
+                requestBody: {
+                    name: VALIDATION.CUSTOMER.name.type,
+                    email: VALIDATION.CUSTOMER.email.type,
+                    phone: VALIDATION.CUSTOMER.phone.type,
+                    password: VALIDATION.CUSTOMER.password.type,
+                }
+            },
             description: DESCRIPTION.CUSTOMER.SING_UP,
             callbacks: [ function (req, res) {
                 const {name, phone, password, email} = req.body;
@@ -75,6 +91,13 @@ const routes = {
             method: "post",
             url: "/change-password",
             url_example: "/change-password",
+            details: {
+                requestBody: {
+                    email: VALIDATION.CUSTOMER.email.type,
+                    password: VALIDATION.CUSTOMER.password.type,
+                    newPassword: VALIDATION.CUSTOMER.password.type,
+                }
+            },
             description: DESCRIPTION.CUSTOMER.CHANGE_PASSWORD,
             callbacks: [ function (req, res) {
                 const {password, email, newPassword} = req.body;

@@ -142,14 +142,17 @@ const routes = {
         },
         {
             method: "delete",
-            url: "/companies/:companyId",
-            url_example: "/companies/1",
+            url: "/companies",
+            url_example: "/companies",
             details: {
                 ...PERMISSION,
+                requestBody: {
+                    id: VALIDATION.COMPANY.id.type
+                }
             },
             description: DESCRIPTION.COMPANY.DELETE,
             callbacks: [verifyToken, function (req, res) {
-                const companyId = +req.params.companyId;
+                const {companyId} = req.body;
 
                 if (!companyId) {
                     return res.status(400).send({

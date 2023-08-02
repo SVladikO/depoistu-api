@@ -160,8 +160,6 @@ const VALIDATOR = {
     }
 }
 
-console.log(2222, Yup.number().type)
-
 module.exports = {
     VALIDATOR,
     VALIDATION
