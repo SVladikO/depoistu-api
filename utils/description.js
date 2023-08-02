@@ -1,3 +1,5 @@
+const {TOKEN_NAME} = require("../middleware/auth");
+
 const DESCRIPTION = {
     CUSTOMER: {
         SING_IN: "Customer Sing IN.",
@@ -24,4 +26,9 @@ const DESCRIPTION = {
     },
 }
 
-module.exports = DESCRIPTION;
+const PERMISSION = {"permission": `BE check in headers[${TOKEN_NAME}]`};
+
+module.exports = {
+    DESCRIPTION,
+    PERMISSION,
+};

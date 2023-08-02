@@ -77,11 +77,49 @@
                 (accumulator, r) =>
                     accumulator +
                     '<div class="row ' + mapper[r.method] + '">' +
-                    '<div>' + r.method + '</div>' +
-                    '<div>' + r.url + '</div>' +
-                    '<div class="description">' + r.description + '</div></div>', ''
-            )
+                        '<div>' + r.method + '</div>' +
+                        '<div>' + r.url + '</div>' +
+                        '<div class="description">' + r.description + '</div>' +
+                    '</div>' +
+                    (
+                        r.details ?
+                    '<div class="details">' +
+                            getPermission(r) +
+                            getValidation(r) +
+                            getRequestBody(r) +
+                        // '<div class="response">'    + r.details.response + '</div>' +
+                    '</div>'
+                    : ''),
+                '')
     }
+
+    function getPermission(r) {
+        const {permission} = r.details;
+        if (permission) {
+            return `<div class="permission">PERMISSON: ${permission}</div>`;
+        }
+
+        return '';
+
+    }
+    function getValidation(r) {
+        const {validation} = r.details;
+        if (validation) {
+            return `<div class="validation">VALIDATION: ${validation}</div>`;
+        }
+
+        return '';
+    }
+    function getRequestBody(r) {
+        const {requestBody} = r.details;
+        if (requestBody) {
+            return `<div class="requestBody">REQYEST BODY: ${requestBody}</div>`;
+        }
+
+        return '';
+    }
+
+    // function getRequestBody() {}
 
 </script>
 </body>

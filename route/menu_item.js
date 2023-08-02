@@ -1,8 +1,8 @@
 const {getParamMessageRequirements, dbRequest} = require("../utils");
 const QUERY = require("../db/query");
-const VALIDATOR = require("../utils/validation");
+const {VALIDATOR, VALIDATION} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/responce");
-const DESCRIPTION = require("../utils/description");
+const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
 
 const routes = {
@@ -10,10 +10,11 @@ const routes = {
     "description": "For menu items.",
     "routes": [
         {
-            "method": "get",
-            "url": "/menu/:companyId",
-            "description": DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID,
-            callbacks: [ function (req, res) {
+            method: "get",
+            url: "/menu/:companyId",
+            url_example: "/menu/1",
+            description: DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID,
+            callbacks: [function (req, res) {
                 const companyId = +req.params.companyId;
 
                 if (!companyId) {
@@ -33,8 +34,24 @@ const routes = {
             }]
         },
         {
-            "method": "post",
-            "url": "/menu",
+            method: "post",
+            url: "/menu",
+            url_example: "/menu",
+            details: {
+                ...PERMISSION,
+                validation: true,
+                requestBody: {
+                    id: VALIDATION.MENU_ITEM.id.type,
+                    name: VALIDATION.MENU_ITEM.name.type,
+                    category_id: VALIDATION.MENU_ITEM.category_id.type,
+                    company_id: VALIDATION.MENU_ITEM.company_id.type,
+                    description: VALIDATION.MENU_ITEM.description.type,
+                    cookingTime: VALIDATION.MENU_ITEM.cookingTime.type,
+                    price: VALIDATION.MENU_ITEM.price.type,
+                    size: VALIDATION.MENU_ITEM.size.type,
+                    image_url: VALIDATION.MENU_ITEM.image_url.type,
+                }
+            },
             "description": DESCRIPTION.MENU_ITEM.CREATE,
             callbacks: [verifyToken, function (req, res) {
                 const {id, category_id, company_id, name, description, cookingTime, price, size, image_url} = req.body;
@@ -47,8 +64,23 @@ const routes = {
             }]
         },
         {
-            "method": "put",
-            "url": "/menu",
+            method: "put",
+            url: "/menu",
+            url_example: "/menu",
+            details: {
+                ...PERMISSION,
+                validation: true,
+                requestBody: {
+                    id: VALIDATION.MENU_ITEM.id.type,
+                    category_id: VALIDATION.MENU_ITEM.category_id.type,
+                    name: VALIDATION.MENU_ITEM.name.type,
+                    description: VALIDATION.MENU_ITEM.description.type,
+                    cookingTime: VALIDATION.MENU_ITEM.cookingTime.type,
+                    price: VALIDATION.MENU_ITEM.price.type,
+                    size: VALIDATION.MENU_ITEM.size.type,
+                    image_url: VALIDATION.MENU_ITEM.image_url.type,
+                }
+            },
             "description": DESCRIPTION.MENU_ITEM.UPDATE,
             callbacks: [verifyToken, function (req, res) {
                 const {id, name, category_id, description, cookingTime, price, size, image_url} = req.body;
@@ -63,13 +95,20 @@ const routes = {
             }]
         },
         {
-            "method": "put",
-            "url": "/menu/visible",
-            "description": DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE,
+            method: "put",
+            url: "/menu/visible",
+            url_example: "/menu/visible",
+            description: DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE,
+            details: {
+                ...PERMISSION,
+                requestBody: {
+                    id: VALIDATION.MENU_ITEM.id.type,
+                    is_visible: VALIDATION.MENU_ITEM.is_visible.type,
+                }
+            },
             callbacks: [verifyToken, function (req, res) {
                 const {id, is_visible} = req.body;
                 const menuItem = {id, is_visible};
-                console.log(1111, id, is_visible)
                 VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
                     .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)))
                     .then(() => ({success: true}))
@@ -78,9 +117,16 @@ const routes = {
             }]
         },
         {
-            "method": "delete",
-            "url": "/menu",
-            "description": DESCRIPTION.MENU_ITEM.DELETE,
+            method: "delete",
+            url: "/menu",
+            url_example: "/menu",
+            details: {
+                ...PERMISSION,
+                requestBody: {
+                    id: VALIDATION.MENU_ITEM.id.type
+                }
+            },
+            description: DESCRIPTION.MENU_ITEM.DELETE,
             callbacks: [verifyToken, function (req, res) {
                 const {id} = req.body;
 
