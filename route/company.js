@@ -7,14 +7,15 @@ const {verifyToken} = require("../middleware/auth");
 const {sendHandler, catchHandler} = require("../utils/responce")
 const routes = {
     "name": "Company",
-    "description": "For company data.",
+    description: "For company data.",
     "routes": [
         {
-            "method": "get",
-            "url": "/companies/by/city_id/:city_id",
+            method: "get",
+            url: "/companies/by/city_id/:city_id",
+            url_example: "/companies/by/city_id/102",
 
 
-            "description": DESCRIPTION.COMPANY.GET_BY_CITY_ID,
+            description: DESCRIPTION.COMPANY.GET_BY_CITY_ID,
             callbacks: [function (req, res) {
                 const {city_id} = req.params;
 
@@ -30,9 +31,10 @@ const routes = {
             }]
         },
         {
-            "method": "get",
-            "url": "/companies/by/id/:companyId",
-            "description": DESCRIPTION.COMPANY.GET_BY_COMPANY_ID,
+            method: "get",
+            url: "/companies/by/id/:companyId",
+            url_example: "/companies/by/id/2",
+            description: DESCRIPTION.COMPANY.GET_BY_COMPANY_ID,
             callbacks: [function (req, res) {
                 const companyId = +req.params.companyId;
 
@@ -48,9 +50,10 @@ const routes = {
             }]
         },
         {
-            "method": "get",
-            "url": "/companies/cities",
-            "description": DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES,
+            method: "get",
+            url: "/companies/cities",
+            url_example: "/companies/cities",
+            description: DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES,
             callbacks: [function (req, res) {
                 dbRequest(QUERY.COMPANY.SELECT_AVAILABLE_CITIES())
                     .then(r => r.map(o => o.CITY_ID) || [])
@@ -59,12 +62,13 @@ const routes = {
             }]
         },
         {
-            "method": "get",
-            "url": "/companies/by/customer/:customerId",
-            "details": {
+            method: "get",
+            url: "/companies/by/customer/:customerId",
+            url_example: "/companies/by/customer/2",
+            details: {
                 ...PERMISSION,
             },
-            "description": DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID,
+            description: DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID,
             callbacks: [verifyToken, function (req, res) {
                 const customerId = +req.params.customerId;
 
@@ -81,9 +85,10 @@ const routes = {
         },
 
         {
-            "method": "post",
-            "url": "/companies",
-            "details": {
+            method: "post",
+            url: "/companies",
+            url_example: "/companies",
+            details: {
                 ...PERMISSION,
                 validation: true,
                 requestBody: {
@@ -95,7 +100,7 @@ const routes = {
                     schedule: VALIDATION.COMPANY.schedule.type,
                 },
             },
-            "description": DESCRIPTION.COMPANY.CREATE,
+            description: DESCRIPTION.COMPANY.CREATE,
             callbacks: [verifyToken, function (req, res) {
                 const {customer_id, name, city_id, street, phone, schedule} = req.body;
                 const join_date = '' + new Date().getTime();
@@ -108,10 +113,11 @@ const routes = {
             }]
         },
         {
-            "method": "put",
-            "url": "/companies",
-            "description": DESCRIPTION.COMPANY.UPDATE,
-            "details": {
+            method: "put",
+            url: "/companies",
+            url_example: "/companies",
+            description: DESCRIPTION.COMPANY.UPDATE,
+            details: {
                 ...PERMISSION,
                 validation: true,
                 requestBody: {
@@ -135,12 +141,13 @@ const routes = {
             }]
         },
         {
-            "method": "delete",
-            "url": "/companies/:companyId",
-            "details": {
+            method: "delete",
+            url: "/companies/:companyId",
+            url_example: "/companies/1",
+            details: {
                 ...PERMISSION,
             },
-            "description": DESCRIPTION.COMPANY.DELETE,
+            description: DESCRIPTION.COMPANY.DELETE,
             callbacks: [verifyToken, function (req, res) {
                 const companyId = +req.params.companyId;
 

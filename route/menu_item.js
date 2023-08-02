@@ -12,6 +12,7 @@ const routes = {
         {
             method: "get",
             url: "/menu/:companyId",
+            url_example: "/menu/1",
             description: DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID,
             callbacks: [function (req, res) {
                 const companyId = +req.params.companyId;
@@ -35,6 +36,7 @@ const routes = {
         {
             method: "post",
             url: "/menu",
+            url_example: "/menu",
             details: {
                 ...PERMISSION,
                 validation: true,
@@ -64,6 +66,7 @@ const routes = {
         {
             method: "put",
             url: "/menu",
+            url_example: "/menu",
             details: {
                 ...PERMISSION,
                 validation: true,
@@ -94,6 +97,7 @@ const routes = {
         {
             method: "delete",
             url: "/menu",
+            url_example: "/menu",
             details: {
                 ...PERMISSION,
                 requestBody: {

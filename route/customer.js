@@ -22,16 +22,16 @@ const addToken = customer => {
 }
 
 const routes = {
-    "name": "Customer",
-    "description": "For customers and business owners",
-    "routes": [
+    name: "Customer",
+    description: "For customers and business owners",
+    routes: [
         {
-            "method": "post",
-            "url": "/sign-in",
-            "description": DESCRIPTION.CUSTOMER.SING_IN,
+            method: "post",
+            url: "/sign-in",
+            url_example: "/sign-in",
+            description: DESCRIPTION.CUSTOMER.SING_IN,
             callbacks: [ function (req, res) {
                 const {email, password} = req.body;
-
 
                 dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))
                     .then(getFirstCustomer)
@@ -46,9 +46,10 @@ const routes = {
             }]
         },
         {
-            "method": "post",
-            "url": "/sign-up",
-            "description": DESCRIPTION.CUSTOMER.SING_UP,
+            method: "post",
+            url: "/sign-up",
+            url_example: "/sign-up",
+            description: DESCRIPTION.CUSTOMER.SING_UP,
             callbacks: [ function (req, res) {
                 const {name, phone, password, email} = req.body;
                 const join_date = new Date().getTime();
@@ -71,9 +72,10 @@ const routes = {
             }]
         },
         {
-            "method": "post",
-            "url": "/change-password",
-            "description": DESCRIPTION.CUSTOMER.CHANGE_PASSWORD,
+            method: "post",
+            url: "/change-password",
+            url_example: "/change-password",
+            description: DESCRIPTION.CUSTOMER.CHANGE_PASSWORD,
             callbacks: [ function (req, res) {
                 const {password, email, newPassword} = req.body;
                 const customer = {password, email, newPassword};
