@@ -99,6 +99,7 @@ const VALIDATION = {
             .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MAX}`)
     },
     COMPANY: {
+        id: Yup.number().required('Id is required'),
         customer_id: Yup.number().required(),
         name: Yup.string()
             .required()
@@ -138,8 +139,8 @@ const VALIDATOR = {
             return validator.validate(company)
         },
         UPDATE: company => {
-            const {name, city_id, street, phone, schedule} = VALIDATION.COMPANY;
-            const validator = Yup.object().shape({name, city_id, street, phone, schedule});
+            const {id, name, city_id, street, phone, schedule} = VALIDATION.COMPANY;
+            const validator = Yup.object().shape({id, name, city_id, street, phone, schedule});
 
             return validator.validate(company);
         },

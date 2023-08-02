@@ -2,7 +2,7 @@ const {getParamMessageRequirements, dbRequest} = require("../utils");
 const QUERY = require("../db/query");
 const {VALIDATOR} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/responce");
-const {DESCRIPTION} = require("../utils/description");
+const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
 
 const routes = {
@@ -35,6 +35,9 @@ const routes = {
         {
             "method": "post",
             "url": "/menu",
+            "details": {
+                ...PERMISSION,
+            },
             "description": DESCRIPTION.MENU_ITEM.CREATE,
             callbacks: [verifyToken, function (req, res) {
                 const {id, category_id, company_id, name, description, cookingTime, price, size, image_url} = req.body;
@@ -49,6 +52,9 @@ const routes = {
         {
             "method": "put",
             "url": "/menu",
+            "details": {
+                ...PERMISSION,
+            },
             "description": DESCRIPTION.MENU_ITEM.UPDATE,
             callbacks: [verifyToken, function (req, res) {
                 const {id, name, category_id, description, cookingTime, price, size, image_url} = req.body;
@@ -65,6 +71,9 @@ const routes = {
         {
             "method": "delete",
             "url": "/menu",
+            "details": {
+                ...PERMISSION,
+            },
             "description": DESCRIPTION.MENU_ITEM.DELETE,
             callbacks: [verifyToken, function (req, res) {
                 const {id} = req.body;

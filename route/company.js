@@ -5,7 +5,12 @@ const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
 
 const {sendHandler, catchHandler} = require("../utils/responce")
-
+// "details": {
+//     "permission": 1,
+//         "validation": 1,
+//         "requestBody": 1,
+//         "response": 1,
+// },
 const routes = {
     "name": "Company",
     "description": "For company data.",
@@ -13,12 +18,7 @@ const routes = {
         {
             "method": "get",
             "url": "/companies/by/city_id/:city_id",
-            "details": {
-                "permission": 1,
-                "validation": 1,
-                "requestBody": 1,
-                "response": 1,
-            },
+
 
             "description": DESCRIPTION.COMPANY.GET_BY_CITY_ID,
             callbacks: [function (req, res) {
@@ -55,6 +55,17 @@ const routes = {
         },
         {
             "method": "get",
+            "url": "/companies/cities",
+            "description": DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES,
+            callbacks: [function (req, res) {
+                dbRequest(QUERY.COMPANY.SELECT_AVAILABLE_CITIES())
+                    .then(r => r.map(o => o.CITY_ID) || [])
+                    .then(sendHandler(res))
+                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES));
+            }]
+        },
+        {
+            "method": "get",
             "url": "/companies/by/customer/:customerId",
             "details": {
                 ...PERMISSION,
@@ -74,23 +85,13 @@ const routes = {
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID, customerId));
             }]
         },
-        {
-            "method": "get",
-            "url": "/companies/cities",
-            "description": DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES,
-            callbacks: [function (req, res) {
-                dbRequest(QUERY.COMPANY.SELECT_AVAILABLE_CITIES())
-                    .then(r => r.map(o => o.CITY_ID) || [])
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES));
-            }]
-        },
+
         {
             "method": "post",
             "url": "/companies",
             "details": {
                 ...PERMISSION,
-               "validation": true,
+                "validation": true,
                 "requestBody": {
                     customer_id: VALIDATION.COMPANY.customer_id.type,
                     name: VALIDATION.COMPANY.name.type,
@@ -119,7 +120,14 @@ const routes = {
             "details": {
                 ...PERMISSION,
                 "validation": true,
-                "requestBody": '{id, name, phone, city_id, street, schedule}',
+                "requestBody": {
+                    id: VALIDATION.COMPANY.id.type,
+                    name: VALIDATION.COMPANY.name.type,
+                    phone: VALIDATION.COMPANY.phone.type,
+                    city_id: VALIDATION.COMPANY.city_id.type,
+                    street: VALIDATION.COMPANY.street.type,
+                    schedule: VALIDATION.COMPANY.schedule.type,
+                },
             },
             callbacks: [verifyToken, function (req, res) {
                 const {id, name, phone, city_id, street, schedule} = req.body;
