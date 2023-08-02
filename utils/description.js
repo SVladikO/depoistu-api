@@ -24,7 +24,7 @@ const DESCRIPTION = {
     },
 }
 
-const PERMISSION = {"permission": `Check headers[${TOKEN_NAME}]: secret token key`};
+const PERMISSION = {"permission": `BE check token in headers[${TOKEN_NAME}].`};
 
 module.exports = {
     DESCRIPTION,

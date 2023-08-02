@@ -5,12 +5,6 @@ const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
 
 const {sendHandler, catchHandler} = require("../utils/responce")
-// "details": {
-//     "permission": 1,
-//         "validation": 1,
-//         "requestBody": 1,
-//         "response": 1,
-// },
 const routes = {
     "name": "Company",
     "description": "For company data.",
@@ -91,8 +85,8 @@ const routes = {
             "url": "/companies",
             "details": {
                 ...PERMISSION,
-                "validation": true,
-                "requestBody": {
+                validation: true,
+                requestBody: {
                     customer_id: VALIDATION.COMPANY.customer_id.type,
                     name: VALIDATION.COMPANY.name.type,
                     city_id: VALIDATION.COMPANY.city_id.type,
@@ -119,8 +113,8 @@ const routes = {
             "description": DESCRIPTION.COMPANY.UPDATE,
             "details": {
                 ...PERMISSION,
-                "validation": true,
-                "requestBody": {
+                validation: true,
+                requestBody: {
                     id: VALIDATION.COMPANY.id.type,
                     name: VALIDATION.COMPANY.name.type,
                     phone: VALIDATION.COMPANY.phone.type,
