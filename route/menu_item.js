@@ -95,6 +95,21 @@ const routes = {
             }]
         },
         {
+            "method": "put",
+            "url": "/menu/visible",
+            "description": DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE,
+            callbacks: [verifyToken, function (req, res) {
+                const {id, is_visible} = req.body;
+                const menuItem = {id, is_visible};
+                console.log(1111, id, is_visible)
+                VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
+                    .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)))
+                    .then(() => ({success: true}))
+                    .then(sendHandler(res))
+                    .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.UPDATE, id))
+            }]
+        },
+        {
             method: "delete",
             url: "/menu",
             url_example: "/menu",

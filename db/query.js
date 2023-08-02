@@ -30,6 +30,10 @@ const QUERY = {
                            image_url    = '${mi.image_url}'
                        WHERE id = ${mi.id}
         `,
+        UPDATE_IS_VISIBLE: mi => `UPDATE MENU_ITEM
+                       SET is_visible   = '${+mi.is_visible}'
+                       WHERE id = ${mi.id}
+        `,
         DELETE_BY_MENU_ITEM_ID: id => `DELETE
                                        FROM MENU_ITEM
                                        WHERE ID = ${id}`,
@@ -43,10 +47,11 @@ const QUERY = {
         SELECT_BY_CUSTOMER_ID: customerId => `SELECT *
                                               from COMPANY
                                               WHERE customer_id = '${customerId}';`,
-        SELECT_AVAILABLE_CITIES: () => `SELECT DISTINCT CITY_ID FROM COMPANY;`,
+        SELECT_AVAILABLE_CITIES: () => `SELECT DISTINCT CITY_ID
+                                        FROM COMPANY;`,
         SELECT_BY_CITY_ID: city_id => `SELECT *
-                                    from COMPANY
-                                    WHERE CITY_ID = '${city_id}';`,
+                                       from COMPANY
+                                       WHERE CITY_ID = '${city_id}';`,
         SELECT_BY_COMPANY_ID: companyId => `SELECT *
                                             from COMPANY
                                             WHERE id = '${companyId}';`,
@@ -65,7 +70,7 @@ const QUERY = {
         UPDATE: c => `UPDATE COMPANY
                       SET name     = '${c.name}',
                           phone    = '${c.phone}',
-                          city_id     = '${c.city_id}',
+                          city_id  = '${c.city_id}',
                           street   = '${c.street}',
                           schedule = '${c.schedule}'
                       WHERE id = ${c.id}
@@ -79,9 +84,17 @@ const QUERY = {
         SELECT_BY_EMAIL_AND_PASSWORD: (email, password) =>
             `select *
              from CUSTOMER
-             where email='${email}'
-               and password='${password}';`,
-
+             where email = '${email}'
+               and password = '${password}';`,
+        SELECT_BY_EMAIL_AND_EMAIL_VERIFICATION_CODE: (email, verification_code) =>
+            `select *
+             from CUSTOMER
+             where email = '${email}'
+               and join_date = '${verification_code}';`,
+        SET_IS_VERIFFIED_EMAIL_TRUE: (email) =>
+            `UPDATE CUSTOMER
+             SET is_verified_email = true
+             where email = '${email}'`,
         SELECT_BY_EMAIL: email => `select *
                                    from CUSTOMER
                                    where email = '${email}';`,
@@ -95,8 +108,8 @@ const QUERY = {
                               '${c.join_date}')
         ;`,
         UPDATE_PASSWORD: c => `UPDATE CUSTOMER
-                      SET password = '${c.newPassword}' 
-                      WHERE email = '${c.email}'
+                               SET password = '${c.newPassword}'
+                               WHERE email = '${c.email}'
         ;`,
     },
     // INSERT: ``,
