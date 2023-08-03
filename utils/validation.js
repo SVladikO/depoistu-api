@@ -65,25 +65,28 @@ const VALIDATION = {
         name: Yup.string()
             .min(FIELD_REQUIREMENTS_FOR.USER.NAME.MIN, `Too Short! Min length ${FIELD_REQUIREMENTS_FOR.USER.NAME.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.USER.NAME.MAX, `Too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.NAME.MAX}`)
-            .required(`Required!`),
+            .required(`Name is required!`),
         email: Yup.string()
             .email(`Invalid email`)
             .max(FIELD_REQUIREMENTS_FOR.USER.EMAIL.MAX, `Too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.EMAIL.MAX}`)
-            .required(`Required`),
+            .required(`Email is required`),
         phone: Yup.string()
             .min(FIELD_REQUIREMENTS_FOR.USER.PHONE.MIN, `Example: 380971234567`)
             .max(FIELD_REQUIREMENTS_FOR.USER.PHONE.MAX, `Example: 380971234567`)
-            .required(`Required!`),
+            .required(`Phone is required!`),
         password: Yup.string()
             .min(FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MIN, `Too Short! Min length ${FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MAX, `Too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MAX}`)
-            .required(`Required`)
+            .required(`Password is required`),
+        emailVerificationCode: Yup.string().required(`Email verification code is required`),
     },
     MENU_ITEM: {
+        id: Yup.string().required(`Id is required!`),
+        is_visible: Yup.bool().required(`is_visible is required!`),
         category_id: Yup.string().required(`Category id is required!`),
         company_id: Yup.string().required(`Company id is equired!`),
         name: Yup.string()
-            .required(`Name required!`)
+            .required(`Name is required!`)
             .min(FIELD_REQUIREMENTS_FOR.MENU_ITEM.NAME.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.NAME.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.NAME.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.NAME.MAX}`),
         price: Yup.string()
@@ -96,17 +99,19 @@ const VALIDATION = {
             .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.COOKING_TIME.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.COOKING_TIME.MAX}`),
         size: Yup.string()
             .min(FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MIN}`)
-            .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MAX}`)
+            .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MAX}`),
+        image_url: Yup.string().required('Image url is required')
     },
     COMPANY: {
-        customer_id: Yup.number().required(),
+        id: Yup.number().required('Id is required'),
+        customer_id: Yup.number().required('Customer id is required'),
         name: Yup.string()
-            .required()
+            .required('Name is required')
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MAX}`),
-        city_id: Yup.string().required(),
+        city_id: Yup.string().required('City id is required'),
         street: Yup.string()
-            .required()
+            .required('Street is required')
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX}`),
         phone: Yup.string()
@@ -114,7 +119,7 @@ const VALIDATION = {
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MIN, `Example: 380971234567`)
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Example: 380971234567`),
         schedule: Yup.string()
-            .required()
+            .required('Schedule is required')
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.SCHEDULE.MIN, 'Schedule should not be empty. Minimum one day should be scheduled.')
     }
 }
@@ -122,7 +127,8 @@ const VALIDATION = {
 const VALIDATOR = {
     CUSTOMER: {
         SING_UP: customer => {
-            const validator = Yup.object().shape(VALIDATION.CUSTOMER)
+            const {name, email, phone, password} = VALIDATION.CUSTOMER;
+            const validator = Yup.object().shape({name, email, phone, password})
             return validator.validate(customer)
         },
         CHANGE_PASSWORD: customer => {
@@ -130,7 +136,13 @@ const VALIDATOR = {
 
             const validator = Yup.object().shape({password, email, newPassword: password})
             return validator.validate(customer)
-        }
+        },
+        VALIDATE_EMAIL: customer => {
+            const {email, emailVerificationCode} = VALIDATION.CUSTOMER;
+
+            const validator = Yup.object().shape({email, emailVerificationCode})
+            return validator.validate(customer)
+        },
     },
     COMPANY: {
         CREATE: company => {
@@ -138,15 +150,16 @@ const VALIDATOR = {
             return validator.validate(company)
         },
         UPDATE: company => {
-            const {name, city_id, street, phone, schedule} = VALIDATION.COMPANY;
-            const validator = Yup.object().shape({name, city_id, street, phone, schedule});
+            const {id, name, city_id, street, phone, schedule} = VALIDATION.COMPANY;
+            const validator = Yup.object().shape({id, name, city_id, street, phone, schedule});
 
             return validator.validate(company);
         },
     },
     MENU_ITEM: {
         CREATE: menuItem => {
-            const validator = Yup.object().shape(VALIDATION.MENU_ITEM);
+            const {category_id, company_id, name, price, description, cookingTime, size} = VALIDATION.MENU_ITEM;
+            const validator = Yup.object().shape({category_id, company_id, name, price, description, cookingTime, size});
             return validator.validate(menuItem);
         },
         UPDATE: menuItem => {
@@ -154,7 +167,15 @@ const VALIDATOR = {
             const validator = Yup.object().shape({name, category_id, price, description, cookingTime, size});
             return validator.validate(menuItem);
         },
+        UPDATE_IS_VISIBLE: menuItem => {
+            const {id, is_visible} = VALIDATION.MENU_ITEM;
+            const validator = Yup.object().shape({id, is_visible});
+            return validator.validate(menuItem);
+        },
     }
 }
 
-module.exports = VALIDATOR;
+module.exports = {
+    VALIDATOR,
+    VALIDATION
+};

@@ -1,8 +1,11 @@
+const {TOKEN_NAME} = require("../middleware/auth");
+
 const DESCRIPTION = {
     CUSTOMER: {
         SING_IN: "Customer Sing IN.",
         SING_UP: "Customer Sing UP.",
         CHANGE_PASSWORD: "Customer change password.",
+        VERIFY_EMAIL: "Verify customer email.",
     },
     COMPANY: {
         GET_BY_CITY: "Get companies by city uniq identifier.",
@@ -17,9 +20,15 @@ const DESCRIPTION = {
     MENU_ITEM: {
         GET_BY_COMPANY_ID: "Get menu by companyId",
         CREATE: "Create menu item.",
+        UPDATE_IS_VISIBLE: "Update menu item visibility.",
         UPDATE: "Update menu item.",
         DELETE: "Delete menu item.",
     },
 }
 
-module.exports = DESCRIPTION;
+const PERMISSION = {"permission": `BE check in headers[${TOKEN_NAME}]`};
+
+module.exports = {
+    DESCRIPTION,
+    PERMISSION,
+};

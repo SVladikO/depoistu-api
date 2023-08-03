@@ -1,18 +1,20 @@
 const {getParamMessageRequirements, dbRequest} = require("../utils");
 const QUERY = require("../db/query");
-const VALIDATOR = require("../utils/validation");
+const {VALIDATOR, VALIDATION} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/responce");
-const DESCRIPTION = require("../utils/description");
+const {DESCRIPTION, PERMISSION} = require("../utils/description");
+const {verifyToken} = require("../middleware/auth");
 
 const routes = {
     "name": "Menu",
     "description": "For menu items.",
     "routes": [
         {
-            "method": "get",
-            "url": "/menu/:companyId",
-            "description": DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID,
-            callback: function (req, res) {
+            method: "get",
+            url: "/menu/:companyId",
+            url_example: "/menu/1",
+            description: DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID,
+            callbacks: [function (req, res) {
                 const companyId = +req.params.companyId;
 
                 if (!companyId) {
@@ -29,13 +31,29 @@ const routes = {
                 dbRequest(QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID(companyId))
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID, companyId))
-            }
+            }]
         },
         {
-            "method": "post",
-            "url": "/menu",
+            method: "post",
+            url: "/menu",
+            url_example: "/menu",
+            details: {
+                ...PERMISSION,
+                validation: true,
+                requestBody: {
+                    id: VALIDATION.MENU_ITEM.id.type,
+                    name: VALIDATION.MENU_ITEM.name.type,
+                    category_id: VALIDATION.MENU_ITEM.category_id.type,
+                    company_id: VALIDATION.MENU_ITEM.company_id.type,
+                    description: VALIDATION.MENU_ITEM.description.type,
+                    cookingTime: VALIDATION.MENU_ITEM.cookingTime.type,
+                    price: VALIDATION.MENU_ITEM.price.type,
+                    size: VALIDATION.MENU_ITEM.size.type,
+                    image_url: VALIDATION.MENU_ITEM.image_url.type,
+                }
+            },
             "description": DESCRIPTION.MENU_ITEM.CREATE,
-            callback: function (req, res) {
+            callbacks: [verifyToken, function (req, res) {
                 const {id, category_id, company_id, name, description, cookingTime, price, size, image_url} = req.body;
                 const menuItem = {id, category_id, company_id, name, description, cookingTime, price, size, image_url};
 
@@ -43,13 +61,28 @@ const routes = {
                     .then(() => dbRequest(QUERY.MENU_ITEM.INSERT(menuItem)))
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.CREATE, menuItem))
-            }
+            }]
         },
         {
-            "method": "put",
-            "url": "/menu",
+            method: "put",
+            url: "/menu",
+            url_example: "/menu",
+            details: {
+                ...PERMISSION,
+                validation: true,
+                requestBody: {
+                    id: VALIDATION.MENU_ITEM.id.type,
+                    category_id: VALIDATION.MENU_ITEM.category_id.type,
+                    name: VALIDATION.MENU_ITEM.name.type,
+                    description: VALIDATION.MENU_ITEM.description.type,
+                    cookingTime: VALIDATION.MENU_ITEM.cookingTime.type,
+                    price: VALIDATION.MENU_ITEM.price.type,
+                    size: VALIDATION.MENU_ITEM.size.type,
+                    image_url: VALIDATION.MENU_ITEM.image_url.type,
+                }
+            },
             "description": DESCRIPTION.MENU_ITEM.UPDATE,
-            callback: function (req, res) {
+            callbacks: [verifyToken, function (req, res) {
                 const {id, name, category_id, description, cookingTime, price, size, image_url} = req.body;
                 const menuItem = {id, name, category_id, description, cookingTime, price, size, image_url};
 
@@ -59,19 +92,48 @@ const routes = {
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.UPDATE, id))
 
-            }
+            }]
         },
         {
-            "method": "delete",
-            "url": "/menu",
-            "description": DESCRIPTION.MENU_ITEM.DELETE,
-            callback: function (req, res) {
+            method: "put",
+            url: "/menu/visible",
+            url_example: "/menu/visible",
+            description: DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE,
+            details: {
+                ...PERMISSION,
+                requestBody: {
+                    id: VALIDATION.MENU_ITEM.id.type,
+                    is_visible: VALIDATION.MENU_ITEM.is_visible.type,
+                }
+            },
+            callbacks: [verifyToken, function (req, res) {
+                const {id, is_visible} = req.body;
+                const menuItem = {id, is_visible};
+                VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
+                    .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)))
+                    .then(() => ({success: true}))
+                    .then(sendHandler(res))
+                    .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.UPDATE, id))
+            }]
+        },
+        {
+            method: "delete",
+            url: "/menu",
+            url_example: "/menu",
+            details: {
+                ...PERMISSION,
+                requestBody: {
+                    id: VALIDATION.MENU_ITEM.id.type
+                }
+            },
+            description: DESCRIPTION.MENU_ITEM.DELETE,
+            callbacks: [verifyToken, function (req, res) {
                 const {id} = req.body;
 
                 dbRequest(QUERY.MENU_ITEM.DELETE_BY_MENU_ITEM_ID(id))
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.DELETE, id))
-            }
+            }]
         },
 
     ]
