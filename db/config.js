@@ -1,5 +1,5 @@
 const config = {
-    master: {
+    main: {
         host: 'mysql-126266-0.cloudclusters.net',
         user: 'admin',
         password: 'y3QV0azM',
