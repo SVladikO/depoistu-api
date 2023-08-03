@@ -34,6 +34,30 @@ const routes = {
             }]
         },
         {
+            method: "get",
+            url: "/menu/only-visible/:companyId",
+            url_example: "/menu/only-visible/1",
+            description: DESCRIPTION.MENU_ITEM.GET_ONLY_VISIBLE_BY_COMPANY_ID,
+            callbacks: [function (req, res) {
+                const companyId = +req.params.companyId;
+
+                if (!companyId) {
+                    return res.status(400).send({
+                        message: 'Bad request.'
+                    })
+                }
+
+                if (isNaN(companyId)) {
+                    res.send(getParamMessageRequirements('companyId',));
+                    return;
+                }
+
+                dbRequest(QUERY.MENU_ITEM.SELECT_ALL_ONLY_VISIABLE_BY_COMPANY_ID(companyId))
+                    .then(sendHandler(res))
+                    .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID, companyId))
+            }]
+        },
+        {
             method: "post",
             url: "/menu",
             url_example: "/menu",

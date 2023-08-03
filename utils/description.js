@@ -19,6 +19,7 @@ const DESCRIPTION = {
     },
     MENU_ITEM: {
         GET_BY_COMPANY_ID: "Get menu by companyId",
+        GET_ONLY_VISIBLE_BY_COMPANY_ID: "Get only visible menu by companyId",
         CREATE: "Create menu item.",
         UPDATE_IS_VISIBLE: "Update menu item visibility.",
         UPDATE: "Update menu item.",
