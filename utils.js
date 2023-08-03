@@ -1,7 +1,7 @@
 const mysql = require('mysql2');
 const dbConfig = require("./db/config");
 
-const getMode = () => process.env.MODE || 'develop';
+const getMode = () => process.env.NODE_ENV || 'develop';
 const connection = mysql.createConnection(dbConfig[getMode()]);
 
 const prefix = '---->'
