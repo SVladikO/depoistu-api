@@ -33,8 +33,9 @@ module.exports = app;
 
 function corsOptionsDelegate(req, callback) {
     const allowlist = [
-        'https://pma-master.onrender.com',
-        'https://pma-develop.onrender.com',
+        'https://depoistu-qa.onrender.com',
+        'https://depoistu-develop.onrender.com',
+        'https://depoistu-stage.onrender.com',
         'https://depoistu.com',
         'http://localhost:3000'
     ];
