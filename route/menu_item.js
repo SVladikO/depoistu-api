@@ -1,4 +1,4 @@
-const {getParamMessageRequirements, dbRequest} = require("../utils");
+const {getParamMessageRequirements, dbRequest, validateIsVisible} = require("../utils");
 const QUERY = require("../db/query");
 const {VALIDATOR, VALIDATION} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/responce");
@@ -79,7 +79,7 @@ const routes = {
             "description": DESCRIPTION.MENU_ITEM.CREATE,
             callbacks: [verifyToken, function (req, res) {
                 const {id, category_id, company_id, name, description, cookingTime, price, size, image_url} = req.body;
-                const menuItem = {id, category_id, company_id, name, description, cookingTime, price, size, image_url};
+                const menuItem = {id, category_id, company_id, name, description, cookingTime, price, size, image_url, is_visible: 1};
 
                 VALIDATOR.MENU_ITEM.CREATE(menuItem)
                     .then(() => dbRequest(QUERY.MENU_ITEM.INSERT(menuItem)))
@@ -132,7 +132,7 @@ const routes = {
             },
             callbacks: [verifyToken, function (req, res) {
                 const {id, is_visible} = req.body;
-                const menuItem = {id, is_visible};
+                const menuItem = {id, is_visible: validateIsVisible(is_visible)};
                 VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
                     .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)))
                     .then(() => ({success: true}))

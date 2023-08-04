@@ -21,9 +21,9 @@ const QUERY = {
                                         where category_id = ${categoryId}
                                           and company_id = ${companyId};`,
         INSERT: mi => `INSERT INTO MENU_ITEM (id, category_id, company_id, name, description, cooking_time, price, size,
-                                              image_url)
+                                              image_url, is_visible)
                        VALUES (default, '${mi.category_id}', '${mi.company_id}', '${mi.name}', '${mi.description}',
-                               '${mi.cookingTime}', '${mi.price}', '${mi.size}', '${mi.image_url}');`,
+                               '${mi.cookingTime}', '${mi.price}', '${mi.size}', '${mi.image_url}', '${mi.is_visible}');`,
         UPDATE: mi => `UPDATE MENU_ITEM
                        SET name         = '${mi.name}',
                            description  = '${mi.description}',
@@ -35,7 +35,7 @@ const QUERY = {
                        WHERE id = ${mi.id}
         `,
         UPDATE_IS_VISIBLE: mi => `UPDATE MENU_ITEM
-                       SET is_visible   = '${+mi.is_visible}'
+                       SET is_visible   = '${mi.is_visible}'
                        WHERE id = ${mi.id}
         `,
         DELETE_BY_MENU_ITEM_ID: id => `DELETE
