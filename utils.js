@@ -26,6 +26,14 @@ function dbRequest(query) {
     });
 }
 
+/**
+ * The problem started from DB. IS_VISIBLE field is BOOLEAN type but save 0 / 1 . We should save only these values.
+ *
+ * @param value
+ * @return {number}
+ */
+const validateIsVisible = value => +(!!value);
+
 const getParamMessageRequirements = (paramName, requiredType = 'number') => {
     const message = `Error: Param ${paramName} should be ${requiredType}`;
     console.log('???? ' + message)
@@ -63,6 +71,7 @@ const logRequestDetails = (req, res, next) => {
 }
 
 module.exports = {
+    validateIsVisible,
     getMode,
     getParamMessageRequirements,
     dbRequest,

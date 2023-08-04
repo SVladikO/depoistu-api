@@ -158,8 +158,8 @@ const VALIDATOR = {
     },
     MENU_ITEM: {
         CREATE: menuItem => {
-            const {category_id, company_id, name, price, description, cookingTime, size} = VALIDATION.MENU_ITEM;
-            const validator = Yup.object().shape({category_id, company_id, name, price, description, cookingTime, size});
+            const {category_id, company_id, name, price, description, cookingTime, size, is_visible} = VALIDATION.MENU_ITEM;
+            const validator = Yup.object().shape({category_id, company_id, name, price, description, cookingTime, size, is_visible});
             return validator.validate(menuItem);
         },
         UPDATE: menuItem => {
