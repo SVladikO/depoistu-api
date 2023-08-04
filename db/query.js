@@ -7,6 +7,10 @@ const QUERY = {
             companyId => `select *
                           from MENU_ITEM
                           where company_id = ${companyId};`,
+        SELECT_ALL_ONLY_VISIABLE_BY_COMPANY_ID:
+            companyId => `select *
+                          from MENU_ITEM
+                          where company_id = ${companyId} and is_visible=1;`,
         SELECT_CATEGORY_ID_BY_COMPANY_ID:
             companyId => `select category_id
                           from MENU_ITEM

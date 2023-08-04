@@ -39,6 +39,7 @@ function corsOptionsDelegate(req, callback) {
         'https://depoistu.com',
         'http://localhost:3000'
     ];
+
     let corsOptions;
 
     if (allowlist.indexOf(req.header('Origin')) !== -1) {
