@@ -83,7 +83,6 @@ const routes = {
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID, customerId));
             }]
         },
-
         {
             method: "post",
             url: "/companies",
@@ -96,15 +95,17 @@ const routes = {
                     name: VALIDATION.COMPANY.name.type,
                     city_id: VALIDATION.COMPANY.city_id.type,
                     street: VALIDATION.COMPANY.street.type,
-                    phone: VALIDATION.COMPANY.phone.type,
+                    phone1: VALIDATION.COMPANY.phone1.type,
+                    phone2: VALIDATION.COMPANY.phone2.type,
+                    phone3: VALIDATION.COMPANY.phone3.type,
                     schedule: VALIDATION.COMPANY.schedule.type,
                 },
             },
             description: DESCRIPTION.COMPANY.CREATE,
             callbacks: [verifyToken, function (req, res) {
-                const {customer_id, name, city_id, street, phone, schedule} = req.body;
+                const {customer_id, name, city_id, street, phone1, phone2, phone3, schedule} = req.body;
                 const join_date = '' + new Date().getTime();
-                const company = {customer_id, name, phone, city_id, street, join_date, schedule};
+                const company = {customer_id, name, phone1, phone2, phone3, city_id, street, join_date, schedule};
 
                 VALIDATOR.COMPANY.CREATE(company)
                     .then(() => dbRequest(QUERY.COMPANY.INSERT(company)))
@@ -123,15 +124,17 @@ const routes = {
                 requestBody: {
                     id: VALIDATION.COMPANY.id.type,
                     name: VALIDATION.COMPANY.name.type,
-                    phone: VALIDATION.COMPANY.phone.type,
+                    phone1: VALIDATION.COMPANY.phone1.type,
+                    phone2: VALIDATION.COMPANY.phone2.type,
+                    phone3: VALIDATION.COMPANY.phone3.type,
                     city_id: VALIDATION.COMPANY.city_id.type,
                     street: VALIDATION.COMPANY.street.type,
                     schedule: VALIDATION.COMPANY.schedule.type,
                 },
             },
             callbacks: [verifyToken, function (req, res) {
-                const {id, name, phone, city_id, street, schedule} = req.body;
-                const company = {id, name, phone, city_id, street, schedule};
+                const {id, name, phone1, phone2, phone3, city_id, street, schedule} = req.body;
+                const company = {id, name, phone1, phone2, phone3, city_id, street, schedule};
 
                 VALIDATOR.COMPANY.UPDATE(company)
                     .then(() => dbRequest(QUERY.COMPANY.UPDATE(company)))
