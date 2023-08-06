@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pizza mobile api</title>
+    <title>Depoistu api</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 <div class="content">
     <h3>
         <div style='text-align : right'>
-            DB server - <span id="db" style="text-transform: uppercase"></span>
+            <span id="db" style="text-transform: uppercase"></span> DB
         </div>
     </h3>
 
@@ -70,8 +70,7 @@
 
     function renderRoute(route) {
         return '<div class="route">' +
-            '<div class="entity">' + route.name + '</div>' +
-            '<div class="description">' + route.description + '</div>' +
+            '<h2 class="entity">' + route.name + '</h2>' +
             '</div>' +
             route.routes.reduce(
                 (accumulator, r) =>
@@ -80,46 +79,8 @@
                         '<div>' + r.method + '</div>' +
                         '<div>' + r.url + '</div>' +
                         '<div class="description">' + r.description + '</div>' +
-                    '</div>' +
-                    (
-                        r.details ?
-                    '<div class="details">' +
-                            getPermission(r) +
-                            getValidation(r) +
-                            getRequestBody(r) +
-                        // '<div class="response">'    + r.details.response + '</div>' +
-                    '</div>'
-                    : ''),
-                '')
+                    '</div>', '')
     }
-
-    function getPermission(r) {
-        const {permission} = r.details;
-        if (permission) {
-            return `<div class="permission">PERMISSON: ${permission}</div>`;
-        }
-
-        return '';
-
-    }
-    function getValidation(r) {
-        const {validation} = r.details;
-        if (validation) {
-            return `<div class="validation">VALIDATION: ${validation}</div>`;
-        }
-
-        return '';
-    }
-    function getRequestBody(r) {
-        const {requestBody} = r.details;
-        if (requestBody) {
-            return `<div class="requestBody">REQYEST BODY: ${requestBody}</div>`;
-        }
-
-        return '';
-    }
-
-    // function getRequestBody() {}
 
 </script>
 </body>
