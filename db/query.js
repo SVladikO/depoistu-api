@@ -61,11 +61,13 @@ const QUERY = {
                                             WHERE id = '${companyId}';`,
         SELECT_ALL: () => `SELECT *
                            FROM COMPANY;`,
-        INSERT: c => `INSERT INTO COMPANY (id, customer_id, name, phone, city_id, street, join_date, schedule)
+        INSERT: c => `INSERT INTO COMPANY (id, customer_id, name, phone1, phone2, phone3, city_id, street, join_date, schedule)
                       VALUES (DEFAULT,
                               '${c.customer_id}',
                               '${c.name}',
-                              '${c.phone}',
+                              '${c.phone1}',
+                              '${c.phone2}',
+                              '${c.phone3}',
                               '${c.city_id}',
                               '${c.street}',
                               '${c.join_date}',
@@ -73,7 +75,9 @@ const QUERY = {
         ;`,
         UPDATE: c => `UPDATE COMPANY
                       SET name     = '${c.name}',
-                          phone    = '${c.phone}',
+                          phone1    = '${c.phone1}',
+                          phone2    = '${c.phone2}',
+                          phone3    = '${c.phone3}',
                           city_id  = '${c.city_id}',
                           street   = '${c.street}',
                           schedule = '${c.schedule}'
