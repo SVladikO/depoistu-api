@@ -98,6 +98,12 @@ const QUERY = {
              from CUSTOMER
              where email = '${email}'
                and password = '${password}';`,
+        SELECT_BY_ID_AND_EMAIL_AND_PASSWORD: (id, email, password) =>
+            `select *
+             from CUSTOMER
+             where id = '${id}'
+               and email = '${email}'
+               and password = '${password}';`,
         SELECT_BY_EMAIL_AND_EMAIL_VERIFICATION_CODE: (email, verification_code) =>
             `select *
              from CUSTOMER

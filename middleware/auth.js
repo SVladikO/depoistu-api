@@ -28,7 +28,7 @@ const verifyToken = (req, res, next) => {
         return catchHandler(res)({message: "Invalid Token"});
     }
 
-    dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(customer.email, customer.password))
+    dbRequest(QUERY.CUSTOMER.SELECT_BY_ID_AND_EMAIL_AND_PASSWORD(customer.id, customer.email, customer.password))
         .then(getFirstCustomer)
         .then(res => {
             req.customer = res;
