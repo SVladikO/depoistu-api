@@ -56,6 +56,10 @@ const QUERY = {
         SELECT_BY_CITY_ID: city_id => `SELECT *
                                        from COMPANY
                                        WHERE CITY_ID = '${city_id}';`,
+        // CHECK OWNERSHIP...
+        CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID: (company_id, customer_id) => `SELECT *
+                                                                                            from COMPANY
+                                       WHERE id = '${company_id}' and customer_id = '${customer_id}';`,
         SELECT_BY_COMPANY_ID: companyId => `SELECT *
                                             from COMPANY
                                             WHERE id = '${companyId}';`,

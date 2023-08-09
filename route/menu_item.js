@@ -62,8 +62,8 @@ const routes = {
             url: "/menu",
             url_example: "/menu",
             details: {
-                ...PERMISSION,
-                validation: true,
+                ...PERMISSION(),
+                bodyValidation: true,
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
                     name: VALIDATION.MENU_ITEM.name.type,
@@ -92,8 +92,8 @@ const routes = {
             url: "/menu",
             url_example: "/menu",
             details: {
-                ...PERMISSION,
-                validation: true,
+                ...PERMISSION(),
+                bodyValidation: true,
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
                     category_id: VALIDATION.MENU_ITEM.category_id.type,
@@ -124,7 +124,7 @@ const routes = {
             url_example: "/menu/visible",
             description: DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE,
             details: {
-                ...PERMISSION,
+                ...PERMISSION(),
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
                     is_visible: VALIDATION.MENU_ITEM.is_visible.type,
@@ -145,7 +145,7 @@ const routes = {
             url: "/menu",
             url_example: "/menu",
             details: {
-                ...PERMISSION,
+                ...PERMISSION(),
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type
                 }
