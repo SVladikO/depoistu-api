@@ -155,7 +155,7 @@ const routes = {
             details: {
                 ...PERMISSION(['4. Check ownership.']),
                 requestBody: {
-                    id: VALIDATION.COMPANY.id.type
+                    companyId: VALIDATION.COMPANY.id.type
                 }
             },
             description: DESCRIPTION.COMPANY.DELETE,
