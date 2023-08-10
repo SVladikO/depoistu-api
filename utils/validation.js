@@ -114,10 +114,16 @@ const VALIDATION = {
             .required('Street is required')
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX}`),
-        phone: Yup.string()
+        phone1: Yup.string()
             .required()
-            .min(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MIN, `Example: 380971234567`)
-            .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Example: 380971234567`),
+            .min(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MIN, `Phone 1 Example: 380971234567`)
+            .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Phone 1 Example: 380971234567`),
+        phone2: Yup.string()
+            .notRequired()
+            .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Phone 2 Example: 380971234567`),
+        phone3: Yup.string()
+            .notRequired()
+            .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Phone 3 Example: 380971234567`),
         schedule: Yup.string()
             .required('Schedule is required')
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.SCHEDULE.MIN, 'Schedule should not be empty. Minimum one day should be scheduled.')
@@ -146,20 +152,21 @@ const VALIDATOR = {
     },
     COMPANY: {
         CREATE: company => {
-            const validator = Yup.object().shape(VALIDATION.COMPANY)
+            const {name, city_id, street, phone1, phone2, phone3, schedule} = VALIDATION.COMPANY;
+            const validator = Yup.object().shape({name, city_id, street, phone1, phone2, phone3, schedule})
             return validator.validate(company)
         },
         UPDATE: company => {
-            const {id, name, city_id, street, phone, schedule} = VALIDATION.COMPANY;
-            const validator = Yup.object().shape({id, name, city_id, street, phone, schedule});
+            const {id, name, city_id, street, phone1, phone2, phone3, schedule} = VALIDATION.COMPANY;
+            const validator = Yup.object().shape({id, name, city_id, street, phone1, phone2, phone3, schedule});
 
             return validator.validate(company);
         },
     },
     MENU_ITEM: {
         CREATE: menuItem => {
-            const {category_id, company_id, name, price, description, cookingTime, size} = VALIDATION.MENU_ITEM;
-            const validator = Yup.object().shape({category_id, company_id, name, price, description, cookingTime, size});
+            const {category_id, company_id, name, price, description, cookingTime, size, is_visible} = VALIDATION.MENU_ITEM;
+            const validator = Yup.object().shape({category_id, company_id, name, price, description, cookingTime, size, is_visible});
             return validator.validate(menuItem);
         },
         UPDATE: menuItem => {

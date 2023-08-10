@@ -13,8 +13,6 @@ const routes = {
             method: "get",
             url: "/companies/by/city_id/:city_id",
             url_example: "/companies/by/city_id/102",
-
-
             description: DESCRIPTION.COMPANY.GET_BY_CITY_ID,
             callbacks: [function (req, res) {
                 const {city_id} = req.params;
@@ -63,48 +61,49 @@ const routes = {
         },
         {
             method: "get",
-            url: "/companies/by/customer/:customerId",
+            url: "/companies/by/customer",
             url_example: "/companies/by/customer/2",
             details: {
-                ...PERMISSION,
+                ...PERMISSION(),
             },
             description: DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID,
             callbacks: [verifyToken, function (req, res) {
-                const customerId = +req.params.customerId;
+                const customer_id = req.customer.ID;
 
-                if (!customerId) {
+                if (!customer_id) {
                     return res.status(400).send({
                         message: 'Bad request.'
                     })
                 }
 
-                dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId))
+                dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customer_id))
                     .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID, customerId));
+                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID, customer_id));
             }]
         },
-
         {
             method: "post",
             url: "/companies",
             url_example: "/companies",
             details: {
-                ...PERMISSION,
-                validation: true,
+                ...PERMISSION(),
+                bodyValidation: true,
                 requestBody: {
-                    customer_id: VALIDATION.COMPANY.customer_id.type,
                     name: VALIDATION.COMPANY.name.type,
                     city_id: VALIDATION.COMPANY.city_id.type,
                     street: VALIDATION.COMPANY.street.type,
-                    phone: VALIDATION.COMPANY.phone.type,
+                    phone1: VALIDATION.COMPANY.phone1.type,
+                    phone2: VALIDATION.COMPANY.phone2.type,
+                    phone3: VALIDATION.COMPANY.phone3.type,
                     schedule: VALIDATION.COMPANY.schedule.type,
                 },
             },
             description: DESCRIPTION.COMPANY.CREATE,
             callbacks: [verifyToken, function (req, res) {
-                const {customer_id, name, city_id, street, phone, schedule} = req.body;
+                const customer_id = req.customer.ID;
+                const {name, city_id, street, phone1, phone2, phone3, schedule} = req.body;
                 const join_date = '' + new Date().getTime();
-                const company = {customer_id, name, phone, city_id, street, join_date, schedule};
+                const company = {customer_id, name, phone1, phone2, phone3, city_id, street, join_date, schedule};
 
                 VALIDATOR.COMPANY.CREATE(company)
                     .then(() => dbRequest(QUERY.COMPANY.INSERT(company)))
@@ -118,22 +117,31 @@ const routes = {
             url_example: "/companies",
             description: DESCRIPTION.COMPANY.UPDATE,
             details: {
-                ...PERMISSION,
-                validation: true,
+                ...PERMISSION(['4. Check ownership.']),
+                bodyValidation: true,
                 requestBody: {
                     id: VALIDATION.COMPANY.id.type,
                     name: VALIDATION.COMPANY.name.type,
-                    phone: VALIDATION.COMPANY.phone.type,
+                    phone1: VALIDATION.COMPANY.phone1.type,
+                    phone2: VALIDATION.COMPANY.phone2.type,
+                    phone3: VALIDATION.COMPANY.phone3.type,
                     city_id: VALIDATION.COMPANY.city_id.type,
                     street: VALIDATION.COMPANY.street.type,
                     schedule: VALIDATION.COMPANY.schedule.type,
                 },
             },
             callbacks: [verifyToken, function (req, res) {
-                const {id, name, phone, city_id, street, schedule} = req.body;
-                const company = {id, name, phone, city_id, street, schedule};
+                const {id, name, phone1, phone2, phone3, city_id, street, schedule} = req.body;
+                const company = {id, name, phone1, phone2, phone3, city_id, street, schedule};
+                const customer_id = req.customer.ID;
 
                 VALIDATOR.COMPANY.UPDATE(company)
+                    .then(() => dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(id, customer_id)))
+                    .then(res => {
+                        if (!res.length) {
+                            throw new Error('Only company owners can change data.');
+                        }
+                    })
                     .then(() => dbRequest(QUERY.COMPANY.UPDATE(company)))
                     .then(() => dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id)))
                     .then(sendHandler(res))
@@ -145,14 +153,15 @@ const routes = {
             url: "/companies",
             url_example: "/companies",
             details: {
-                ...PERMISSION,
+                ...PERMISSION(['4. Check ownership.']),
                 requestBody: {
-                    id: VALIDATION.COMPANY.id.type
+                    companyId: VALIDATION.COMPANY.id.type
                 }
             },
             description: DESCRIPTION.COMPANY.DELETE,
             callbacks: [verifyToken, function (req, res) {
                 const {companyId} = req.body;
+                const customer_id = req.customer.ID;
 
                 if (!companyId) {
                     return res.status(400).send({
@@ -160,7 +169,13 @@ const routes = {
                     })
                 }
 
-                dbRequest(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId))
+                dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(companyId, customer_id))
+                    .then(res => {
+                        if (!res.length) {
+                            throw new Error('Only company owners can delete company.');
+                        }
+                    })
+                    .then(() => dbRequest(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId)))
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.DELETE, companyId));
             }]
