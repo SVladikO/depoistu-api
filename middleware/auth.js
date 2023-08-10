@@ -1,34 +1,44 @@
 const jwt = require('jsonwebtoken');
-const {catchHandler} = require('../utils/responce')
+const {catchHandler, getFirstCustomer} = require('../utils/responce')
+const {dbRequest} = require("../utils");
+const QUERY = require("../db/query");
 
-const TOKEN_NAME = "x-access-token";
-
-const TOKEN_KEY = process.env.TOKEN_KEY || 'secret-key'
+const X_ACCESS_TOKEN_NAME = "x-access-token";
+const TOKEN_SECRET_KEY = process.env.TOKEN_KEY || 'secret-key'
 
 class Token {
 }
+
 // Example: https://www.section.io/engineering-education/how-to-build-authentication-api-with-jwt-token-in-nodejs/
-Token.encode = (email, password) => jwt.sign({email, password}, TOKEN_KEY);
-Token.decode = token => jwt.verify(token, TOKEN_KEY);
+Token.encode = (id, email, password) => jwt.sign({id, email, password}, TOKEN_SECRET_KEY);
+Token.verify = token => jwt.verify(token, TOKEN_SECRET_KEY);
 
 const verifyToken = (req, res, next) => {
-    const token = req.headers[TOKEN_NAME];
+    const token = req.headers[X_ACCESS_TOKEN_NAME];
 
     if (!token) {
         return catchHandler(res)({errorMessage: "A token is required for authentication"})
     }
 
+    let customer;
+
     try {
-        req.cusomer = Token.decode(token);
+        customer = Token.verify(token);
     } catch (err) {
         return catchHandler(res)({errorMessage: "Invalid Token"});
     }
 
-    return next();
+    dbRequest(QUERY.CUSTOMER.SELECT_BY_ID_AND_EMAIL_AND_PASSWORD(customer.id, customer.email, customer.password))
+        .then(getFirstCustomer)
+        .then(res => {
+            req.customer = res;
+            next();
+        })
+        .catch(catchHandler(res, 'Customer does not exist. Verification is failed.', {}))
 }
 
 module.exports = {
     verifyToken,
     Token,
-    TOKEN_NAME
+    TOKEN_NAME: X_ACCESS_TOKEN_NAME
 };

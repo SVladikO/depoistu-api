@@ -11,9 +11,9 @@ const DESCRIPTION = {
         GET_BY_CITY: "Get companies by city uniq identifier.",
         GET_BY_CITY_ID: "Get companies by city id.",
         GET_BY_COMPANY_ID: "Get company by companyId.",
-        GET_BY_CUSTOMER_ID: "Get companies by customer id.",
+        GET_BY_CUSTOMER_ID: "Get companies by customer id. We take customer id from access token.",
         GET_AVAILABLE_CITIES: "Get array cities. Avoid duplication.",
-        CREATE: "Create company.",
+        CREATE: "Create company. We take customer id from token.",
         UPDATE: "Update company.",
         DELETE: "Delete company by companyId.",
     },
@@ -27,7 +27,19 @@ const DESCRIPTION = {
     },
 }
 
-const PERMISSION = {"permission": `BE check in headers[${TOKEN_NAME}]`};
+const PERMISSION = (extra) => {
+    let permission = [
+        ` 1. Check existence of "${TOKEN_NAME}" in header.`,
+        ' 2. Token validation.',
+        ' 3. Check customer existence in DB.'
+    ];
+
+    if (extra?.length) {
+        permission = [...permission, ...extra]
+    }
+
+    return {permission};
+};
 
 module.exports = {
     DESCRIPTION,

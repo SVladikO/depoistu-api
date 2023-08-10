@@ -1,23 +1,15 @@
 const {dbRequest} = require("../utils");
 const QUERY = require("../db/query");
 const {VALIDATOR, VALIDATION} = require("../utils/validation");
-const {catchHandler, sendHandler} = require("../utils/responce");
+const {catchHandler, sendHandler, getFirstCustomer} = require("../utils/responce");
 const {DESCRIPTION} = require("../utils/description");
 const {Token} = require("../middleware/auth");
 // const nodemailer = require('nodemailer');
 
-const getFirstCustomer = customers => {
-    if (customers.length > 0) {
-        const {ID, NAME, EMAIL, PHONE, PASSWORD, IS_VERIFIED_EMAIL} = customers[0];
-        return {ID, NAME, EMAIL, PHONE, PASSWORD, IS_VERIFIED_EMAIL};
-    }
-
-    throw new Error('Wrong credentials.');
-}
-
 const addToken = customer => {
-    const {EMAIL, PASSWORD} = customer;
-    const token = Token.encode({EMAIL, PASSWORD});
+    const {ID, EMAIL, PASSWORD} = customer;
+    const token =
+        Token.encode(ID, EMAIL, PASSWORD);
 
     return {...customer, token};
 }
@@ -31,7 +23,7 @@ const routes = {
             url: "/sign-in",
             url_example: "/sign-in",
             details: {
-                validation: true,
+                bodyValidation: true,
                 requestBody: {
                     email: VALIDATION.CUSTOMER.email.type,
                     password: VALIDATION.CUSTOMER.password.type
@@ -44,11 +36,6 @@ const routes = {
                 dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))
                     .then(getFirstCustomer)
                     .then(addToken)
-                    .then(response => {
-                        console.log(11111111, response)
-
-                        return response;
-                    })
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_IN, {email, password}))
             }]
@@ -58,7 +45,7 @@ const routes = {
             url: "/sign-up",
             url_example: "/sign-up",
             details: {
-                validation: true,
+                bodyValidation: true,
                 requestBody: {
                     name: VALIDATION.CUSTOMER.name.type,
                     email: VALIDATION.CUSTOMER.email.type,

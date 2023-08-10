@@ -56,6 +56,10 @@ const QUERY = {
         SELECT_BY_CITY_ID: city_id => `SELECT *
                                        from COMPANY
                                        WHERE CITY_ID = '${city_id}';`,
+        // CHECK OWNERSHIP...
+        CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID: (company_id, customer_id) => `SELECT *
+                                                                                            from COMPANY
+                                       WHERE id = '${company_id}' and customer_id = '${customer_id}';`,
         SELECT_BY_COMPANY_ID: companyId => `SELECT *
                                             from COMPANY
                                             WHERE id = '${companyId}';`,
@@ -93,6 +97,12 @@ const QUERY = {
             `select *
              from CUSTOMER
              where email = '${email}'
+               and password = '${password}';`,
+        SELECT_BY_ID_AND_EMAIL_AND_PASSWORD: (id, email, password) =>
+            `select *
+             from CUSTOMER
+             where id = '${id}'
+               and email = '${email}'
                and password = '${password}';`,
         SELECT_BY_EMAIL_AND_EMAIL_VERIFICATION_CODE: (email, verification_code) =>
             `select *
