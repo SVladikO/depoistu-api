@@ -169,7 +169,7 @@ const routes = {
                     })
                 }
 
-                dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(id, customer_id))
+                dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(companyId, customer_id))
                     .then(res => {
                         if (!res.length) {
                             throw new Error('Only company owners can delete company.');
