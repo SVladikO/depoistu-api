@@ -15,13 +15,13 @@ const verifyToken = (req, res, next) => {
     const token = req.headers[TOKEN_NAME];
 
     if (!token) {
-        return catchHandler(res)({message: "A token is required for authentication"})
+        return catchHandler(res)({errorMessage: "A token is required for authentication"})
     }
 
     try {
         req.cusomer = Token.decode(token);
     } catch (err) {
-        return catchHandler(res)({message: "Invalid Token"});
+        return catchHandler(res)({errorMessage: "Invalid Token"});
     }
 
     return next();
