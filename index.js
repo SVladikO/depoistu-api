@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors');
 // const open = require('open'); // open browser after run
 
-const {connectRoutes, provideBEApi, logRequestDetails, getMode} = require('./utils')
+const {connectRoutes, provideBEApi, logRequestDetails, DB_MODE} = require('./utils')
 const routes = require('./route/index');
 
 const app = express();
@@ -21,7 +21,7 @@ app.get('/', function (req, res) {
 })
 
 app.get('/db-mode', function (req, res) {
-    res.send({mode: getMode()})
+    res.send({mode: DB_MODE})
 })
 
 const PORT = process.env.PORT || 4000;
