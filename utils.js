@@ -1,11 +1,23 @@
 const mysql = require('mysql2');
-const dbConfig = require("./db/config");
+const {
+    DB_HOST,
+    DB_USER,
+    DB_PASSWORD,
+    DB_DATABASE,
+    DB_PORT,
+    DB_MODE
+} = process.env;
 
-const getMode = () => process.env.NODE_ENV || 'develop';
-const connection = mysql.createConnection(dbConfig[getMode()]);
+const connection = mysql.createConnection({
+    host: DB_HOST,
+    user: DB_USER,
+    password: DB_PASSWORD,
+    database: DB_DATABASE,
+    port: DB_PORT
+});
 
 const prefix = '---->'
-console.log(prefix, 'DB environment: ', getMode());
+console.log(prefix, 'DB environment: ', DB_MODE);
 
 function dbRequest(query) {
     return new Promise((resolve, reject) => {
@@ -47,7 +59,13 @@ const provideBEApi = (app, routes) => {
                 name,
 
                 description,
-                routes: routes.map(({method, url, url_example, description, details}) => ({method, details, url, url_example, description}))
+                routes: routes.map(({method, url, url_example, description, details}) => ({
+                    method,
+                    details,
+                    url,
+                    url_example,
+                    description
+                }))
             })
     );
 
@@ -72,7 +90,7 @@ const logRequestDetails = (req, res, next) => {
 
 module.exports = {
     validateIsVisible,
-    getMode,
+    getMode: DB_MODE,
     getParamMessageRequirements,
     dbRequest,
     logRequestDetails,
