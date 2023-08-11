@@ -1,4 +1,4 @@
-const {getParamMessageRequirements, dbRequest} = require("../utils");
+const {getParamMessageRequirements, dbRequest, validateIsVisible} = require("../utils");
 const QUERY = require("../db/query");
 const {VALIDATOR, VALIDATION} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/responce");
@@ -34,12 +34,36 @@ const routes = {
             }]
         },
         {
+            method: "get",
+            url: "/menu/only-visible/:companyId",
+            url_example: "/menu/only-visible/1",
+            description: DESCRIPTION.MENU_ITEM.GET_ONLY_VISIBLE_BY_COMPANY_ID,
+            callbacks: [function (req, res) {
+                const companyId = +req.params.companyId;
+
+                if (!companyId) {
+                    return res.status(400).send({
+                        message: 'Bad request.'
+                    })
+                }
+
+                if (isNaN(companyId)) {
+                    res.send(getParamMessageRequirements('companyId',));
+                    return;
+                }
+
+                dbRequest(QUERY.MENU_ITEM.SELECT_ALL_ONLY_VISIABLE_BY_COMPANY_ID(companyId))
+                    .then(sendHandler(res))
+                    .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID, companyId))
+            }]
+        },
+        {
             method: "post",
             url: "/menu",
             url_example: "/menu",
             details: {
-                ...PERMISSION,
-                validation: true,
+                ...PERMISSION(),
+                bodyValidation: true,
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
                     name: VALIDATION.MENU_ITEM.name.type,
@@ -55,7 +79,7 @@ const routes = {
             "description": DESCRIPTION.MENU_ITEM.CREATE,
             callbacks: [verifyToken, function (req, res) {
                 const {id, category_id, company_id, name, description, cookingTime, price, size, image_url} = req.body;
-                const menuItem = {id, category_id, company_id, name, description, cookingTime, price, size, image_url};
+                const menuItem = {id, category_id, company_id, name, description, cookingTime, price, size, image_url, is_visible: 1};
 
                 VALIDATOR.MENU_ITEM.CREATE(menuItem)
                     .then(() => dbRequest(QUERY.MENU_ITEM.INSERT(menuItem)))
@@ -68,8 +92,8 @@ const routes = {
             url: "/menu",
             url_example: "/menu",
             details: {
-                ...PERMISSION,
-                validation: true,
+                ...PERMISSION(),
+                bodyValidation: true,
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
                     category_id: VALIDATION.MENU_ITEM.category_id.type,
@@ -100,7 +124,7 @@ const routes = {
             url_example: "/menu/visible",
             description: DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE,
             details: {
-                ...PERMISSION,
+                ...PERMISSION(),
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
                     is_visible: VALIDATION.MENU_ITEM.is_visible.type,
@@ -108,7 +132,7 @@ const routes = {
             },
             callbacks: [verifyToken, function (req, res) {
                 const {id, is_visible} = req.body;
-                const menuItem = {id, is_visible};
+                const menuItem = {id, is_visible: validateIsVisible(is_visible)};
                 VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
                     .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)))
                     .then(() => ({success: true}))
@@ -121,7 +145,7 @@ const routes = {
             url: "/menu",
             url_example: "/menu",
             details: {
-                ...PERMISSION,
+                ...PERMISSION(),
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type
                 }
