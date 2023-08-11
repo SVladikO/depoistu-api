@@ -90,7 +90,7 @@ const logRequestDetails = (req, res, next) => {
 
 module.exports = {
     validateIsVisible,
-    getMode: DB_MODE,
+    DB_MODE,
     getParamMessageRequirements,
     dbRequest,
     logRequestDetails,
