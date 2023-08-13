@@ -1,9 +1,25 @@
-const {getParamMessageRequirements, dbRequest, validateIsVisible} = require("../utils");
+const {dbRequest} = require("../utils/connection");
 const QUERY = require("../db/query");
 const {VALIDATOR, VALIDATION} = require("../utils/validation");
-const {catchHandler, sendHandler} = require("../utils/responce");
+const {catchHandler, sendHandler} = require("../utils/handler");
 const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
+
+/**
+ * The problem started from DB. IS_VISIBLE field is BOOLEAN type but save 0 / 1 . We should save only these values.
+ *
+ * @param value
+ * @return {number}
+ */
+const validateIsVisible = value => +(!!value);
+
+
+const getParamMessageRequirements = (paramName, requiredType = 'number') => {
+    const message = `Error: Param ${paramName} should be ${requiredType}`;
+    console.log('???? ' + message)
+    return message;
+}
+
 
 const routes = {
     "name": "Menu",

@@ -1,10 +1,10 @@
-const {dbRequest} = require("../utils");
+const {dbRequest} = require("../utils/connection");
 const QUERY = require("../db/query");
 const {VALIDATOR, VALIDATION} = require("../utils/validation")
 const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
 
-const {sendHandler, catchHandler} = require("../utils/responce")
+const {sendHandler, catchHandler} = require("../utils/handler")
 const routes = {
     "name": "Company",
     description: "For company data.",
