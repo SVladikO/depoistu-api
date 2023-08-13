@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
-const {catchHandler, getFirstCustomer} = require('../utils/responce')
-const {dbRequest} = require("../utils");
+const {catchHandler, getFirstCustomer} = require('../utils/handler')
+const {dbRequest} = require("../utils/connection");
 const QUERY = require("../db/query");
 
 const X_ACCESS_TOKEN_NAME = "x-access-token";
