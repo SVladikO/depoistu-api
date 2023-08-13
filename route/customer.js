@@ -1,7 +1,8 @@
-const {dbRequest} = require("../utils");
+const {dbRequest} = require("../utils/connection");
 const QUERY = require("../db/query");
 const {VALIDATOR, VALIDATION} = require("../utils/validation");
-const {catchHandler, sendHandler, getFirstCustomer} = require("../utils/responce");
+const {catchHandler, sendHandler} = require("../utils/handler");
+const {getFirstCustomer} = require("../utils/customers.utils");
 const {DESCRIPTION} = require("../utils/description");
 const {Token} = require("../middleware/auth");
 // const nodemailer = require('nodemailer');
@@ -155,6 +156,9 @@ const routes = {
         }
     ]
 }
+
+
+
 
 
 module.exports = routes;

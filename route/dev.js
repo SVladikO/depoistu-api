@@ -1,4 +1,4 @@
-const {dbRequest} = require("../utils");
+const {dbRequest} = require("../utils/connection");
 const QUERY = require("../db/query");
 
 module.exports = function (app) {

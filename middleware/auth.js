@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
-const {catchHandler, getFirstCustomer} = require('../utils/responce')
-const {dbRequest} = require("../utils");
+const {catchHandler} = require('../utils/handler')
+const {getFirstCustomer} = require("../utils/customers.utils");
+const {dbRequest} = require("../utils/connection");
 const QUERY = require("../db/query");
 
 const X_ACCESS_TOKEN_NAME = "x-access-token";
@@ -34,7 +35,7 @@ const verifyToken = (req, res, next) => {
             req.customer = res;
             next();
         })
-        .catch(catchHandler(res, 'Customer does not exist. Verification is failed.', {}))
+        .catch(catchHandler(res, 'Customer does not exist. Verification is failed.'))
 }
 
 module.exports = {
