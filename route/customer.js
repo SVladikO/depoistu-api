@@ -2,6 +2,7 @@ const {dbRequest} = require("../utils/connection");
 const QUERY = require("../db/query");
 const {VALIDATOR, VALIDATION} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/handler");
+const {getFirstCustomer} = require("../utils/customers.utils");
 const {DESCRIPTION} = require("../utils/description");
 const {Token} = require("../middleware/auth");
 // const nodemailer = require('nodemailer');
@@ -157,14 +158,6 @@ const routes = {
 }
 
 
-function getFirstCustomer(customers) {
-    if (customers.length > 0) {
-        const {ID, NAME, EMAIL, PHONE, PASSWORD, IS_VERIFIED_EMAIL} = customers[0];
-        return {ID, NAME, EMAIL, PHONE, PASSWORD, IS_VERIFIED_EMAIL};
-    }
-
-    throw new Error('Wrong credentials.');
-}
 
 
 
