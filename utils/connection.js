@@ -47,8 +47,6 @@ function dbRequest(query) {
                         log(`DB REQUEST ERROR ${query}`.bold.red, err);
                         reject(err)
                     }
-
-                    log("DB REQUEST SUCCESS".bold.green)
                     log(
                         query
                             .replace(/(?:\r\n|\r|\n)/g, ' ')
