@@ -44,16 +44,17 @@ function dbRequest(query) {
                 (err, results) => {
 
                     if (err) {
-                        log(`DB REQUEST ERROR ${query}`.bold.red, err);
+                        log(`DB REQUEST ERROR`.bold.red, err);
+                        log(query.bold.red)
                         reject(err)
                     }
-                    log(
-                        query
-                            .replace(/(?:\r\n|\r|\n)/g, ' ')
-                            .replace(/\s{2,}/g, ' ')
-                            .trim()
-                            .bold.green
-                    )
+                    // log(
+                    //     query
+                    //         .replace(/(?:\r\n|\r|\n)/g, ' ')
+                    //         .replace(/\s{2,}/g, ' ')
+                    //         .trim()
+                    //         .bold.green
+                    // )
                     // log('DB REQUEST SUCCESS: '.bold.green, results)
                     resolve(results)
                 }
