@@ -184,5 +184,5 @@ const VALIDATOR = {
 
 module.exports = {
     VALIDATOR,
-    VALIDATION
+    VALIDATION,
 };
