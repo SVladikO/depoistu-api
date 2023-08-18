@@ -54,10 +54,12 @@ const QUERY = {
         SELECT_BY_CUSTOMER_ID: customerId => `SELECT *
                                               from COMPANY
                                               WHERE customer_id = '${customerId}';`,
-        SELECT_AVAILABLE_CITIES: () => `SELECT DISTINCT CITY_ID
-                                        FROM COMPANY;`,
+        SELECT_AVAILABLE_CITIES: () => `SELECT DISTINCT COMPANY.CITY_ID
+                                        FROM COMPANY
+                                                 JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID;`,
         SELECT_BY_CITY_ID: city_id => `SELECT *
                                        from COMPANY
+                                                JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
                                        WHERE CITY_ID = '${city_id}';`,
         // CHECK OWNERSHIP...
         CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID: (company_id, customer_id) => `SELECT *
