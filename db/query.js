@@ -57,7 +57,15 @@ const QUERY = {
         SELECT_AVAILABLE_CITIES: () => `SELECT DISTINCT COMPANY.CITY_ID
                                         FROM COMPANY
                                                  JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID;`,
-        SELECT_BY_CITY_ID: city_id => `SELECT *
+        SELECT_BY_CITY_ID: city_id => `SELECT DISTINCT COMPANY.ID,
+                                                       COMPANY.NAME,
+                                                       COMPANY.PHONE1,
+                                                       COMPANY.PHONE2,
+                                                       COMPANY.PHONE3,
+                                                       COMPANY.CITY_ID,
+                                                       COMPANY.STREET,
+                                                       COMPANY.JOIN_DATE,
+                                                       COMPANY.SCHEDULE
                                        from COMPANY
                                                 JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
                                        WHERE CITY_ID = '${city_id}';`,
@@ -82,6 +90,7 @@ const QUERY = {
                               '${c.join_date}',
                               '${c.schedule}')
         ;`,
+
         UPDATE: c => `UPDATE COMPANY
                       SET name     = '${c.name}',
                           phone1    = '${c.phone1}',
