@@ -175,6 +175,7 @@ const routes = {
                             throw new Error('Only company owners can delete company.');
                         }
                     })
+                    .then(() => dbRequest(QUERY.MENU_ITEM.DELETE_BY_COMPANY_ID(companyId)))
                     .then(() => dbRequest(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId)))
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.DELETE, companyId));
