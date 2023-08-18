@@ -41,6 +41,9 @@ const QUERY = {
         DELETE_BY_MENU_ITEM_ID: id => `DELETE
                                        FROM MENU_ITEM
                                        WHERE ID = ${id}`,
+        DELETE_BY_COMPANY_ID: id => `DELETE
+                                       FROM MENU_ITEM
+                                       WHERE company_id = ${id}`,
     },
     HISTORY: {
         INSERT: (customer_id, company_id, order_details, date_time) =>
