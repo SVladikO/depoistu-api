@@ -1,5 +1,5 @@
 const {dbRequest} = require("../utils/connection");
-const QUERY = require("../db/query");
+const QUERY = require("../utils/query");
 const {VALIDATOR, VALIDATION} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/handler");
 const {DESCRIPTION, PERMISSION} = require("../utils/description");

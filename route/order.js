@@ -1,5 +1,5 @@
 const {dbRequest} = require("../utils/connection");
-const QUERY = require("../db/query");
+const QUERY = require("../utils/query");
 
 const routes = {
     "name": "Order",
