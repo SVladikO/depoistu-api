@@ -120,7 +120,7 @@ const routes = {
             url: "/menu",
             url_example: "/menu",
             details: {
-                ...PERMISSION(),
+                ...PERMISSION(['4. Check ownership.']),
                 bodyValidation: true,
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
@@ -155,7 +155,7 @@ const routes = {
             url_example: "/menu/visible",
             description: DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE,
             details: {
-                ...PERMISSION(),
+                ...PERMISSION(['4. Check ownership.']),
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
                     is_visible: VALIDATION.MENU_ITEM.is_visible.type,
@@ -180,7 +180,7 @@ const routes = {
             url: "/menu",
             url_example: "/menu",
             details: {
-                ...PERMISSION(),
+                ...PERMISSION(['4. Check ownership.']),
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type
                 }

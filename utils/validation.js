@@ -175,8 +175,8 @@ const VALIDATOR = {
             return validator.validate(menuItem);
         },
         UPDATE_IS_VISIBLE: menuItem => {
-            const {id, is_visible, company_id} = VALIDATION.MENU_ITEM;
-            const validator = Yup.object().shape({id, is_visible, company_id});
+            const {id, is_visible} = VALIDATION.MENU_ITEM;
+            const validator = Yup.object().shape({id, is_visible});
             return validator.validate(menuItem);
         },
     }
