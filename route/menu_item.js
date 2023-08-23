@@ -95,7 +95,18 @@ const routes = {
             "description": DESCRIPTION.MENU_ITEM.CREATE,
             callbacks: [verifyToken, function (req, res) {
                 const {id, category_id, company_id, name, description, cookingTime, price, size, image_url} = req.body;
-                const menuItem = {id, category_id, company_id, name, description, cookingTime, price, size, image_url, is_visible: 1};
+                const menuItem = {
+                    id,
+                    category_id,
+                    company_id,
+                    name,
+                    description,
+                    cookingTime,
+                    price,
+                    size,
+                    image_url,
+                    is_visible: 1
+                };
 
                 VALIDATOR.MENU_ITEM.CREATE(menuItem)
                     .then(() => dbRequest(QUERY.MENU_ITEM.INSERT(menuItem)))
@@ -147,9 +158,17 @@ const routes = {
                 }
             },
             callbacks: [verifyToken, function (req, res) {
-                const {id, is_visible} = req.body;
-                const menuItem = {id, is_visible: validateIsVisible(is_visible)};
+                const customerId = req.customer.ID;
+                const {id, company_id, is_visible} = req.body;
+                const menuItem = {id, company_id, is_visible: validateIsVisible(is_visible)};
+
                 VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
+                    .then(() => dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(company_id, customerId)))
+                    .then(res => {
+                        if (!res.length) {
+                            throw new Error('Only company owners can update menu items.');
+                        }
+                    })
                     .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)))
                     .then(() => ({success: true}))
                     .then(sendHandler(res))
@@ -168,11 +187,18 @@ const routes = {
             },
             description: DESCRIPTION.MENU_ITEM.DELETE,
             callbacks: [verifyToken, function (req, res) {
-                const {id} = req.body;
+                const {menuItemId, companyId} = req.body;
+                const customerId = req.customer.ID;
 
-                dbRequest(QUERY.MENU_ITEM.DELETE_BY_MENU_ITEM_ID(id))
+                dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(companyId, customerId))
+                    .then(res => {
+                        if (!res.length) {
+                            throw new Error('Only company owners can delete menu item.');
+                        }
+                    })
+                    .then(() => dbRequest(QUERY.MENU_ITEM.DELETE_BY_MENU_ITEM_ID_AND_COMPANY_ID(menuItemId, companyId)))
                     .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.DELETE, id))
+                    .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.DELETE, menuItemId))
             }]
         },
 
