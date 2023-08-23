@@ -3,6 +3,7 @@ const {catchHandler} = require('../utils/handler')
 const {getFirstCustomer} = require("../utils/customers.utils");
 const {dbRequest} = require("../utils/connection");
 const QUERY = require("../utils/query");
+const {TRANSLATION, resolve} = require("../utils/translations")
 
 const X_ACCESS_TOKEN_NAME = "x-access-token";
 const TOKEN_SECRET_KEY = process.env.TOKEN_KEY || 'secret-key'
@@ -18,7 +19,7 @@ const verifyToken = (req, res, next) => {
     const token = req.headers[X_ACCESS_TOKEN_NAME];
 
     if (!token) {
-        return catchHandler(res)({errorMessage: "A token is required for authentication"})
+        return catchHandler(res)({errorMessage: resolve(TRANSLATION.TOKEN.REQUIRED, req)})
     }
 
     let customer;
@@ -26,7 +27,7 @@ const verifyToken = (req, res, next) => {
     try {
         customer = Token.verify(token);
     } catch (err) {
-        return catchHandler(res)({errorMessage: "Invalid Token"});
+        return catchHandler(res)({errorMessage: resolve(TRANSLATION.TOKEN.INVALID, req)});
     }
 
     dbRequest(QUERY.CUSTOMER.SELECT_BY_ID_AND_EMAIL_AND_PASSWORD(customer.id, customer.email, customer.password))
@@ -35,7 +36,7 @@ const verifyToken = (req, res, next) => {
             req.customer = res;
             next();
         })
-        .catch(catchHandler(res, 'Customer does not exist. Verification is failed.'))
+        .catch(catchHandler(res, resolve(TRANSLATION.TOKEN.FAKE, req)))
 }
 
 module.exports = {

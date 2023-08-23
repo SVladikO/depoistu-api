@@ -5,6 +5,7 @@ const {catchHandler, sendHandler} = require("../utils/handler");
 const {getFirstCustomer} = require("../utils/customers.utils");
 const {DESCRIPTION} = require("../utils/description");
 const {Token} = require("../middleware/auth");
+const {TRANSLATION, translate} = require("../utils/translations");
 // const nodemailer = require('nodemailer');
 
 const addToken = customer => {
@@ -64,7 +65,7 @@ const routes = {
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL(email)))
                     .then(response => {
                             if (response.length) {
-                                throw new Error('This email is already used. Please login.')
+                                throw new Error(translate(TRANSLATION.CUSTOMER.EMAIL_USED, req))
                             }
                         }
                     )
@@ -121,7 +122,7 @@ const routes = {
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
                     .then(response => {
                             if (!response.length) {
-                                throw new Error('Wrong old password.')
+                                throw new Error(translate(TRANSLATION.CUSTOMER.WRONG_PASSWORD, req))
                             }
                         }
                     )
@@ -144,7 +145,7 @@ const routes = {
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_EMAIL_VERIFICATION_CODE(email, emailVerificationCode)))
                     .then(response => {
                             if (!response.length) {
-                                throw new Error('Wrong email verification code.')
+                                throw new Error(translate(TRANSLATION.CUSTOMER.WRONG_EMAIL_VERIFICATION_CODE, req))
                             }
                         }
                     )

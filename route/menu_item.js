@@ -4,6 +4,7 @@ const {VALIDATOR, VALIDATION} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/handler");
 const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
+const {TRANSLATION, translate} = require("../utils/translations");
 
 /**
  * The problem started from DB. IS_VISIBLE field is BOOLEAN type but save 0 / 1 . We should save only these values.
@@ -13,13 +14,11 @@ const {verifyToken} = require("../middleware/auth");
  */
 const validateIsVisible = value => +(!!value);
 
-
 const getParamMessageRequirements = (paramName, requiredType = 'number') => {
     const message = `Error: Param ${paramName} should be ${requiredType}`;
     console.log('???? ' + message)
     return message;
 }
-
 
 const routes = {
     "name": "Menu",
@@ -35,7 +34,7 @@ const routes = {
 
                 if (!companyId) {
                     return res.status(400).send({
-                        message: 'Bad request.'
+                        message: translate(TRANSLATION.MENU_ITEM.COMPANY_ID_REQUIRED, req)
                     })
                 }
 
@@ -59,7 +58,7 @@ const routes = {
 
                 if (!companyId) {
                     return res.status(400).send({
-                        message: 'Bad request.'
+                        message: translate(TRANSLATION.MENU_ITEM.COMPANY_ID_REQUIRED, req)
                     })
                 }
 
