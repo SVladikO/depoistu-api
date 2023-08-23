@@ -39,12 +39,23 @@ const QUERY = {
         UPDATE_IS_VISIBLE: mi => `UPDATE MENU_ITEM
                                   SET is_visible = '${mi.is_visible}'
                                   WHERE id = ${mi.id} and COMPANY_ID = ${mi.company_id};`,
-        DELETE_BY_MENU_ITEM_ID_AND_COMPANY_ID : (menuItemId, companyId) => `DELETE
-                                       FROM MENU_ITEM
-                                       WHERE ID = ${menuItemId} AND COMPANY_ID = ${companyId}`,
+        DELETE_BY_MENU_ITEM_ID : id => `DELETE
+                                        FROM MENU_ITEM
+                                        WHERE ID = ${id}`,
         DELETE_BY_COMPANY_ID: id => `DELETE
                                      FROM MENU_ITEM
                                      WHERE company_id = ${id}`,
+        CHECK_OWNERSHIP_SELECT_BY_CUSTOMER_ID_AND_MENU_ITEM_ID : (customer_id, menu_item_id) => `
+            SELECT MENU_ITEM.NAME, MENU_ITEM.PRICE
+            FROM MENU_ITEM
+                     JOIN COMPANY
+                          ON MENU_ITEM.COMPANY_ID = COMPANY.ID
+                     JOIN CUSTOMER
+                          ON CUSTOMER.ID = COMPANY.CUSTOMER_ID
+            WHERE CUSTOMER.ID = ${customer_id}
+              AND MENU_ITEM.ID = ${menu_item_id};
+
+        `
     },
     HISTORY: {
         INSERT: (customer_id, company_id, order_details, date_time) =>
