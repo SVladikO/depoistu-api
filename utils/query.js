@@ -38,7 +38,7 @@ const QUERY = {
         `,
         UPDATE_IS_VISIBLE: mi => `UPDATE MENU_ITEM
                                   SET is_visible = '${mi.is_visible}'
-                                  WHERE id = ${mi.id} and COMPANY_ID = ${mi.company_id};`,
+                                  WHERE id = ${mi.id};`,
         DELETE_BY_MENU_ITEM_ID : id => `DELETE
                                         FROM MENU_ITEM
                                         WHERE ID = ${id}`,
