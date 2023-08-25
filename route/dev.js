@@ -1,5 +1,5 @@
 const {dbRequest} = require("../utils/connection");
-const QUERY = require("../db/query");
+const QUERY = require("../utils/query");
 
 module.exports = function (app) {
     // app.get('/insert', function (req, res) {

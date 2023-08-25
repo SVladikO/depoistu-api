@@ -35,32 +35,32 @@ const pool = mysql.createPool({
 
 log('DB environment: ', DB_MODE, DB_HOST);
 
+pool.on('connection', () => log("==== DB CONNECTED"))
+pool.on('end', () => log("==== DB DISCONNECTED"))
+
 function dbRequest(query) {
     return new Promise((resolve, reject) => {
-        pool.getConnection(function (err, connection) {
-            if (err) reject(err); // not connected!
-            connection.query(
-                query,
-                (err, results) => {
+        pool.query(
+            query,
+            (err, results) => {
 
-                    if (err) {
-                        log(`DB REQUEST ERROR`.bold.red, err);
-                        log(query.bold.red)
-                        reject(err)
-                    }
-                    // log(
-                    //     query
-                    //         .replace(/(?:\r\n|\r|\n)/g, ' ')
-                    //         .replace(/\s{2,}/g, ' ')
-                    //         .trim()
-                    //         .bold.green
-                    // )
-                    // log('DB REQUEST SUCCESS: '.bold.green, results)
-                    resolve(results)
+                if (err) {
+                    log(`DB REQUEST ERROR`.bold.red, err);
+                    log(query.bold.red)
+                    reject(err)
                 }
-            )
-        })
-    });
+                // log(
+                //     query
+                //         .replace(/(?:\r\n|\r|\n)/g, ' ')
+                //         .replace(/\s{2,}/g, ' ')
+                //         .trim()
+                //         .bold.green
+                // )
+                // log('DB REQUEST SUCCESS: '.bold.green, results)
+                resolve(results)
+            }
+        )
+    })
 }
 
 module.exports = {

@@ -1,9 +1,10 @@
 const {dbRequest} = require("../utils/connection");
-const QUERY = require("../db/query");
+const QUERY = require("../utils/query");
 const {VALIDATOR, VALIDATION} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/handler");
 const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
+const {checkMenuItemOwner} = require("../middleware/menu_item");
 
 /**
  * The problem started from DB. IS_VISIBLE field is BOOLEAN type but save 0 / 1 . We should save only these values.
@@ -95,7 +96,18 @@ const routes = {
             "description": DESCRIPTION.MENU_ITEM.CREATE,
             callbacks: [verifyToken, function (req, res) {
                 const {id, category_id, company_id, name, description, cookingTime, price, size, image_url} = req.body;
-                const menuItem = {id, category_id, company_id, name, description, cookingTime, price, size, image_url, is_visible: 1};
+                const menuItem = {
+                    id,
+                    category_id,
+                    company_id,
+                    name,
+                    description,
+                    cookingTime,
+                    price,
+                    size,
+                    image_url,
+                    is_visible: 1
+                };
 
                 VALIDATOR.MENU_ITEM.CREATE(menuItem)
                     .then(() => dbRequest(QUERY.MENU_ITEM.INSERT(menuItem)))
@@ -108,7 +120,7 @@ const routes = {
             url: "/menu",
             url_example: "/menu",
             details: {
-                ...PERMISSION(),
+                ...PERMISSION(['4. Check ownership.']),
                 bodyValidation: true,
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
@@ -122,17 +134,20 @@ const routes = {
                 }
             },
             "description": DESCRIPTION.MENU_ITEM.UPDATE,
-            callbacks: [verifyToken, function (req, res) {
-                const {id, name, category_id, description, cookingTime, price, size, image_url} = req.body;
-                const menuItem = {id, name, category_id, description, cookingTime, price, size, image_url};
+            callbacks: [
+                verifyToken,
+                checkMenuItemOwner('Only owner can update menu item'),
+                function (req, res) {
+                    const {id, name, category_id, description, cookingTime, price, size, image_url} = req.body;
+                    const menuItem = {id, name, category_id, description, cookingTime, price, size, image_url};
 
-                VALIDATOR.MENU_ITEM.UPDATE(menuItem)
-                    .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE(menuItem)))
-                    .then(() => dbRequest(QUERY.MENU_ITEM.SELECT_BY_ID(id)))
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.UPDATE, id))
+                    VALIDATOR.MENU_ITEM.UPDATE(menuItem)
+                        .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE(menuItem)))
+                        .then(() => dbRequest(QUERY.MENU_ITEM.SELECT_BY_ID(id)))
+                        .then(sendHandler(res))
+                        .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.UPDATE, id))
 
-            }]
+                }]
         },
         {
             method: "put",
@@ -140,40 +155,47 @@ const routes = {
             url_example: "/menu/visible",
             description: DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE,
             details: {
-                ...PERMISSION(),
+                ...PERMISSION(['4. Check ownership.']),
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
                     is_visible: VALIDATION.MENU_ITEM.is_visible.type,
                 }
             },
-            callbacks: [verifyToken, function (req, res) {
-                const {id, is_visible} = req.body;
-                const menuItem = {id, is_visible: validateIsVisible(is_visible)};
-                VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
-                    .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)))
-                    .then(() => ({success: true}))
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.UPDATE, id))
-            }]
+            callbacks: [
+                verifyToken,
+                checkMenuItemOwner('Only owner can update menu item visibility'),
+                function (req, res) {
+                    const {id, company_id, is_visible} = req.body;
+                    const menuItem = {id, company_id, is_visible: validateIsVisible(is_visible)};
+
+                    VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
+                        .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)))
+                        .then(() => ({success: true}))
+                        .then(sendHandler(res))
+                        .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.UPDATE, id))
+                }]
         },
         {
             method: "delete",
             url: "/menu",
             url_example: "/menu",
             details: {
-                ...PERMISSION(),
+                ...PERMISSION(['4. Check ownership.']),
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type
                 }
             },
             description: DESCRIPTION.MENU_ITEM.DELETE,
-            callbacks: [verifyToken, function (req, res) {
-                const {id} = req.body;
+            callbacks: [
+                verifyToken,
+                checkMenuItemOwner('Only owner can delete menu item'),
+                function (req, res) {
+                    const {id} = req.body;
 
-                dbRequest(QUERY.MENU_ITEM.DELETE_BY_MENU_ITEM_ID(id))
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.DELETE, id))
-            }]
+                    dbRequest(QUERY.MENU_ITEM.DELETE_BY_MENU_ITEM_ID(id))
+                        .then(sendHandler(res))
+                        .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.DELETE, id))
+                }]
         },
 
     ]
