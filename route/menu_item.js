@@ -44,7 +44,7 @@ const routes = {
                 }
 
                 dbRequest(QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID(companyId))
-                    .then(convertMenuItemNames)
+                    .then(convertMenuItemFields)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID, companyId))
             }]
@@ -69,7 +69,7 @@ const routes = {
                 }
 
                 dbRequest(QUERY.MENU_ITEM.SELECT_ALL_ONLY_VISIABLE_BY_COMPANY_ID(companyId))
-                    .then(convertMenuItemNames)
+                    .then(convertMenuItemFields)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID, companyId))
             }]
@@ -144,7 +144,7 @@ const routes = {
                     VALIDATOR.MENU_ITEM.UPDATE(menuItem)
                         .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE(menuItem)))
                         .then(() => dbRequest(QUERY.MENU_ITEM.SELECT_BY_ID(id)))
-                        .then(convertMenuItemNames)
+                        .then(convertMenuItemFields)
                         .then(sendHandler(res))
                         .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.UPDATE, id))
 
@@ -203,7 +203,7 @@ const routes = {
 }
 
 
-function convertMenuItemNames(res) {
+function convertMenuItemFields(res) {
     return res.map(mi => {
         const {
             ID: id,

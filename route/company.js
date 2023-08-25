@@ -24,7 +24,7 @@ const routes = {
                 }
 
                 dbRequest(QUERY.COMPANY.SELECT_BY_CITY_ID(city_id))
-                    .then(convertCompanyNames)
+                    .then(convertCompanyFields)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CITY_ID, city_id))
             }]
@@ -44,7 +44,7 @@ const routes = {
                 }
 
                 dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId))
-                    .then(convertCompanyNames)
+                    .then(convertCompanyFields)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_COMPANY_ID, companyId));
             }]
@@ -56,7 +56,7 @@ const routes = {
             description: DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES,
             callbacks: [function (req, res) {
                 dbRequest(QUERY.COMPANY.SELECT_AVAILABLE_CITIES())
-                    .then(convertCompanyNames)
+                    .then(convertCompanyFields)
                     .then(r => r.map(o => o.cityId) || [])
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES));
@@ -71,18 +71,18 @@ const routes = {
             },
             description: DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID,
             callbacks: [verifyToken, function (req, res) {
-                const customer_id = req.customer.ID;
+                const customerId = req.customer.id;
 
-                if (!customer_id) {
+                if (!customerId) {
                     return res.status(400).send({
                         message: 'Bad request.'
                     })
                 }
 
-                dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customer_id))
-                    .then(convertCompanyNames)
+                dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId))
+                    .then(convertCompanyFields)
                     .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID, customer_id));
+                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID, customerId));
             }]
         },
         {
@@ -104,7 +104,7 @@ const routes = {
             },
             description: DESCRIPTION.COMPANY.CREATE,
             callbacks: [verifyToken, function (req, res) {
-                const customerId = req.customer.ID;
+                const customerId = req.customer.id;
                 const {name, cityId, street, phone1, phone2, phone3, schedule} = req.body;
                 const joinDate = '' + new Date().getTime();
                 const company = {customerId, name, phone1, phone2, phone3, cityId, street, joinDate, schedule};
@@ -137,10 +137,10 @@ const routes = {
             callbacks: [verifyToken, function (req, res) {
                 const {id, name, phone1, phone2, phone3, cityId, street, schedule} = req.body;
                 const company = {id, name, phone1, phone2, phone3, cityId, street, schedule};
-                const customer_id = req.customer.ID;
+                const customerId = req.customer.id;
 
                 VALIDATOR.COMPANY.UPDATE(company)
-                    .then(() => dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(id, customer_id)))
+                    .then(() => dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(id, customerId)))
                     .then(res => {
                         if (!res.length) {
                             throw new Error('Only company owners can change data.');
@@ -148,7 +148,7 @@ const routes = {
                     })
                     .then(() => dbRequest(QUERY.COMPANY.UPDATE(company)))
                     .then(() => dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id)))
-                    .then(convertCompanyNames)
+                    .then(convertCompanyFields)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.UPDATE, company))
             }]
@@ -166,7 +166,7 @@ const routes = {
             description: DESCRIPTION.COMPANY.DELETE,
             callbacks: [verifyToken, function (req, res) {
                 const {companyId} = req.body;
-                const customerId = req.customer.ID;
+                const customerId = req.customer.id;
 
                 if (!companyId) {
                     return res.status(400).send({
@@ -189,7 +189,7 @@ const routes = {
     ]
 };
 
-function convertCompanyNames(companies) {
+function convertCompanyFields(companies) {
     return companies.map(company => {
         const {
             ID: id,

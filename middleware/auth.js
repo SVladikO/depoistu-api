@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const {catchHandler} = require('../utils/handler')
-const {getFirstCustomer} = require("../utils/customers.utils");
+const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.utils");
 const {dbRequest} = require("../utils/connection");
 const QUERY = require("../utils/query");
 
@@ -29,7 +29,9 @@ const verifyToken = (req, res, next) => {
         return catchHandler(res)({errorMessage: "Invalid Token"});
     }
 
+    console.log(111111, customer);
     dbRequest(QUERY.CUSTOMER.SELECT_BY_ID_AND_EMAIL_AND_PASSWORD(customer.id, customer.email, customer.password))
+        .then(convertCustomerFields)
         .then(getFirstCustomer)
         .then(res => {
             req.customer = res;
