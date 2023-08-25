@@ -94,7 +94,7 @@ const routes = {
                 bodyValidation: true,
                 requestBody: {
                     name: VALIDATION.COMPANY.name.type,
-                    city_id: VALIDATION.COMPANY.cityId.type,
+                    cityId: VALIDATION.COMPANY.cityId.type,
                     street: VALIDATION.COMPANY.street.type,
                     phone1: VALIDATION.COMPANY.phone1.type,
                     phone2: VALIDATION.COMPANY.phone2.type,
@@ -129,7 +129,7 @@ const routes = {
                     phone1: VALIDATION.COMPANY.phone1.type,
                     phone2: VALIDATION.COMPANY.phone2.type,
                     phone3: VALIDATION.COMPANY.phone3.type,
-                    city_id: VALIDATION.COMPANY.cityId.type,
+                    cityId: VALIDATION.COMPANY.cityId.type,
                     street: VALIDATION.COMPANY.street.type,
                     schedule: VALIDATION.COMPANY.schedule.type,
                 },

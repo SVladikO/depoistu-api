@@ -14,13 +14,11 @@ const {checkMenuItemOwner} = require("../middleware/menu_item");
  */
 const validateIsVisible = value => +(!!value);
 
-
 const getParamMessageRequirements = (paramName, requiredType = 'number') => {
     const message = `Error: Param ${paramName} should be ${requiredType}`;
     console.log('???? ' + message)
     return message;
 }
-
 
 const routes = {
     "name": "Menu",
@@ -86,13 +84,13 @@ const routes = {
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
                     name: VALIDATION.MENU_ITEM.name.type,
-                    category_id: VALIDATION.MENU_ITEM.categoryId.type,
-                    company_id: VALIDATION.MENU_ITEM.companyId.type,
+                    categoryId: VALIDATION.MENU_ITEM.categoryId.type,
+                    companyId: VALIDATION.MENU_ITEM.companyId.type,
                     description: VALIDATION.MENU_ITEM.description.type,
                     cookingTime: VALIDATION.MENU_ITEM.cookingTime.type,
                     price: VALIDATION.MENU_ITEM.price.type,
                     size: VALIDATION.MENU_ITEM.size.type,
-                    image_url: VALIDATION.MENU_ITEM.imageUrl.type,
+                    imageUrl: VALIDATION.MENU_ITEM.imageUrl.type,
                 }
             },
             "description": DESCRIPTION.MENU_ITEM.CREATE,
@@ -126,13 +124,13 @@ const routes = {
                 bodyValidation: true,
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
-                    category_id: VALIDATION.MENU_ITEM.categoryId.type,
+                    categoryId: VALIDATION.MENU_ITEM.categoryId.type,
                     name: VALIDATION.MENU_ITEM.name.type,
                     description: VALIDATION.MENU_ITEM.description.type,
                     cookingTime: VALIDATION.MENU_ITEM.cookingTime.type,
                     price: VALIDATION.MENU_ITEM.price.type,
                     size: VALIDATION.MENU_ITEM.size.type,
-                    image_url: VALIDATION.MENU_ITEM.imageUrl.type,
+                    imageUrl: VALIDATION.MENU_ITEM.imageUrl.type,
                 }
             },
             "description": DESCRIPTION.MENU_ITEM.UPDATE,
@@ -161,7 +159,7 @@ const routes = {
                 ...PERMISSION(['4. Check ownership.']),
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
-                    is_visible: VALIDATION.MENU_ITEM.isVisible.type,
+                    isVisible: VALIDATION.MENU_ITEM.isVisible.type,
                 }
             },
             callbacks: [
