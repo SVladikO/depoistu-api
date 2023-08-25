@@ -161,7 +161,7 @@ const routes = {
             description: DESCRIPTION.COMPANY.DELETE,
             callbacks: [verifyToken, function (req, res) {
                 const {companyId} = req.body;
-                const customer_id = req.customer.ID;
+                const customerId = req.customer.ID;
 
                 if (!companyId) {
                     return res.status(400).send({
@@ -169,7 +169,7 @@ const routes = {
                     })
                 }
 
-                dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(companyId, customer_id))
+                dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(companyId, customerId))
                     .then(res => {
                         if (!res.length) {
                             throw new Error('Only company owners can delete company.');
