@@ -104,12 +104,12 @@ const VALIDATION = {
     },
     COMPANY: {
         id: Yup.number().required('Id is required'),
-        customer_id: Yup.number().required('Customer id is required'),
+        customerId: Yup.number().required('Customer id is required'),
         name: Yup.string()
             .required('Name is required')
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MAX}`),
-        city_id: Yup.string().required('City id is required'),
+        cityId: Yup.string().required('City id is required'),
         street: Yup.string()
             .required('Street is required')
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN}`)
@@ -152,13 +152,13 @@ const VALIDATOR = {
     },
     COMPANY: {
         CREATE: company => {
-            const {name, city_id, street, phone1, phone2, phone3, schedule} = VALIDATION.COMPANY;
-            const validator = Yup.object().shape({name, city_id, street, phone1, phone2, phone3, schedule})
+            const {name, cityId, street, phone1, phone2, phone3, schedule} = VALIDATION.COMPANY;
+            const validator = Yup.object().shape({name, cityId, street, phone1, phone2, phone3, schedule})
             return validator.validate(company)
         },
         UPDATE: company => {
-            const {id, name, city_id, street, phone1, phone2, phone3, schedule} = VALIDATION.COMPANY;
-            const validator = Yup.object().shape({id, name, city_id, street, phone1, phone2, phone3, schedule});
+            const {id, name, cityId, street, phone1, phone2, phone3, schedule} = VALIDATION.COMPANY;
+            const validator = Yup.object().shape({id, name, cityId, street, phone1, phone2, phone3, schedule});
 
             return validator.validate(company);
         },

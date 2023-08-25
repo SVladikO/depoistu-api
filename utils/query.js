@@ -70,7 +70,7 @@ const QUERY = {
                                         FROM COMPANY
                                                  JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
                                         WHERE MENU_ITEM.IS_VISIBLE = 1;`,
-        SELECT_BY_CITY_ID: city_id => `SELECT DISTINCT COMPANY.ID,
+        SELECT_BY_CITY_ID: cityId => `SELECT DISTINCT COMPANY.ID,
                                                        COMPANY.NAME,
                                                        COMPANY.PHONE1,
                                                        COMPANY.PHONE2,
@@ -81,7 +81,7 @@ const QUERY = {
                                                        COMPANY.SCHEDULE
                                        from COMPANY
                                                 JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
-                                       WHERE CITY_ID = '${city_id}'
+                                       WHERE CITY_ID = '${cityId}'
                                          AND MENU_ITEM.IS_VISIBLE = 1;`,
         // CHECK OWNERSHIP...
         CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID: (company_id, customer_id) => `SELECT *
@@ -96,14 +96,14 @@ const QUERY = {
         INSERT: c => `INSERT INTO COMPANY (id, customer_id, name, phone1, phone2, phone3, city_id, street, join_date,
                                            schedule)
                       VALUES (DEFAULT,
-                              '${c.customer_id}',
+                              '${c.customerId}',
                               '${c.name}',
                               '${c.phone1}',
                               '${c.phone2}',
                               '${c.phone3}',
-                              '${c.city_id}',
+                              '${c.cityId}',
                               '${c.street}',
-                              '${c.join_date}',
+                              '${c.joinDate}',
                               '${c.schedule}')
         ;`,
 
@@ -112,7 +112,7 @@ const QUERY = {
                           phone1   = '${c.phone1}',
                           phone2   = '${c.phone2}',
                           phone3   = '${c.phone3}',
-                          city_id  = '${c.city_id}',
+                          city_id  = '${c.cityId}',
                           street   = '${c.street}',
                           schedule = '${c.schedule}'
                       WHERE id = ${c.id}
