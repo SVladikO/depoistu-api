@@ -11,6 +11,13 @@ const app = express();
 
 app.use(cors(corsOptionsDelegate));
 app.use(express.json());
+app.use((err, req, res, next) => {
+    if (err) {
+        res.status(400).send('error parsing data')
+    } else {
+        next()
+    }
+})
 app.use(express.static('public'));
 app.use(logRequestDetails);
 
