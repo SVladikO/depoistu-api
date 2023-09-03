@@ -61,7 +61,10 @@ const TRANSLATION = {
             en: "Bad request. Company id is required",
             ua: "Не правильний запит. Company id обовязкове.",
         },
-
+        ONLY_OWNER_CAN: {
+            en: "Only owner can bring changes.",
+            ua: "Тільки власник може вносити зміни.",
+        },
     }
 }
 
