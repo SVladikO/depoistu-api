@@ -82,9 +82,9 @@ const VALIDATION = {
     },
     MENU_ITEM: {
         id: Yup.string().required(`Id is required!`),
-        is_visible: Yup.bool().required(`is_visible is required!`),
-        category_id: Yup.string().required(`Category id is required!`),
-        company_id: Yup.string().required(`Company id is equired!`),
+        isVisible: Yup.bool().required(`is_visible is required!`),
+        categoryId: Yup.string().required(`Category id is required!`),
+        companyId: Yup.string().required(`Company id is equired!`),
         name: Yup.string()
             .required(`Name is required!`)
             .min(FIELD_REQUIREMENTS_FOR.MENU_ITEM.NAME.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.NAME.MIN}`)
@@ -100,16 +100,16 @@ const VALIDATION = {
         size: Yup.string()
             .min(FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MAX}`),
-        image_url: Yup.string().required('Image url is required')
+        imageUrl: Yup.string().required('Image url is required')
     },
     COMPANY: {
         id: Yup.number().required('Id is required'),
-        customer_id: Yup.number().required('Customer id is required'),
+        customerId: Yup.number().required('Customer id is required'),
         name: Yup.string()
             .required('Name is required')
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MAX}`),
-        city_id: Yup.string().required('City id is required'),
+        cityId: Yup.string().required('City id is required'),
         street: Yup.string()
             .required('Street is required')
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN}`)
@@ -152,31 +152,31 @@ const VALIDATOR = {
     },
     COMPANY: {
         CREATE: company => {
-            const {name, city_id, street, phone1, phone2, phone3, schedule} = VALIDATION.COMPANY;
-            const validator = Yup.object().shape({name, city_id, street, phone1, phone2, phone3, schedule})
+            const {name, cityId, street, phone1, phone2, phone3, schedule} = VALIDATION.COMPANY;
+            const validator = Yup.object().shape({name, cityId, street, phone1, phone2, phone3, schedule})
             return validator.validate(company)
         },
         UPDATE: company => {
-            const {id, name, city_id, street, phone1, phone2, phone3, schedule} = VALIDATION.COMPANY;
-            const validator = Yup.object().shape({id, name, city_id, street, phone1, phone2, phone3, schedule});
+            const {id, name, cityId, street, phone1, phone2, phone3, schedule} = VALIDATION.COMPANY;
+            const validator = Yup.object().shape({id, name, cityId, street, phone1, phone2, phone3, schedule});
 
             return validator.validate(company);
         },
     },
     MENU_ITEM: {
         CREATE: menuItem => {
-            const {category_id, company_id, name, price, description, cookingTime, size, is_visible} = VALIDATION.MENU_ITEM;
-            const validator = Yup.object().shape({category_id, company_id, name, price, description, cookingTime, size, is_visible});
+            const {categoryId, companyId, name, price, description, cookingTime, size, is_visible} = VALIDATION.MENU_ITEM;
+            const validator = Yup.object().shape({categoryId, companyId, name, price, description, cookingTime, size, is_visible});
             return validator.validate(menuItem);
         },
         UPDATE: menuItem => {
-            const {name, category_id, price, description, cookingTime, size} = VALIDATION.MENU_ITEM;
-            const validator = Yup.object().shape({name, category_id, price, description, cookingTime, size});
+            const {name, categoryId, price, description, cookingTime, size} = VALIDATION.MENU_ITEM;
+            const validator = Yup.object().shape({name, categoryId, price, description, cookingTime, size});
             return validator.validate(menuItem);
         },
         UPDATE_IS_VISIBLE: menuItem => {
-            const {id, is_visible} = VALIDATION.MENU_ITEM;
-            const validator = Yup.object().shape({id, is_visible});
+            const {id, isVisible} = VALIDATION.MENU_ITEM;
+            const validator = Yup.object().shape({id, isVisible});
             return validator.validate(menuItem);
         },
     }
