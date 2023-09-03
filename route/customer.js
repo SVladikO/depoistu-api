@@ -2,16 +2,15 @@ const {dbRequest} = require("../utils/connection");
 const QUERY = require("../utils/query");
 const {VALIDATOR, VALIDATION} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/handler");
-const {getFirstCustomer} = require("../utils/customers.utils");
+const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.utils");
 const {DESCRIPTION} = require("../utils/description");
 const {Token} = require("../middleware/auth");
 const {TRANSLATION, translate} = require("../utils/translations");
 // const nodemailer = require('nodemailer');
 
 const addToken = customer => {
-    const {ID, EMAIL, PASSWORD} = customer;
-    const token =
-        Token.encode(ID, EMAIL, PASSWORD);
+    const {id, email, password} = customer;
+    const token = Token.encode(id, email, password);
 
     return {...customer, token};
 }
@@ -36,6 +35,7 @@ const routes = {
                 const {email, password} = req.body;
 
                 dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))
+                    .then(convertCustomerFields)
                     .then(getFirstCustomer)
                     .then(addToken)
                     .then(sendHandler(res))
@@ -69,33 +69,9 @@ const routes = {
                             }
                         }
                     )
-                    // .then(() => {
-                    //
-                    //     var transporter = nodemailer.createTransport({
-                    //         service: 'gmail',
-                    //         auth: {
-                    //             user: 'vlad.serhiychuk@gmail.com',
-                    //             pass: '/XNMiwr111'
-                    //         }
-                    //     });
-                    //
-                    //     var mailOptions = {
-                    //         from: 'vlad.serhiychuk@gmail.com',
-                    //         to: 'serhiichuk.irina@gmail.com',
-                    //         subject: 'Verification code for your email',
-                    //         text: '1686300364887'
-                    //     };
-                    //
-                    //     transporter.sendMail(mailOptions, function(error, info){
-                    //         if (error) {
-                    //             throw new Error(error);
-                    //         } else {
-                    //             console.log('Email sent: ' + info.response);
-                    //         }
-                    //     });
-                    // })
                     .then(() => dbRequest(QUERY.CUSTOMER.INSERT(customer)))
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
+                    .then(convertCustomerFields)
                     .then(getFirstCustomer)
                     .then(addToken)
                     .then(sendHandler(res))
@@ -128,6 +104,7 @@ const routes = {
                     )
                     .then(() => dbRequest(QUERY.CUSTOMER.UPDATE_PASSWORD(customer)))
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, newPassword)))
+                    .then(convertCustomerFields)
                     .then(getFirstCustomer)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.CHANGE_PASSWORD, customer))
@@ -139,7 +116,6 @@ const routes = {
             "description": DESCRIPTION.CUSTOMER.VERIFY_EMAIL,
             callbacks: [function (req, res) {
                 const {email, emailVerificationCode} = req.body;
-                console.log(1111, {email, emailVerificationCode})
 
                 VALIDATOR.CUSTOMER.VALIDATE_EMAIL({email, emailVerificationCode})
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_EMAIL_VERIFICATION_CODE(email, emailVerificationCode)))
@@ -157,6 +133,8 @@ const routes = {
         }
     ]
 }
+
+
 
 
 

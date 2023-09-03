@@ -25,6 +25,7 @@ const routes = {
                 }
 
                 dbRequest(QUERY.COMPANY.SELECT_BY_CITY_ID(city_id))
+                    .then(convertCompanyFields)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CITY_ID, city_id))
             }]
@@ -44,6 +45,7 @@ const routes = {
                 }
 
                 dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId))
+                    .then(convertCompanyFields)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_COMPANY_ID, companyId));
             }]
@@ -55,7 +57,8 @@ const routes = {
             description: DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES,
             callbacks: [function (req, res) {
                 dbRequest(QUERY.COMPANY.SELECT_AVAILABLE_CITIES())
-                    .then(r => r.map(o => o.CITY_ID) || [])
+                    .then(convertCompanyFields)
+                    .then(r => r.map(o => o.cityId) || [])
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES));
             }]
@@ -69,11 +72,18 @@ const routes = {
             },
             description: DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID,
             callbacks: [verifyToken, function (req, res) {
-                const customer_id = req.customer.ID;
+                const customerId = req.customer.id;
 
-                dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customer_id))
+                if (!customerId) {
+                    return res.status(400).send({
+                        message: 'Bad request.'
+                    })
+                }
+
+                dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId))
+                    .then(convertCompanyFields)
                     .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID, customer_id));
+                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID, customerId));
             }]
         },
         {
@@ -85,7 +95,7 @@ const routes = {
                 bodyValidation: true,
                 requestBody: {
                     name: VALIDATION.COMPANY.name.type,
-                    city_id: VALIDATION.COMPANY.city_id.type,
+                    cityId: VALIDATION.COMPANY.cityId.type,
                     street: VALIDATION.COMPANY.street.type,
                     phone1: VALIDATION.COMPANY.phone1.type,
                     phone2: VALIDATION.COMPANY.phone2.type,
@@ -95,10 +105,10 @@ const routes = {
             },
             description: DESCRIPTION.COMPANY.CREATE,
             callbacks: [verifyToken, function (req, res) {
-                const customer_id = req.customer.ID;
-                const {name, city_id, street, phone1, phone2, phone3, schedule} = req.body;
-                const join_date = '' + new Date().getTime();
-                const company = {customer_id, name, phone1, phone2, phone3, city_id, street, join_date, schedule};
+                const customerId = req.customer.id;
+                const {name, cityId, street, phone1, phone2, phone3, schedule} = req.body;
+                const joinDate = '' + new Date().getTime();
+                const company = {customerId, name, phone1, phone2, phone3, cityId, street, joinDate, schedule};
 
                 VALIDATOR.COMPANY.CREATE(company)
                     .then(() => dbRequest(QUERY.COMPANY.INSERT(company)))
@@ -120,18 +130,18 @@ const routes = {
                     phone1: VALIDATION.COMPANY.phone1.type,
                     phone2: VALIDATION.COMPANY.phone2.type,
                     phone3: VALIDATION.COMPANY.phone3.type,
-                    city_id: VALIDATION.COMPANY.city_id.type,
+                    cityId: VALIDATION.COMPANY.cityId.type,
                     street: VALIDATION.COMPANY.street.type,
                     schedule: VALIDATION.COMPANY.schedule.type,
                 },
             },
             callbacks: [verifyToken, function (req, res) {
-                const {id, name, phone1, phone2, phone3, city_id, street, schedule} = req.body;
-                const company = {id, name, phone1, phone2, phone3, city_id, street, schedule};
-                const customer_id = req.customer.ID;
+                const {id, name, phone1, phone2, phone3, cityId, street, schedule} = req.body;
+                const company = {id, name, phone1, phone2, phone3, cityId, street, schedule};
+                const customerId = req.customer.id;
 
                 VALIDATOR.COMPANY.UPDATE(company)
-                    .then(() => dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(id, customer_id)))
+                    .then(() => dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(id, customerId)))
                     .then(res => {
                         if (!res.length) {
                             throw new Error(translate(TRANSLATION.COMPANY.RESTRICTION_UPDATE, req));
@@ -139,6 +149,7 @@ const routes = {
                     })
                     .then(() => dbRequest(QUERY.COMPANY.UPDATE(company)))
                     .then(() => dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id)))
+                    .then(convertCompanyFields)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.UPDATE, company))
             }]
@@ -156,7 +167,7 @@ const routes = {
             description: DESCRIPTION.COMPANY.DELETE,
             callbacks: [verifyToken, function (req, res) {
                 const {companyId} = req.body;
-                const customer_id = req.customer.ID;
+                const customerId = req.customer.id;
 
                 if (!companyId) {
                     return res.status(400).send({
@@ -164,7 +175,7 @@ const routes = {
                     })
                 }
 
-                dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(companyId, customer_id))
+                dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(companyId, customerId))
                     .then(res => {
                         if (!res.length) {
                             throw new Error(translate(TRANSLATION.COMPANY.RESTRICTION_DELETE, req));
@@ -178,5 +189,35 @@ const routes = {
         },
     ]
 };
+
+function convertCompanyFields(companies) {
+    return companies.map(company => {
+        const {
+            ID: id,
+            NAME: name,
+            PHONE1: phone1,
+            PHONE2: phone2,
+            PHONE3: phone3,
+            PHOTOS: photos,
+            CITY_ID: cityId,
+            STREET: street,
+            JOIN_DATE: joinDate,
+            SCHEDULE: schedule
+        } = company;
+
+        return {
+            id,
+            name,
+            phone1,
+            phone2,
+            phone3,
+            photos,
+            cityId,
+            street,
+            joinDate,
+            schedule
+        }
+    })
+}
 
 module.exports = routes;
