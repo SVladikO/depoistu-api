@@ -37,6 +37,10 @@ const TRANSLATION = {
             en: 'Wrong email verification code.',
             ua: "Не вірний код веріфікації email.",
         },
+        WRONG_CREDENTIALS: {
+            en: "Wrong credentials. Customer doesn't exist.",
+            ua: "Не правильні логін чи пароль. Клієн не існує.",
+        },
     },
     COMPANY: {
         RESTRICTION_UPDATE: {

@@ -1,9 +1,13 @@
-function getFirstCustomer(customers) {
-    if (customers.length > 0) {
-        return customers[0];
-    }
+const {resolve, TRANSLATION} = require("./translations");
 
-    throw new Error("Wrong credentials. Customer doesn't exist");
+function getFirstCustomer(req) {
+    return customers => {
+        if (customers.length > 0) {
+            return customers[0];
+        }
+
+        throw new Error(resolve(TRANSLATION.CUSTOMER.WRONG_CREDENTIALS, req));
+    }
 }
 
 function convertCustomerFields(res) {

@@ -33,7 +33,7 @@ const verifyToken = (req, res, next) => {
     console.log(111111, customer);
     dbRequest(QUERY.CUSTOMER.SELECT_BY_ID_AND_EMAIL_AND_PASSWORD(customer.id, customer.email, customer.password))
         .then(convertCustomerFields)
-        .then(getFirstCustomer)
+        .then(getFirstCustomer(req))
         .then(res => {
             req.customer = res;
             next();

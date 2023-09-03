@@ -36,7 +36,7 @@ const routes = {
 
                 dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))
                     .then(convertCustomerFields)
-                    .then(getFirstCustomer)
+                    .then(getFirstCustomer(req))
                     .then(addToken)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_IN, {email, password}))
@@ -72,7 +72,7 @@ const routes = {
                     .then(() => dbRequest(QUERY.CUSTOMER.INSERT(customer)))
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
                     .then(convertCustomerFields)
-                    .then(getFirstCustomer)
+                    .then(getFirstCustomer(req))
                     .then(addToken)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_UP, customer))
@@ -105,7 +105,7 @@ const routes = {
                     .then(() => dbRequest(QUERY.CUSTOMER.UPDATE_PASSWORD(customer)))
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, newPassword)))
                     .then(convertCustomerFields)
-                    .then(getFirstCustomer)
+                    .then(getFirstCustomer(req))
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.CHANGE_PASSWORD, customer))
             }]
