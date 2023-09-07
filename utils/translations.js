@@ -29,9 +29,9 @@ const TRANSLATION = {
             en: "This email is already used. Please login.",
             ua: "Даний email уже використовується. Залогіньтесь.",
         },
-        WRONG_PASSWORD: {
-            en: "This email is already used. Please login.",
-            ua: "Даний email уже використовується. Залогіньтесь.",
+        WRONG_OLD_PASSWORD: {
+            en: "Wrong old password.",
+            ua: "Не вірний старий пароль.",
         },
         WRONG_EMAIL_VERIFICATION_CODE: {
             en: 'Wrong email verification code.',

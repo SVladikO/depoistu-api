@@ -98,7 +98,7 @@ const routes = {
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
                     .then(response => {
                             if (!response.length) {
-                                throw new Error(translate(TRANSLATION.CUSTOMER.WRONG_PASSWORD, req))
+                                throw new Error(translate(TRANSLATION.CUSTOMER.WRONG_OLD_PASSWORD, req))
                             }
                         }
                     )
