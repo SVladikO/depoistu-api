@@ -5,6 +5,7 @@ const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
 
 const {sendHandler, catchHandler} = require("../utils/handler")
+const {TRANSLATION, translate} = require("../utils/translations");
 const routes = {
     "name": "Company",
     description: "For company data.",
@@ -19,7 +20,7 @@ const routes = {
 
                 if (city_id === 'undefined') {
                     return res.status(400).send({
-                        message: 'Bad request.'
+                        message: translate(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)
                     })
                 }
 
@@ -39,7 +40,7 @@ const routes = {
 
                 if (!companyId) {
                     return res.status(400).send({
-                        message: 'Bad request.'
+                        message: translate(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)
                     })
                 }
 
@@ -143,7 +144,7 @@ const routes = {
                     .then(() => dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(id, customerId)))
                     .then(res => {
                         if (!res.length) {
-                            throw new Error('Only company owners can change data.');
+                            throw new Error(translate(TRANSLATION.COMPANY.RESTRICTION_UPDATE, req));
                         }
                     })
                     .then(() => dbRequest(QUERY.COMPANY.UPDATE(company)))
@@ -170,14 +171,14 @@ const routes = {
 
                 if (!companyId) {
                     return res.status(400).send({
-                        message: 'Bad request.'
+                        message: translate(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)
                     })
                 }
 
                 dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(companyId, customerId))
                     .then(res => {
                         if (!res.length) {
-                            throw new Error('Only company owners can delete company.');
+                            throw new Error(translate(TRANSLATION.COMPANY.RESTRICTION_DELETE, req));
                         }
                     })
                     .then(() => dbRequest(QUERY.MENU_ITEM.DELETE_BY_COMPANY_ID(companyId)))

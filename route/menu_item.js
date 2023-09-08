@@ -5,7 +5,7 @@ const {catchHandler, sendHandler} = require("../utils/handler");
 const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
 const {checkMenuItemOwner} = require("../middleware/menu_item");
-
+const {TRANSLATION, resolve} = require("../utils/translations");
 /**
  * The problem started from DB. IS_VISIBLE field is BOOLEAN type but save 0 / 1 . We should save only these values.
  *
@@ -34,7 +34,7 @@ const routes = {
 
                 if (!companyId) {
                     return res.status(400).send({
-                        message: 'Bad request.'
+                        message: resolve(TRANSLATION.MENU_ITEM.COMPANY_ID_REQUIRED, req)
                     })
                 }
 
@@ -59,7 +59,7 @@ const routes = {
 
                 if (!companyId) {
                     return res.status(400).send({
-                        message: 'Bad request.'
+                        message: resolve(TRANSLATION.MENU_ITEM.COMPANY_ID_REQUIRED, req)
                     })
                 }
 
@@ -136,7 +136,7 @@ const routes = {
             "description": DESCRIPTION.MENU_ITEM.UPDATE,
             callbacks: [
                 verifyToken,
-                checkMenuItemOwner('Only owner can update menu item'),
+                checkMenuItemOwner(),
                 function (req, res) {
                     const {id, name, categoryId, description, cookingTime, price, size, imageUrl} = req.body;
                     const menuItem = {id, name, categoryId, description, cookingTime, price, size, imageUrl};
@@ -147,7 +147,6 @@ const routes = {
                         .then(convertMenuItemFields)
                         .then(sendHandler(res))
                         .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.UPDATE, id))
-
                 }]
         },
         {
@@ -164,7 +163,7 @@ const routes = {
             },
             callbacks: [
                 verifyToken,
-                checkMenuItemOwner('Only owner can update menu item visibility'),
+                checkMenuItemOwner(),
                 function (req, res) {
                     const {id, companyId, isVisible} = req.body;
                     const menuItem = {id, companyId, isVisible: validateIsVisible(isVisible)};
@@ -189,7 +188,7 @@ const routes = {
             description: DESCRIPTION.MENU_ITEM.DELETE,
             callbacks: [
                 verifyToken,
-                checkMenuItemOwner('Only owner can delete menu item'),
+                checkMenuItemOwner(),
                 function (req, res) {
                     const {id} = req.body;
 

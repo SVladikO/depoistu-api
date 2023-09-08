@@ -5,6 +5,7 @@ const {catchHandler, sendHandler} = require("../utils/handler");
 const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.utils");
 const {DESCRIPTION} = require("../utils/description");
 const {Token} = require("../middleware/auth");
+const {TRANSLATION, translate} = require("../utils/translations");
 // const nodemailer = require('nodemailer');
 
 const addToken = customer => {
@@ -35,7 +36,7 @@ const routes = {
 
                 dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))
                     .then(convertCustomerFields)
-                    .then(getFirstCustomer)
+                    .then(getFirstCustomer(req))
                     .then(addToken)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_IN, {email, password}))
@@ -64,14 +65,14 @@ const routes = {
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL(email)))
                     .then(response => {
                             if (response.length) {
-                                throw new Error('This email is already used. Please login.')
+                                throw new Error(translate(TRANSLATION.CUSTOMER.EMAIL_USED, req))
                             }
                         }
                     )
                     .then(() => dbRequest(QUERY.CUSTOMER.INSERT(customer)))
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
                     .then(convertCustomerFields)
-                    .then(getFirstCustomer)
+                    .then(getFirstCustomer(req))
                     .then(addToken)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_UP, customer))
@@ -97,14 +98,14 @@ const routes = {
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
                     .then(response => {
                             if (!response.length) {
-                                throw new Error('Wrong old password.')
+                                throw new Error(translate(TRANSLATION.CUSTOMER.WRONG_OLD_PASSWORD, req))
                             }
                         }
                     )
                     .then(() => dbRequest(QUERY.CUSTOMER.UPDATE_PASSWORD(customer)))
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, newPassword)))
                     .then(convertCustomerFields)
-                    .then(getFirstCustomer)
+                    .then(getFirstCustomer(req))
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.CHANGE_PASSWORD, customer))
             }]
@@ -120,7 +121,7 @@ const routes = {
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_EMAIL_VERIFICATION_CODE(email, emailVerificationCode)))
                     .then(response => {
                             if (!response.length) {
-                                throw new Error('Wrong email verification code.')
+                                throw new Error(translate(TRANSLATION.CUSTOMER.WRONG_EMAIL_VERIFICATION_CODE, req))
                             }
                         }
                     )
