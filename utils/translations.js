@@ -60,7 +60,7 @@ const TRANSLATION = {
             ua: "Не правильний запит. Company id обовязкове.",
         },
         ONLY_OWNER_CAN: {
-            en: "Only company owner can bring changes.",
+            en: "Only company owner can create menu for his company.",
             ua: "Тільки власник закладу може вносити зміни.",
         },
     },
