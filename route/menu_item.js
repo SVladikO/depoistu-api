@@ -6,6 +6,7 @@ const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
 const {checkMenuItemOwner} = require("../middleware/menu_item");
 const {TRANSLATION, resolve} = require("../utils/translations");
+const {checkCompanyOwner} = require("../middleware/company");
 /**
  * The problem started from DB. IS_VISIBLE field is BOOLEAN type but save 0 / 1 . We should save only these values.
  *
@@ -79,7 +80,7 @@ const routes = {
             url: "/menu",
             url_example: "/menu",
             details: {
-                ...PERMISSION(),
+                ...PERMISSION(['4. Check company ownership. Customer can create menu items to company which he own.']),
                 bodyValidation: true,
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
@@ -94,7 +95,10 @@ const routes = {
                 }
             },
             "description": DESCRIPTION.MENU_ITEM.CREATE,
-            callbacks: [verifyToken, function (req, res) {
+            callbacks: [
+                verifyToken,
+                checkCompanyOwner,
+                function (req, res) {
                 const {id, categoryId, companyId, name, description, cookingTime, price, size, imageUrl} = req.body;
                 const menuItem = {
                     id,
