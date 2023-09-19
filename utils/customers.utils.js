@@ -11,6 +11,7 @@ function getFirstCustomer(req) {
 }
 
 function convertCustomerFields(res) {
+    console.log(6000, res);
     return res.map(customer => {
         const {
             ID: id,
@@ -19,6 +20,7 @@ function convertCustomerFields(res) {
             EMAIL: email,
             PASSWORD: password,
             IS_VERIFIED_EMAIL: isVerifiedEmail,
+            CAN_CREATE_COMPANIES: canCreateCompanies,
         } = customer;
 
         return {
@@ -27,7 +29,8 @@ function convertCustomerFields(res) {
             phone,
             email,
             password,
-            isVerifiedEmail
+            isVerifiedEmail,
+            canCreateCompanies
         }
     })
 }

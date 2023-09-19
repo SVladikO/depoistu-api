@@ -5,7 +5,7 @@ const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
 
 const {sendHandler, catchHandler} = require("../utils/handler")
-const {TRANSLATION, translate} = require("../utils/translations");
+const {TRANSLATION, translate, resolve} = require("../utils/translations");
 const routes = {
     "name": "Company",
     description: "For company data.",
@@ -105,12 +105,23 @@ const routes = {
             },
             description: DESCRIPTION.COMPANY.CREATE,
             callbacks: [verifyToken, function (req, res) {
-                const customerId = req.customer.id;
+                console.log(1000, req.customer);
+                const {id: customerId, canCreateCompanies} = req.customer;
+                console.log(2000, {customerId, canCreateCompanies})
                 const {name, cityId, street, phone1, phone2, phone3, schedule} = req.body;
                 const joinDate = '' + new Date().getTime();
                 const company = {customerId, name, phone1, phone2, phone3, cityId, street, joinDate, schedule};
 
-                VALIDATOR.COMPANY.CREATE(company)
+                let customerCompanies = [];
+
+                dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId))
+                    .then(res => {
+                        console.log(3000, canCreateCompanies, res.length);
+                        if (res.length >= canCreateCompanies) {
+                            throw new Error(`Sorry`);
+                        }
+                    })
+                    .then(() => VALIDATOR.COMPANY.CREATE(company))
                     .then(() => dbRequest(QUERY.COMPANY.INSERT(company)))
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.CREATE, company));
