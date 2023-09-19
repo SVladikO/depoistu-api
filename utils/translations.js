@@ -63,6 +63,10 @@ const TRANSLATION = {
             en: "Only company owner can create menu for his company.",
             ua: "Тільки власник закладу може вносити зміни.",
         },
+        MAX_COMPANY_AMOUNT: {
+            en: "You can create only 1 company. If you need more contact us by email.",
+            ua: "Ви можете створити один заклад. Якщо вам потрібно більше напишіть нам на email.",
+        },
     },
     MENU_ITEM: {
         COMPANY_ID_REQUIRED: {

@@ -3,9 +3,10 @@ const QUERY = require("../utils/query");
 const {VALIDATOR, VALIDATION} = require("../utils/validation")
 const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
+const {checkAvailableCompany} = require("../middleware/company");
 
 const {sendHandler, catchHandler} = require("../utils/handler")
-const {TRANSLATION, translate, resolve} = require("../utils/translations");
+const {TRANSLATION, translate} = require("../utils/translations");
 const routes = {
     "name": "Company",
     description: "For company data.",
@@ -91,7 +92,7 @@ const routes = {
             url: "/companies",
             url_example: "/companies",
             details: {
-                ...PERMISSION(),
+                ...PERMISSION(['4. Check permission to create more companies.']),
                 bodyValidation: true,
                 requestBody: {
                     name: VALIDATION.COMPANY.name.type,
@@ -104,28 +105,20 @@ const routes = {
                 },
             },
             description: DESCRIPTION.COMPANY.CREATE,
-            callbacks: [verifyToken, function (req, res) {
-                console.log(1000, req.customer);
-                const {id: customerId, canCreateCompanies} = req.customer;
-                console.log(2000, {customerId, canCreateCompanies})
-                const {name, cityId, street, phone1, phone2, phone3, schedule} = req.body;
-                const joinDate = '' + new Date().getTime();
-                const company = {customerId, name, phone1, phone2, phone3, cityId, street, joinDate, schedule};
+            callbacks: [
+                verifyToken,
+                checkAvailableCompany,
+                function (req, res) {
+                    const customerId = req.customer.id;
+                    const {name, cityId, street, phone1, phone2, phone3, schedule} = req.body;
+                    const joinDate = '' + new Date().getTime();
+                    const company = {customerId, name, phone1, phone2, phone3, cityId, street, joinDate, schedule};
 
-                let customerCompanies = [];
-
-                dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId))
-                    .then(res => {
-                        console.log(3000, canCreateCompanies, res.length);
-                        if (res.length >= canCreateCompanies) {
-                            throw new Error(`Sorry`);
-                        }
-                    })
-                    .then(() => VALIDATOR.COMPANY.CREATE(company))
-                    .then(() => dbRequest(QUERY.COMPANY.INSERT(company)))
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.CREATE, company));
-            }]
+                    VALIDATOR.COMPANY.CREATE(company)
+                        .then(() => dbRequest(QUERY.COMPANY.INSERT(company)))
+                        .then(sendHandler(res))
+                        .catch(catchHandler(res, DESCRIPTION.COMPANY.CREATE, company));
+                }]
         },
         {
             method: "put",
