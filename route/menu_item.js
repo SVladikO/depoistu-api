@@ -1,12 +1,13 @@
-const {dbRequest} = require("../utils/connection");
+const {verifyToken} = require("../middleware/auth");
+const {checkCompanyOwner} = require("../middleware/company");
+const {checkMenuItemOwner} = require("../middleware/menu_item");
+
 const QUERY = require("../utils/query");
+const {dbRequest} = require("../utils/connection");
 const {VALIDATOR, VALIDATION} = require("../utils/validation");
+const {TRANSLATION, resolve} = require("../utils/translations");
 const {catchHandler, sendHandler} = require("../utils/handler");
 const {DESCRIPTION, PERMISSION} = require("../utils/description");
-const {verifyToken} = require("../middleware/auth");
-const {checkMenuItemOwner} = require("../middleware/menu_item");
-const {TRANSLATION, resolve} = require("../utils/translations");
-const {checkCompanyOwner} = require("../middleware/company");
 /**
  * The problem started from DB. IS_VISIBLE field is BOOLEAN type but save 0 / 1 . We should save only these values.
  *
@@ -70,6 +71,13 @@ const routes = {
                 }
 
                 dbRequest(QUERY.MENU_ITEM.SELECT_ALL_ONLY_VISIABLE_BY_COMPANY_ID(companyId))
+                    .then(res => {
+                        if (!res.length) {
+                            throw new Error(resolve(TRANSLATION.COMPANY.NO_MENU, req));
+                        }
+
+                        return res;
+                    })
                     .then(convertMenuItemFields)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID, companyId))
@@ -220,7 +228,6 @@ function convertMenuItemFields(res) {
             SIZE: size,
             IMAGE_URL: imageUrl,
         } = mi;
-
         return {
             id,
             categoryId,

@@ -26,8 +26,8 @@ const TRANSLATION = {
     },
     CUSTOMER: {
         EMAIL_USED: {
-            en: "This email is already used. Please login.",
-            ua: "Даний email уже використовується. Залогіньтесь.",
+            en: "This email is already used. Please login if you remember password.",
+            ua: "Даний email уже використовується. Ви можете ввійти в систему якщо памятаєте пароль.",
         },
         WRONG_OLD_PASSWORD: {
             en: "Wrong old password.",
@@ -63,6 +63,14 @@ const TRANSLATION = {
             en: "Only company owner can create menu for his company.",
             ua: "Тільки власник закладу може вносити зміни.",
         },
+        NO_MENU: {
+            en: "No menu.",
+            ua: "Нема меню.",
+        },
+        DESNT_EXIST: {
+            en: "This company doesn't exist.",
+            ua: "Даний заклад не існує.",
+        }
     },
     MENU_ITEM: {
         COMPANY_ID_REQUIRED: {
