@@ -17,6 +17,18 @@ const checkCompanyOwner = (req, res, next) => {
         .catch(catchHandler(res))
 }
 
+const checkAvailableCompany = (req, res, next) => {
+    dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(req.customer.id))
+        .then(res => {
+            if (res.length >= req.customer.canCreateCompanies) {
+                throw new Error(resolve(TRANSLATION.COMPANY.MAX_COMPANY_AMOUNT, req));
+            }
+        })
+        .then(() => next())
+        .catch(catchHandler(res))
+}
+
 module.exports = {
-    checkCompanyOwner
+    checkCompanyOwner,
+    checkAvailableCompany
 }

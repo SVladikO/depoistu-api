@@ -3,6 +3,7 @@ const QUERY = require("../utils/query");
 const {VALIDATOR, VALIDATION} = require("../utils/validation")
 const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
+const {checkAvailableCompany} = require("../middleware/company");
 
 const {sendHandler, catchHandler} = require("../utils/handler")
 const {TRANSLATION, translate} = require("../utils/translations");
@@ -91,7 +92,7 @@ const routes = {
             url: "/companies",
             url_example: "/companies",
             details: {
-                ...PERMISSION(),
+                ...PERMISSION(['4. Check permission to create more companies.']),
                 bodyValidation: true,
                 requestBody: {
                     name: VALIDATION.COMPANY.name.type,
@@ -104,17 +105,20 @@ const routes = {
                 },
             },
             description: DESCRIPTION.COMPANY.CREATE,
-            callbacks: [verifyToken, function (req, res) {
-                const customerId = req.customer.id;
-                const {name, cityId, street, phone1, phone2, phone3, schedule} = req.body;
-                const joinDate = '' + new Date().getTime();
-                const company = {customerId, name, phone1, phone2, phone3, cityId, street, joinDate, schedule};
+            callbacks: [
+                verifyToken,
+                checkAvailableCompany,
+                function (req, res) {
+                    const customerId = req.customer.id;
+                    const {name, cityId, street, phone1, phone2, phone3, schedule} = req.body;
+                    const joinDate = '' + new Date().getTime();
+                    const company = {customerId, name, phone1, phone2, phone3, cityId, street, joinDate, schedule};
 
-                VALIDATOR.COMPANY.CREATE(company)
-                    .then(() => dbRequest(QUERY.COMPANY.INSERT(company)))
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.CREATE, company));
-            }]
+                    VALIDATOR.COMPANY.CREATE(company)
+                        .then(() => dbRequest(QUERY.COMPANY.INSERT(company)))
+                        .then(sendHandler(res))
+                        .catch(catchHandler(res, DESCRIPTION.COMPANY.CREATE, company));
+                }]
         },
         {
             method: "put",
