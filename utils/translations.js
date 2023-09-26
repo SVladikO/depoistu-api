@@ -3,12 +3,17 @@ const CURRENT_LANGUAGE = "current-language";
 const resolve = (tr, req) => {
     const currentLanguage = req.headers[CURRENT_LANGUAGE];
 
+    console.log(11111, 'TRANSLATION OBJECT: ',  tr)
+    console.log(22222, 'SELECTED LANGUAGE: ',currentLanguage)
+
     if (!currentLanguage) {
         return tr['en']
     }
 
+
     return tr[currentLanguage];
 }
+
 const TRANSLATION = {
     TOKEN: {
         REQUIRED: {
@@ -20,8 +25,8 @@ const TRANSLATION = {
             ua: "Пошкоджений токен. Перевірте чи ви залогінились."
         },
         FAKE: {
-            en: "Customer does not exist. Verification is failed. Check 'Are you signed in?'.",
-            ua: 'Користувач не існує. Доступ обмежено. Перевірте чи ви залогінились.',
+            en: "Verification is failed. Check 'Are you signed in?'.",
+            ua: 'Доступ обмежено. Перевірте чи ви залогінились.',
         }
     },
     CUSTOMER: {
@@ -61,11 +66,11 @@ const TRANSLATION = {
         },
         ONLY_OWNER_CAN: {
             en: "Only company owner can create menu for his company.",
-            ua: "Тільки власник закладу може вносити зміни.",
+            ua: "Тільки власник закладу може створювати меню для закладу.",
         },
         NO_MENU: {
-            en: "No menu.",
-            ua: "Нема меню.",
+            en: "Menu doesn't exist.",
+            ua: "Меню відсутнє.",
         },
         DESNT_EXIST: {
             en: "This company doesn't exist.",
