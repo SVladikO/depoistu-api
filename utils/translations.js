@@ -48,14 +48,6 @@ const TRANSLATION = {
         },
     },
     COMPANY: {
-        RESTRICTION_UPDATE: {
-            en: "Only company owners can change data.",
-            ua: "Лише власник компанії може змінювати дані.",
-        },
-        RESTRICTION_DELETE: {
-            en: "Only owner can delete company.",
-            ua: "Лише власник може видаляти компанію.",
-        },
         CITY_ID_REQUIRED: {
             en: "Bad request. City id is required",
             ua: "Не правильний запит. City id обовязкове.",
@@ -65,8 +57,8 @@ const TRANSLATION = {
             ua: "Не правильний запит. Company id обовязкове.",
         },
         ONLY_OWNER_CAN: {
-            en: "Only company owner can create menu for his company.",
-            ua: "Тільки власник закладу може створювати меню для закладу.",
+            en: "Only company owner can edit information.",
+            ua: "Тільки власник закладу може змінювати інформацію.",
         },
         NO_MENU: {
             en: "Menu doesn't exist.",
