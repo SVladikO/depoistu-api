@@ -3,12 +3,17 @@ const CURRENT_LANGUAGE = "current-language";
 const resolve = (tr, req) => {
     const currentLanguage = req.headers[CURRENT_LANGUAGE];
 
+    console.log(11111, 'TRANSLATION OBJECT: ',  tr)
+    console.log(22222, 'SELECTED LANGUAGE: ',currentLanguage)
+
     if (!currentLanguage) {
         return tr['en']
     }
 
+
     return tr[currentLanguage];
 }
+
 const TRANSLATION = {
     TOKEN: {
         REQUIRED: {
@@ -20,14 +25,14 @@ const TRANSLATION = {
             ua: "Пошкоджений токен. Перевірте чи ви залогінились."
         },
         FAKE: {
-            en: "Customer does not exist. Verification is failed. Check 'Are you signed in?'.",
-            ua: 'Користувач не існує. Доступ обмежено. Перевірте чи ви залогінились.',
+            en: "Verification is failed. Check 'Are you signed in?'.",
+            ua: 'Доступ обмежено. Перевірте чи ви залогінились.',
         }
     },
     CUSTOMER: {
         EMAIL_USED: {
-            en: "This email is already used. Please login.",
-            ua: "Даний email уже використовується. Залогіньтесь.",
+            en: "This email is already used. Please login if you remember password.",
+            ua: "Даний email уже використовується. Ви можете ввійти в систему якщо памятаєте пароль.",
         },
         WRONG_OLD_PASSWORD: {
             en: "Wrong old password.",
@@ -43,14 +48,6 @@ const TRANSLATION = {
         },
     },
     COMPANY: {
-        RESTRICTION_UPDATE: {
-            en: "Only company owners can change data.",
-            ua: "Лише власник компанії може змінювати дані.",
-        },
-        RESTRICTION_DELETE: {
-            en: "Only owner can delete company.",
-            ua: "Лише власник може видаляти компанію.",
-        },
         CITY_ID_REQUIRED: {
             en: "Bad request. City id is required",
             ua: "Не правильний запит. City id обовязкове.",
@@ -60,13 +57,21 @@ const TRANSLATION = {
             ua: "Не правильний запит. Company id обовязкове.",
         },
         ONLY_OWNER_CAN: {
-            en: "Only company owner can create menu for his company.",
-            ua: "Тільки власник закладу може вносити зміни.",
+            en: "Only company owner can edit information.",
+            ua: "Тільки власник закладу може змінювати інформацію.",
         },
         MAX_COMPANY_AMOUNT: {
             en: "You can create only 1 company. If you need more contact us by email.",
             ua: "Ви можете створити один заклад. Якщо вам потрібно більше напишіть нам на email.",
         },
+        NO_MENU: {
+            en: "Menu doesn't exist.",
+            ua: "Меню відсутнє.",
+        },
+        DESNT_EXIST: {
+            en: "This company doesn't exist.",
+            ua: "Даний заклад не існує.",
+        }
     },
     MENU_ITEM: {
         COMPANY_ID_REQUIRED: {

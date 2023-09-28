@@ -5,7 +5,13 @@ const {resolve, TRANSLATION} = require("../utils/translations");
 
 const checkCompanyOwner = (req, res, next) => {
     const customerId = req.customer.id;
-    const {companyId} = req.body;
+    const companyId = req.body.companyId || req.body.id;
+
+    if (!companyId) {
+        return catchHandler(res, 'Check company id in middleware')({
+            message: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)
+        })
+    }
 
     dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(companyId, customerId))
         .then(res => {
@@ -14,7 +20,7 @@ const checkCompanyOwner = (req, res, next) => {
             }
         })
         .then(() => next())
-        .catch(catchHandler(res))
+        .catch(catchHandler(res, 'Check company ownership'))
 }
 
 const checkAvailableCompany = (req, res, next) => {

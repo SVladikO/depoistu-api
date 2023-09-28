@@ -1,12 +1,16 @@
 const {dbRequest} = require("../utils/connection");
+
+const {checkCompanyOwner} = require("../middleware/company");
+
 const QUERY = require("../utils/query");
+const {TRANSLATION, resolve} = require("../utils/translations");
 const {VALIDATOR, VALIDATION} = require("../utils/validation")
 const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
 const {checkAvailableCompany} = require("../middleware/company");
 
 const {sendHandler, catchHandler} = require("../utils/handler")
-const {TRANSLATION, translate} = require("../utils/translations");
+
 const routes = {
     "name": "Company",
     description: "For company data.",
@@ -21,7 +25,7 @@ const routes = {
 
                 if (city_id === 'undefined') {
                     return res.status(400).send({
-                        message: translate(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)
+                        message: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)
                     })
                 }
 
@@ -41,11 +45,18 @@ const routes = {
 
                 if (!companyId) {
                     return res.status(400).send({
-                        message: translate(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)
+                        message: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)
                     })
                 }
 
                 dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId))
+                    .then(res => {
+                        if (!res.length) {
+                            throw new Error(resolve(TRANSLATION.COMPANY.DESNT_EXIST, req));
+                        }
+
+                        return res;
+                    })
                     .then(convertCompanyFields)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_COMPANY_ID, companyId));
@@ -139,18 +150,11 @@ const routes = {
                     schedule: VALIDATION.COMPANY.schedule.type,
                 },
             },
-            callbacks: [verifyToken, function (req, res) {
+            callbacks: [verifyToken, checkCompanyOwner, function (req, res) {
                 const {id, name, phone1, phone2, phone3, cityId, street, schedule} = req.body;
                 const company = {id, name, phone1, phone2, phone3, cityId, street, schedule};
-                const customerId = req.customer.id;
 
                 VALIDATOR.COMPANY.UPDATE(company)
-                    .then(() => dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(id, customerId)))
-                    .then(res => {
-                        if (!res.length) {
-                            throw new Error(translate(TRANSLATION.COMPANY.RESTRICTION_UPDATE, req));
-                        }
-                    })
                     .then(() => dbRequest(QUERY.COMPANY.UPDATE(company)))
                     .then(() => dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id)))
                     .then(convertCompanyFields)
@@ -169,23 +173,10 @@ const routes = {
                 }
             },
             description: DESCRIPTION.COMPANY.DELETE,
-            callbacks: [verifyToken, function (req, res) {
+            callbacks: [verifyToken, checkCompanyOwner, function (req, res) {
                 const {companyId} = req.body;
-                const customerId = req.customer.id;
 
-                if (!companyId) {
-                    return res.status(400).send({
-                        message: translate(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)
-                    })
-                }
-
-                dbRequest(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(companyId, customerId))
-                    .then(res => {
-                        if (!res.length) {
-                            throw new Error(translate(TRANSLATION.COMPANY.RESTRICTION_DELETE, req));
-                        }
-                    })
-                    .then(() => dbRequest(QUERY.MENU_ITEM.DELETE_BY_COMPANY_ID(companyId)))
+               dbRequest(QUERY.MENU_ITEM.DELETE_BY_COMPANY_ID(companyId))
                     .then(() => dbRequest(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId)))
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.DELETE, companyId));
