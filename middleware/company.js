@@ -5,7 +5,7 @@ const {resolve, TRANSLATION} = require("../utils/translations");
 
 const checkCompanyOwner = (req, res, next) => {
     const customerId = req.customer.id;
-    const {companyId} = req.body;
+    const companyId = req.body.companyId || req.body.id;
 
     if (!companyId) {
         return catchHandler(res, 'Check company id in middleware')({
