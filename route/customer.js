@@ -59,7 +59,7 @@ const routes = {
             callbacks: [ function (req, res) {
                 const {name, phone, password, email} = req.body;
                 const join_date = new Date().getTime();
-                const customer = {name, phone, password, email, join_date};
+                const customer = {name, phone, password, email, join_date, can_create_companies: 1};
 
                 VALIDATOR.CUSTOMER.SING_UP(customer)
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL(email)))
