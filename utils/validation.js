@@ -98,8 +98,7 @@ const VALIDATION = {
             .min(FIELD_REQUIREMENTS_FOR.MENU_ITEM.COOKING_TIME.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.COOKING_TIME.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.COOKING_TIME.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.COOKING_TIME.MAX}`),
         size: Yup.string()
-            .min(FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MIN}`)
-            .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MAX}`),
+            .required('Size is required'),
         imageUrl: Yup.string().required('Image url is required')
     },
     COMPANY: {
