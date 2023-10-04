@@ -65,12 +65,12 @@ const TRANSLATION = {
             ua: "Ви можете створити один заклад. Якщо вам потрібно більше напишіть нам на email.",
         },
         NO_MENU: {
-            en: "Menu doesn't exist.",
-            ua: "Меню відсутнє.",
+            en: "Menu wasn't found.",
+            ua: "Меню не знайдено.",
         },
         DESNT_EXIST: {
-            en: "This company doesn't exist.",
-            ua: "Даний заклад не існує.",
+            en: "Company wasn't found.",
+            ua: "Заклад не знайдено.",
         }
     },
     MENU_ITEM: {
