@@ -147,13 +147,14 @@ const QUERY = {
                                    from CUSTOMER
                                    where email = '${email}';`,
 
-        INSERT: c => `INSERT INTO CUSTOMER (id, name, phone, password, email, join_date)
+        INSERT: c => `INSERT INTO CUSTOMER (id, name, phone, password, email, join_date, can_create_companies)
                       VALUES (DEFAULT,
                               '${c.name}',
                               '${c.phone}',
                               '${c.password}',
                               '${c.email}',
-                              '${c.join_date}')
+                              '${c.join_date}',
+                              '${c.can_create_companies}')
         ;`,
         UPDATE_PASSWORD: c => `UPDATE CUSTOMER
                                SET password = '${c.newPassword}'
