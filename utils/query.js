@@ -23,37 +23,37 @@ const QUERY = {
                                           and company_id = ${companyId};`,
         INSERT: mi => `INSERT INTO MENU_ITEM (id, category_id, company_id, name, description, cooking_time, price, size,
                                               image_url, is_visible)
-                       VALUES (default, '${mi.category_id}', '${mi.company_id}', '${mi.name}', '${mi.description}',
-                               '${mi.cookingTime}', '${mi.price}', '${mi.size}', '${mi.image_url}', '${mi.is_visible}
+                       VALUES (default, '${mi.categoryId}', '${mi.companyId}', '${mi.name}', '${mi.description}',
+                               '${mi.cookingTime}', '${mi.price}', '${mi.size}', '${mi.imageUrl}', '${mi.isVisible}
                                ');`,
         UPDATE: mi => `UPDATE MENU_ITEM
                        SET name         = '${mi.name}',
                            description  = '${mi.description}',
-                           category_id  = '${mi.category_id}',
+                           category_id  = '${mi.categoryId}',
                            cooking_time = '${mi.cookingTime}',
                            price        = '${mi.price}',
                            size         = '${mi.size}',
-                           image_url    = '${mi.image_url}'
+                           image_url    = '${mi.imageUrl}'
                        WHERE id = ${mi.id}
         `,
         UPDATE_IS_VISIBLE: mi => `UPDATE MENU_ITEM
-                                  SET is_visible = '${mi.is_visible}'
+                                  SET is_visible = '${mi.isVisible}'
                                   WHERE id = ${mi.id};`,
-        DELETE_BY_MENU_ITEM_ID : id => `DELETE
-                                        FROM MENU_ITEM
-                                        WHERE ID = ${id}`,
+        DELETE_BY_MENU_ITEM_ID: id => `DELETE
+                                       FROM MENU_ITEM
+                                       WHERE ID = ${id}`,
         DELETE_BY_COMPANY_ID: id => `DELETE
                                      FROM MENU_ITEM
                                      WHERE company_id = ${id}`,
-        CHECK_OWNERSHIP_SELECT_BY_CUSTOMER_ID_AND_MENU_ITEM_ID : (customer_id, menu_item_id) => `
+        CHECK_OWNERSHIP_SELECT_BY_CUSTOMER_ID_AND_MENU_ITEM_ID: (customerId, menuItemId) => `
             SELECT MENU_ITEM.NAME, MENU_ITEM.PRICE
             FROM MENU_ITEM
                      JOIN COMPANY
                           ON MENU_ITEM.COMPANY_ID = COMPANY.ID
                      JOIN CUSTOMER
                           ON CUSTOMER.ID = COMPANY.CUSTOMER_ID
-            WHERE CUSTOMER.ID = ${customer_id}
-              AND MENU_ITEM.ID = ${menu_item_id};
+            WHERE CUSTOMER.ID = ${customerId}
+              AND MENU_ITEM.ID = ${menuItemId};
 
         `
     },
@@ -70,19 +70,19 @@ const QUERY = {
                                         FROM COMPANY
                                                  JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
                                         WHERE MENU_ITEM.IS_VISIBLE = 1;`,
-        SELECT_BY_CITY_ID: city_id => `SELECT DISTINCT COMPANY.ID,
-                                                       COMPANY.NAME,
-                                                       COMPANY.PHONE1,
-                                                       COMPANY.PHONE2,
-                                                       COMPANY.PHONE3,
-                                                       COMPANY.CITY_ID,
-                                                       COMPANY.STREET,
-                                                       COMPANY.JOIN_DATE,
-                                                       COMPANY.SCHEDULE
-                                       from COMPANY
-                                                JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
-                                       WHERE CITY_ID = '${city_id}'
-                                         AND MENU_ITEM.IS_VISIBLE = 1;`,
+        SELECT_BY_CITY_ID: cityId => `SELECT DISTINCT COMPANY.ID,
+                                                      COMPANY.NAME,
+                                                      COMPANY.PHONE1,
+                                                      COMPANY.PHONE2,
+                                                      COMPANY.PHONE3,
+                                                      COMPANY.CITY_ID,
+                                                      COMPANY.STREET,
+                                                      COMPANY.JOIN_DATE,
+                                                      COMPANY.SCHEDULE
+                                      from COMPANY
+                                               JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
+                                      WHERE CITY_ID = '${cityId}'
+                                        AND MENU_ITEM.IS_VISIBLE = 1;`,
         // CHECK OWNERSHIP...
         CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID: (company_id, customer_id) => `SELECT *
                                                                                             from COMPANY
@@ -96,14 +96,14 @@ const QUERY = {
         INSERT: c => `INSERT INTO COMPANY (id, customer_id, name, phone1, phone2, phone3, city_id, street, join_date,
                                            schedule)
                       VALUES (DEFAULT,
-                              '${c.customer_id}',
+                              '${c.customerId}',
                               '${c.name}',
                               '${c.phone1}',
                               '${c.phone2}',
                               '${c.phone3}',
-                              '${c.city_id}',
+                              '${c.cityId}',
                               '${c.street}',
-                              '${c.join_date}',
+                              '${c.joinDate}',
                               '${c.schedule}')
         ;`,
 
@@ -112,7 +112,7 @@ const QUERY = {
                           phone1   = '${c.phone1}',
                           phone2   = '${c.phone2}',
                           phone3   = '${c.phone3}',
-                          city_id  = '${c.city_id}',
+                          city_id  = '${c.cityId}',
                           street   = '${c.street}',
                           schedule = '${c.schedule}'
                       WHERE id = ${c.id}
@@ -147,13 +147,14 @@ const QUERY = {
                                    from CUSTOMER
                                    where email = '${email}';`,
 
-        INSERT: c => `INSERT INTO CUSTOMER (id, name, phone, password, email, join_date)
+        INSERT: c => `INSERT INTO CUSTOMER (id, name, phone, password, email, join_date, can_create_companies)
                       VALUES (DEFAULT,
                               '${c.name}',
                               '${c.phone}',
                               '${c.password}',
                               '${c.email}',
-                              '${c.join_date}')
+                              '${c.join_date}',
+                              '${c.can_create_companies}')
         ;`,
         UPDATE_PASSWORD: c => `UPDATE CUSTOMER
                                SET password = '${c.newPassword}'
