@@ -142,7 +142,6 @@ const routes = {
                     imageUrl,
                     isVisible: 1
                 };
-                    console.log(111111111, menuItem);
                 VALIDATOR.MENU_ITEM.CREATE(menuItem)
                     .then(() => dbRequest(QUERY.MENU_ITEM.INSERT(menuItem)))
                     .then(sendHandler(res))
@@ -176,7 +175,6 @@ const routes = {
                 verifyToken,
                 checkMenuItemOwner(),
                 function (req, res) {
-                    console.log(1111111111111111111)
                     const {
                         id,
                         name,
@@ -191,8 +189,6 @@ const routes = {
                         price_3,
                         imageUrl
                     } = req.body;
-
-                    console.log(222222222222222222)
 
                     const menuItem = {
                         id,
