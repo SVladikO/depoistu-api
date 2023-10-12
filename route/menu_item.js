@@ -97,8 +97,12 @@ const routes = {
                     companyId: VALIDATION.MENU_ITEM.companyId.type,
                     description: VALIDATION.MENU_ITEM.description.type,
                     cookingTime: VALIDATION.MENU_ITEM.cookingTime.type,
-                    price: VALIDATION.MENU_ITEM.price.type,
-                    size: VALIDATION.MENU_ITEM.size.type,
+                    size_1: VALIDATION.MENU_ITEM.size_1.type,
+                    price_1: VALIDATION.MENU_ITEM.price_1.type,
+                    size_2: VALIDATION.MENU_ITEM.size_2.type,
+                    price_2: VALIDATION.MENU_ITEM.price_2.type,
+                    size_3: VALIDATION.MENU_ITEM.size_3.type,
+                    price_3: VALIDATION.MENU_ITEM.price_3.type,
                     imageUrl: VALIDATION.MENU_ITEM.imageUrl.type,
                 }
             },
@@ -107,7 +111,21 @@ const routes = {
                 verifyToken,
                 checkCompanyOwner,
                 function (req, res) {
-                const {id, categoryId, companyId, name, description, cookingTime, price, size, imageUrl} = req.body;
+                const {
+                    id,
+                    categoryId,
+                    companyId,
+                    name,
+                    description,
+                    cookingTime,
+                    size_1,
+                    price_1,
+                    size_2,
+                    price_2,
+                    size_3,
+                    price_3,
+                    imageUrl,
+                } = req.body;
                 const menuItem = {
                     id,
                     categoryId,
@@ -115,12 +133,15 @@ const routes = {
                     name,
                     description,
                     cookingTime,
-                    price,
-                    size,
+                    size_1,
+                    price_1,
+                    size_2,
+                    price_2,
+                    size_3,
+                    price_3,
                     imageUrl,
                     isVisible: 1
                 };
-
                 VALIDATOR.MENU_ITEM.CREATE(menuItem)
                     .then(() => dbRequest(QUERY.MENU_ITEM.INSERT(menuItem)))
                     .then(sendHandler(res))
@@ -140,8 +161,12 @@ const routes = {
                     name: VALIDATION.MENU_ITEM.name.type,
                     description: VALIDATION.MENU_ITEM.description.type,
                     cookingTime: VALIDATION.MENU_ITEM.cookingTime.type,
-                    price: VALIDATION.MENU_ITEM.price.type,
-                    size: VALIDATION.MENU_ITEM.size.type,
+                    size_1: VALIDATION.MENU_ITEM.size_1.type,
+                    price_1: VALIDATION.MENU_ITEM.price_1.type,
+                    size_2: VALIDATION.MENU_ITEM.size_2.type,
+                    price_2: VALIDATION.MENU_ITEM.price_2.type,
+                    size_3: VALIDATION.MENU_ITEM.size_3.type,
+                    price_3: VALIDATION.MENU_ITEM.price_3.type,
                     imageUrl: VALIDATION.MENU_ITEM.imageUrl.type,
                 }
             },
@@ -150,8 +175,35 @@ const routes = {
                 verifyToken,
                 checkMenuItemOwner(),
                 function (req, res) {
-                    const {id, name, categoryId, description, cookingTime, price, size, imageUrl} = req.body;
-                    const menuItem = {id, name, categoryId, description, cookingTime, price, size, imageUrl};
+                    const {
+                        id,
+                        name,
+                        categoryId,
+                        description,
+                        cookingTime,
+                        size_1,
+                        price_1,
+                        size_2,
+                        price_2,
+                        size_3,
+                        price_3,
+                        imageUrl
+                    } = req.body;
+
+                    const menuItem = {
+                        id,
+                        name,
+                        categoryId,
+                        description,
+                        cookingTime,
+                        size_1,
+                        price_1,
+                        size_2,
+                        price_2,
+                        size_3,
+                        price_3,
+                        imageUrl
+                    };
 
                     VALIDATOR.MENU_ITEM.UPDATE(menuItem)
                         .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE(menuItem)))
@@ -224,8 +276,12 @@ function convertMenuItemFields(res) {
             IS_VISIBLE: isVisible,
             DESCRIPTION: description,
             COOKING_TIME: cookingTime,
-            PRICE: price,
-            SIZE: size,
+            SIZE_1: size_1,
+            PRICE_1: price_1,
+            SIZE_2: size_2,
+            PRICE_2: price_2,
+            SIZE_3: size_3,
+            PRICE_3: price_3,
             IMAGE_URL: imageUrl,
         } = mi;
         return {
@@ -236,8 +292,12 @@ function convertMenuItemFields(res) {
             isVisible,
             description,
             cookingTime,
-            price,
-            size,
+            size_1,
+            price_1,
+            size_2,
+            price_2,
+            size_3,
+            price_3,
             imageUrl,
         }
     })
