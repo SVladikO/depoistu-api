@@ -21,18 +21,46 @@ const QUERY = {
                                         from MENU_ITEM
                                         where category_id = ${categoryId}
                                           and company_id = ${companyId};`,
-        INSERT: mi => `INSERT INTO MENU_ITEM (id, category_id, company_id, name, description, cooking_time, price, size,
-                                              image_url, is_visible)
-                       VALUES (default, '${mi.categoryId}', '${mi.companyId}', '${mi.name}', '${mi.description}',
-                               '${mi.cookingTime}', '${mi.price}', '${mi.size}', '${mi.imageUrl}', '${mi.isVisible}
+        INSERT: mi => `INSERT INTO MENU_ITEM (id,
+                                              category_id,
+                                              company_id,
+                                              name,
+                                              description,
+                                              cooking_time,
+                                              size_1,
+                                              price_1,
+                                              size_2,
+                                              price_2,
+                                              size_3,
+                                              price_3,
+                                              image_url,
+                                              is_visible)
+                       VALUES (default,
+                               '${mi.categoryId}',
+                               '${mi.companyId}',
+                               '${mi.name}',
+                               '${mi.description}',
+                               '${mi.cookingTime}',
+                               '${mi.size_1}',
+                               '${mi.price_1}',
+                               '${mi.size_2}',
+                               '${mi.price_2}',
+                               '${mi.size_3}',
+                               '${mi.price_3}',
+                               '${mi.imageUrl}',
+                               '${mi.isVisible}
                                ');`,
         UPDATE: mi => `UPDATE MENU_ITEM
                        SET name         = '${mi.name}',
                            description  = '${mi.description}',
                            category_id  = '${mi.categoryId}',
                            cooking_time = '${mi.cookingTime}',
-                           price        = '${mi.price}',
-                           size         = '${mi.size}',
+                           size_1         = '${mi.size_1}',
+                           price_1        = '${mi.price_1}',
+                           size_2         = '${mi.size_2}',
+                           price_2        = '${mi.price_2}',
+                           size_3         = '${mi.size_3}',
+                           price_3        = '${mi.price_3}',
                            image_url    = '${mi.imageUrl}'
                        WHERE id = ${mi.id}
         `,
@@ -46,7 +74,7 @@ const QUERY = {
                                      FROM MENU_ITEM
                                      WHERE company_id = ${id}`,
         CHECK_OWNERSHIP_SELECT_BY_CUSTOMER_ID_AND_MENU_ITEM_ID: (customerId, menuItemId) => `
-            SELECT MENU_ITEM.NAME, MENU_ITEM.PRICE
+            SELECT MENU_ITEM.NAME
             FROM MENU_ITEM
                      JOIN COMPANY
                           ON MENU_ITEM.COMPANY_ID = COMPANY.ID
