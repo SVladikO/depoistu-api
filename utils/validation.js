@@ -91,9 +91,6 @@ const VALIDATION = {
             .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.NAME.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.NAME.MAX}`),
         description: Yup.string()
             .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.DESCRIPTION.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.DESCRIPTION.MAX}`),
-        cookingTime: Yup.string()
-            .min(FIELD_REQUIREMENTS_FOR.MENU_ITEM.COOKING_TIME.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.COOKING_TIME.MIN}`)
-            .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.COOKING_TIME.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.COOKING_TIME.MAX}`),
         size_1: Yup.string()
             .min(FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MAX}`),
@@ -177,13 +174,13 @@ const VALIDATOR = {
     },
     MENU_ITEM: {
         CREATE: menuItem => {
-            const {categoryId, companyId, name, price, description, cookingTime, size, is_visible} = VALIDATION.MENU_ITEM;
-            const validator = Yup.object().shape({categoryId, companyId, name, price, description, cookingTime, size, is_visible});
+            const {categoryId, companyId, name, price, description, size, is_visible} = VALIDATION.MENU_ITEM;
+            const validator = Yup.object().shape({categoryId, companyId, name, price, description, size, is_visible});
             return validator.validate(menuItem);
         },
         UPDATE: menuItem => {
-            const {name, categoryId, price, description, cookingTime, size} = VALIDATION.MENU_ITEM;
-            const validator = Yup.object().shape({name, categoryId, price, description, cookingTime, size});
+            const {name, categoryId, price, description, size} = VALIDATION.MENU_ITEM;
+            const validator = Yup.object().shape({name, categoryId, price, description, size});
             return validator.validate(menuItem);
         },
         UPDATE_IS_VISIBLE: menuItem => {
