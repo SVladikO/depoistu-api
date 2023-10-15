@@ -9,6 +9,8 @@ const DESCRIPTION = {
     },
     FAVORITE_COMPANY: {
         GET_BY_CUSTOMER_ID: "Get favorite company by customer id. We take customer id from access token.",
+        ADD: "Add to favorite company.",
+        DELETE: 'Delete company from favorite.',
     },
 
     COMPANY: {

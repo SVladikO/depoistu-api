@@ -100,6 +100,11 @@ const QUERY = {
                                               from FAVORITE_COMPANY
                                                        INNER JOIN COMPANY on FAVORITE_COMPANY.COMPANY_ID = COMPANY.ID
                                               WHERE FAVORITE_COMPANY.customer_id = '${customerId}';`,
+        ADD: (customer_id, company_id) => `INSERT INTO FAVORITE_COMPANY (customer_id, company_id) values (${customer_id}, ${company_id})`,
+        DELETE: (customer_id, company_id) => `DELETE
+                                              FROM FAVORITE_COMPANY
+                                              WHERE customer_id = ${customer_id}
+                                                and company_id = ${company_id}`,
     },
     COMPANY: {
         SELECT_BY_CUSTOMER_ID: customerId => `SELECT *
