@@ -7,6 +7,10 @@ const DESCRIPTION = {
         CHANGE_PASSWORD: "Customer change password.",
         VERIFY_EMAIL: "Verify customer email.",
     },
+    FAVORITE_COMPANY: {
+        GET_BY_CUSTOMER_ID: "Get favorite company by customer id. We take customer id from access token.",
+    },
+
     COMPANY: {
         GET_BY_CITY: "Get companies by city uniq identifier.",
         GET_BY_CITY_ID: "Get companies by city id which have visible menu.",

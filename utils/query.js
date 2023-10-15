@@ -87,6 +87,20 @@ const QUERY = {
             `INSERT INTO HISTORY (id, CUSTOMER_ID, COMPANY_ID, ORDER_DETAILS, DATE_TIME, is_paid, is_prepared)
              VALUES (DEFAULT, ${customer_id}, ${company_id}, '${order_details}', ${date_time}, true, true);`
     },
+    FAVORITE_COMPANY: {
+        SELECT_BY_CUSTOMER_ID: customerId => `SELECT
+                                                  COMPANY.ID,
+                                                  COMPANY.NAME,
+                                                  COMPANY.PHONE1,
+                                                  COMPANY.PHONE2,
+                                                  COMPANY.PHONE3,
+                                                  COMPANY.CITY_ID,
+                                                  COMPANY.STREET,
+                                                  COMPANY.SCHEDULE
+                                              from FAVORITE_COMPANY
+                                                       INNER JOIN COMPANY on FAVORITE_COMPANY.COMPANY_ID = COMPANY.ID
+                                              WHERE FAVORITE_COMPANY.customer_id = '${customerId}';`,
+    },
     COMPANY: {
         SELECT_BY_CUSTOMER_ID: customerId => `SELECT *
                                               from COMPANY
@@ -102,7 +116,6 @@ const QUERY = {
                                                       COMPANY.PHONE3,
                                                       COMPANY.CITY_ID,
                                                       COMPANY.STREET,
-                                                      COMPANY.JOIN_DATE,
                                                       COMPANY.SCHEDULE
                                       from COMPANY
                                                JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
