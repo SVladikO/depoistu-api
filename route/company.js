@@ -2,12 +2,14 @@ const {dbRequest} = require("../utils/connection");
 
 const {checkCompanyOwner} = require("../middleware/company");
 
-const QUERY = require("../utils/query");
-const {TRANSLATION, resolve} = require("../utils/translations");
-const {VALIDATOR, VALIDATION} = require("../utils/validation")
-const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
 const {checkAvailableCompany} = require("../middleware/company");
+
+const QUERY = require("../utils/query");
+const {VALIDATOR, VALIDATION} = require("../utils/validation")
+const {TRANSLATION, resolve} = require("../utils/translations");
+const {DESCRIPTION, PERMISSION} = require("../utils/description");
+const {convertCompanyFields} = require("../utils/company.utils")
 
 const {sendHandler, catchHandler} = require("../utils/handler")
 
@@ -185,34 +187,5 @@ const routes = {
     ]
 };
 
-function convertCompanyFields(companies) {
-    return companies.map(company => {
-        const {
-            ID: id,
-            NAME: name,
-            PHONE1: phone1,
-            PHONE2: phone2,
-            PHONE3: phone3,
-            PHOTOS: photos,
-            CITY_ID: cityId,
-            STREET: street,
-            JOIN_DATE: joinDate,
-            SCHEDULE: schedule
-        } = company;
-
-        return {
-            id,
-            name,
-            phone1,
-            phone2,
-            phone3,
-            photos,
-            cityId,
-            street,
-            joinDate,
-            schedule
-        }
-    })
-}
 
 module.exports = routes;
