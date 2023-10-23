@@ -6,7 +6,7 @@ const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.ut
 const {DESCRIPTION} = require("../utils/description");
 const {Token} = require("../middleware/auth");
 const {TRANSLATION, resolve} = require("../utils/translations");
-// const nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer');
 
 const addToken = customer => {
     const {id, email, password} = customer;
@@ -53,13 +53,50 @@ const routes = {
                     email: VALIDATION.CUSTOMER.email.type,
                     phone: VALIDATION.CUSTOMER.phone.type,
                     password: VALIDATION.CUSTOMER.password.type,
+                    isBusinessOwner: VALIDATION.CUSTOMER.isBusinessOwner.type,
                 }
             },
             description: DESCRIPTION.CUSTOMER.SING_UP,
             callbacks: [ function (req, res) {
-                const {name, phone, password, email} = req.body;
+                const {name, phone, password, email, isBusinessOwner} = req.body;
                 const join_date = new Date().getTime();
-                const customer = {name, phone, password, email, join_date, can_create_companies: 1};
+                const customer = {name, phone, password, email, join_date, can_create_companies: 1, isBusinessOwner};
+
+                VALIDATOR.CUSTOMER.SING_UP(customer)
+                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL(email)))
+                    .then(response => {
+                            if (response.length) {
+                                throw new Error(resolve(TRANSLATION.CUSTOMER.EMAIL_USED, req))
+                            }
+                        }
+                    )
+                    .then(() => dbRequest(QUERY.CUSTOMER.INSERT(customer)))
+                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
+                    .then(convertCustomerFields)
+                    .then(getFirstCustomer(req))
+                    .then(addToken)
+                    .then(sendHandler(res))
+                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_UP, customer))
+            }]
+        },
+        {
+            method: "post",
+            url: "/edit-customer",
+            url_example: "/edit-customer",
+            details: {
+                bodyValidation: true,
+                requestBody: {
+                    name: VALIDATION.CUSTOMER.name.type,
+                    email: VALIDATION.CUSTOMER.email.type,
+                    phone: VALIDATION.CUSTOMER.phone.type,
+                    isBusinessOwner: VALIDATION.CUSTOMER.isBusinessOwner.type,
+                }
+            },
+            description: DESCRIPTION.CUSTOMER.SING_UP,
+            callbacks: [ function (req, res) {
+                const {name, phone, password, email, isBusinessOwner} = req.body;
+                const join_date = new Date().getTime();
+                const customer = {name, phone, password, email, isBusinessOwner};
 
                 VALIDATOR.CUSTOMER.SING_UP(customer)
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL(email)))
