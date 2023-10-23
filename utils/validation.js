@@ -48,7 +48,7 @@ const FIELD_REQUIREMENTS_FOR = {
         },
         STREET: {
             MIN: 2,
-            MAX: 30
+            MAX: 60
         },
         PHONE: {
             MIN: 12,
@@ -116,13 +116,13 @@ const VALIDATION = {
         customerId: Yup.number().required('Customer id is required'),
         name: Yup.string()
             .required('Name is required')
-            .min(FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MIN}`)
-            .max(FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MAX}`),
+            .min(FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MIN, `Name min length ${FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MIN}`)
+            .max(FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MAX, `Name max length ${FIELD_REQUIREMENTS_FOR.COMPANY.NAME.MAX}`),
         cityId: Yup.string().required('City id is required'),
         street: Yup.string()
             .required('Street is required')
-            .min(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN, `Min length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN}`)
-            .max(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX, `Max length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX}`),
+            .min(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN, `Street min length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN}`)
+            .max(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX, `Street max length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX}`),
         phone1: Yup.string()
             .required()
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MIN, `Phone 1 Example: 380971234567`)
