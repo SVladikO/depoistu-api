@@ -4,9 +4,8 @@ const {VALIDATOR, VALIDATION} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/handler");
 const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.utils");
 const {DESCRIPTION} = require("../utils/description");
-const {Token} = require("../middleware/auth");
+const {Token, verifyToken} = require("../middleware/auth");
 const {TRANSLATION, resolve} = require("../utils/translations");
-const nodemailer = require('nodemailer');
 
 const addToken = customer => {
     const {id, email, password} = customer;
@@ -81,38 +80,22 @@ const routes = {
         },
         {
             method: "post",
-            url: "/edit-customer",
-            url_example: "/edit-customer",
+            url: "/edit-business-type",
+            url_example: "/edit-business-type",
             details: {
                 bodyValidation: true,
                 requestBody: {
-                    name: VALIDATION.CUSTOMER.name.type,
-                    email: VALIDATION.CUSTOMER.email.type,
-                    phone: VALIDATION.CUSTOMER.phone.type,
                     isBusinessOwner: VALIDATION.CUSTOMER.isBusinessOwner.type,
                 }
             },
-            description: DESCRIPTION.CUSTOMER.SING_UP,
-            callbacks: [ function (req, res) {
-                const {name, phone, password, email, isBusinessOwner} = req.body;
-                const join_date = new Date().getTime();
-                const customer = {name, phone, password, email, isBusinessOwner};
+            description: DESCRIPTION.CUSTOMER.EDIT_BUSINESS_TYPE,
+            callbacks: [verifyToken, function (req, res) {
+                const {isBusinessOwner} = req.body;
+                const customerId = req.customer.id;
 
-                VALIDATOR.CUSTOMER.SING_UP(customer)
-                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL(email)))
-                    .then(response => {
-                            if (response.length) {
-                                throw new Error(resolve(TRANSLATION.CUSTOMER.EMAIL_USED, req))
-                            }
-                        }
-                    )
-                    .then(() => dbRequest(QUERY.CUSTOMER.INSERT(customer)))
-                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
-                    .then(convertCustomerFields)
-                    .then(getFirstCustomer(req))
-                    .then(addToken)
+                dbRequest(QUERY.CUSTOMER.CHANGE_IS_BUSINESS_OWNER(customerId, isBusinessOwner))
                     .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_UP, customer))
+                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.EDIT_BUSINESS_TYPE, {customerId, isBusinessOwner}))
             }]
         },
         {

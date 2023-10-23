@@ -182,6 +182,10 @@ const QUERY = {
              from CUSTOMER
              where email = '${email}'
                and join_date = '${verification_code}';`,
+        CHANGE_IS_BUSINESS_OWNER: (id, isBusinessOwner) =>
+            `UPDATE CUSTOMER
+             SET is_business_owner = ${isBusinessOwner}
+             where id = '${id}'`,
         SET_IS_VERIFFIED_EMAIL_TRUE: (email) =>
             `UPDATE CUSTOMER
              SET is_verified_email = true
