@@ -78,6 +78,8 @@ const VALIDATION = {
             .min(FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MIN, `Password too Short! Min length ${FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MAX, `Password too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MAX}`)
             .required(`Password is required`),
+        isBusinessOwner: Yup.bool()
+            .required(`isBusinessOwner is required`),
         emailVerificationCode: Yup.string().required(`Email verification code is required`),
     },
     MENU_ITEM: {

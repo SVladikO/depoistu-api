@@ -4,9 +4,8 @@ const {VALIDATOR, VALIDATION} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/handler");
 const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.utils");
 const {DESCRIPTION} = require("../utils/description");
-const {Token} = require("../middleware/auth");
+const {Token, verifyToken} = require("../middleware/auth");
 const {TRANSLATION, resolve} = require("../utils/translations");
-// const nodemailer = require('nodemailer');
 
 const addToken = customer => {
     const {id, email, password} = customer;
@@ -53,13 +52,14 @@ const routes = {
                     email: VALIDATION.CUSTOMER.email.type,
                     phone: VALIDATION.CUSTOMER.phone.type,
                     password: VALIDATION.CUSTOMER.password.type,
+                    isBusinessOwner: VALIDATION.CUSTOMER.isBusinessOwner.type,
                 }
             },
             description: DESCRIPTION.CUSTOMER.SING_UP,
             callbacks: [ function (req, res) {
-                const {name, phone, password, email} = req.body;
+                const {name, phone, password, email, isBusinessOwner} = req.body;
                 const join_date = new Date().getTime();
-                const customer = {name, phone, password, email, join_date, can_create_companies: 1};
+                const customer = {name, phone, password, email, join_date, can_create_companies: 1, isBusinessOwner};
 
                 VALIDATOR.CUSTOMER.SING_UP(customer)
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL(email)))
@@ -76,6 +76,26 @@ const routes = {
                     .then(addToken)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_UP, customer))
+            }]
+        },
+        {
+            method: "post",
+            url: "/edit-business-type",
+            url_example: "/edit-business-type",
+            details: {
+                bodyValidation: true,
+                requestBody: {
+                    isBusinessOwner: VALIDATION.CUSTOMER.isBusinessOwner.type,
+                }
+            },
+            description: DESCRIPTION.CUSTOMER.EDIT_BUSINESS_TYPE,
+            callbacks: [verifyToken, function (req, res) {
+                const {isBusinessOwner} = req.body;
+                const customerId = req.customer.id;
+
+                dbRequest(QUERY.CUSTOMER.CHANGE_IS_BUSINESS_OWNER(customerId, isBusinessOwner))
+                    .then(sendHandler(res))
+                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.EDIT_BUSINESS_TYPE, {customerId, isBusinessOwner}))
             }]
         },
         {
