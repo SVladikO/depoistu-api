@@ -4,6 +4,7 @@ const DESCRIPTION = {
     CUSTOMER: {
         SING_IN: "Customer Sing IN.",
         SING_UP: "Customer Sing UP.",
+        EDIT_BUSINESS_TYPE: "Customer change isBusinessOwner type.",
         CHANGE_PASSWORD: "Customer change password.",
         VERIFY_EMAIL: "Verify customer email.",
     },
