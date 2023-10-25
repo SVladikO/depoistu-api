@@ -21,7 +21,7 @@ const FIELD_REQUIREMENTS_FOR = {
     MENU_ITEM: {
         NAME: {
             MIN: 2,
-            MAX: 30
+            MAX: 100
         },
         PRICE: {
             MIN: 1,
