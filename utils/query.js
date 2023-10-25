@@ -21,18 +21,43 @@ const QUERY = {
                                         from MENU_ITEM
                                         where category_id = ${categoryId}
                                           and company_id = ${companyId};`,
-        INSERT: mi => `INSERT INTO MENU_ITEM (id, category_id, company_id, name, description, cooking_time, price, size,
-                                              image_url, is_visible)
-                       VALUES (default, '${mi.categoryId}', '${mi.companyId}', '${mi.name}', '${mi.description}',
-                               '${mi.cookingTime}', '${mi.price}', '${mi.size}', '${mi.imageUrl}', '${mi.isVisible}
+        INSERT: mi => `INSERT INTO MENU_ITEM (id,
+                                              category_id,
+                                              company_id,
+                                              name,
+                                              description,
+                                              size_1,
+                                              price_1,
+                                              size_2,
+                                              price_2,
+                                              size_3,
+                                              price_3,
+                                              image_url,
+                                              is_visible)
+                       VALUES (default,
+                               '${mi.categoryId}',
+                               '${mi.companyId}',
+                               '${mi.name}',
+                               '${mi.description}',
+                               '${mi.size_1}',
+                               '${mi.price_1}',
+                               '${mi.size_2}',
+                               '${mi.price_2}',
+                               '${mi.size_3}',
+                               '${mi.price_3}',
+                               '${mi.imageUrl}',
+                               '${mi.isVisible}
                                ');`,
         UPDATE: mi => `UPDATE MENU_ITEM
                        SET name         = '${mi.name}',
                            description  = '${mi.description}',
                            category_id  = '${mi.categoryId}',
-                           cooking_time = '${mi.cookingTime}',
-                           price        = '${mi.price}',
-                           size         = '${mi.size}',
+                           size_1         = '${mi.size_1}',
+                           price_1        = '${mi.price_1}',
+                           size_2         = '${mi.size_2}',
+                           price_2        = '${mi.price_2}',
+                           size_3         = '${mi.size_3}',
+                           price_3        = '${mi.price_3}',
                            image_url    = '${mi.imageUrl}'
                        WHERE id = ${mi.id}
         `,
@@ -46,7 +71,7 @@ const QUERY = {
                                      FROM MENU_ITEM
                                      WHERE company_id = ${id}`,
         CHECK_OWNERSHIP_SELECT_BY_CUSTOMER_ID_AND_MENU_ITEM_ID: (customerId, menuItemId) => `
-            SELECT MENU_ITEM.NAME, MENU_ITEM.PRICE
+            SELECT MENU_ITEM.NAME
             FROM MENU_ITEM
                      JOIN COMPANY
                           ON MENU_ITEM.COMPANY_ID = COMPANY.ID
@@ -61,6 +86,25 @@ const QUERY = {
         INSERT: (customer_id, company_id, order_details, date_time) =>
             `INSERT INTO HISTORY (id, CUSTOMER_ID, COMPANY_ID, ORDER_DETAILS, DATE_TIME, is_paid, is_prepared)
              VALUES (DEFAULT, ${customer_id}, ${company_id}, '${order_details}', ${date_time}, true, true);`
+    },
+    FAVORITE_COMPANY: {
+        SELECT_BY_CUSTOMER_ID: customerId => `SELECT
+                                                  COMPANY.ID,
+                                                  COMPANY.NAME,
+                                                  COMPANY.PHONE1,
+                                                  COMPANY.PHONE2,
+                                                  COMPANY.PHONE3,
+                                                  COMPANY.CITY_ID,
+                                                  COMPANY.STREET,
+                                                  COMPANY.SCHEDULE
+                                              from FAVORITE_COMPANY
+                                                       INNER JOIN COMPANY on FAVORITE_COMPANY.COMPANY_ID = COMPANY.ID
+                                              WHERE FAVORITE_COMPANY.customer_id = '${customerId}';`,
+        ADD: (customer_id, company_id) => `INSERT INTO FAVORITE_COMPANY (customer_id, company_id) values (${customer_id}, ${company_id})`,
+        DELETE: (customer_id, company_id) => `DELETE
+                                              FROM FAVORITE_COMPANY
+                                              WHERE customer_id = ${customer_id}
+                                                and company_id = ${company_id}`,
     },
     COMPANY: {
         SELECT_BY_CUSTOMER_ID: customerId => `SELECT *
@@ -77,7 +121,6 @@ const QUERY = {
                                                       COMPANY.PHONE3,
                                                       COMPANY.CITY_ID,
                                                       COMPANY.STREET,
-                                                      COMPANY.JOIN_DATE,
                                                       COMPANY.SCHEDULE
                                       from COMPANY
                                                JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
@@ -139,6 +182,10 @@ const QUERY = {
              from CUSTOMER
              where email = '${email}'
                and join_date = '${verification_code}';`,
+        CHANGE_IS_BUSINESS_OWNER: (id, isBusinessOwner) =>
+            `UPDATE CUSTOMER
+             SET is_business_owner = ${isBusinessOwner}
+             where id = '${id}'`,
         SET_IS_VERIFFIED_EMAIL_TRUE: (email) =>
             `UPDATE CUSTOMER
              SET is_verified_email = true
@@ -147,15 +194,20 @@ const QUERY = {
                                    from CUSTOMER
                                    where email = '${email}';`,
 
-        INSERT: c => `INSERT INTO CUSTOMER (id, name, phone, password, email, join_date, can_create_companies)
+        INSERT: c => {
+        const t = `INSERT INTO CUSTOMER (id, name, phone, password, email, join_date, is_business_owner, can_create_companies)
                       VALUES (DEFAULT,
                               '${c.name}',
                               '${c.phone}',
                               '${c.password}',
                               '${c.email}',
                               '${c.join_date}',
+                              '${+c.isBusinessOwner}',
                               '${c.can_create_companies}')
-        ;`,
+        ;`
+            console.log(5555, t);
+        return t;
+        },
         UPDATE_PASSWORD: c => `UPDATE CUSTOMER
                                SET password = '${c.newPassword}'
                                WHERE email = '${c.email}'

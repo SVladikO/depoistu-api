@@ -35,7 +35,7 @@ const verifyToken = (req, res, next) => {
         .then(getFirstCustomer(req))
         .then(res => {
             req.customer = res;
-            console.log(7000, res);
+            console.log('verifyToken ', res);
             next();
         })
         .catch(catchHandler(res, resolve(TRANSLATION.TOKEN.FAKE, req)))
