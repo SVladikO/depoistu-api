@@ -27,7 +27,7 @@ const FIELD_REQUIREMENTS_FOR = {
             MIN: 1,
         },
         DESCRIPTION: {
-            MAX: 100
+            MAX: 300
         },
         COOKING_TIME: {
             MIN: 1,
