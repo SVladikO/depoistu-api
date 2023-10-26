@@ -21,13 +21,13 @@ const FIELD_REQUIREMENTS_FOR = {
     MENU_ITEM: {
         NAME: {
             MIN: 2,
-            MAX: 30
+            MAX: 100
         },
         PRICE: {
             MIN: 1,
         },
         DESCRIPTION: {
-            MAX: 100
+            MAX: 300
         },
         COOKING_TIME: {
             MIN: 1,
