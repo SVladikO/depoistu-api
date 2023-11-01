@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npm i",
     "start": "node index.js",
-    "dev": "cross-env DB_HOST=mysql-113709-0.cloudclusters.net  DB_USER=admin  DB_PASSWORD=rzYPgxWa  DB_DATABASE=root  DB_PORT=18036  DB_MODE=develop  node index.js"
+    "dev": "cross-env DB_HOST=mysql-152836-0.cloudclusters.net  DB_USER=admin  DB_PASSWORD=JJfZUF3R  DB_DATABASE=root  DB_PORT=19976  DB_MODE=develop  node index.js"
   },
   "dependencies": {
     "body-parser": "^1.20.1",
