@@ -5,7 +5,7 @@ const catchHandler = (res, description = '', dbRequestData) => obj => {
     console.log('_______________________________')
     console.log('_______________________________')
     console.log('_______________________________')
-    console.log('****! ERROR IN -> '.bold.red, description.bold.red, dbRequestData || ' ', (errorMessage || message).bold.red.underline);
+    console.log('****! ERROR IN -> ', description, dbRequestData || ' ', (errorMessage || message));
     console.log('_______________________________')
     console.log('_______________________________')
     console.log('_______________________________')
