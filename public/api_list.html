@@ -57,7 +57,7 @@
             db.innerHTML = res.mode;
         })
 
-    fetch(window.location.origin + '/api')
+    fetch(window.location.origin + '/api-list')
         .then(res => res.json())
         .then(routes => {
             root.innerHTML = renderRoutes(routes);
