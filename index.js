@@ -1,6 +1,5 @@
 const express = require('express')
 const cors = require('cors');
-// const open = require('open'); // open browser after run
 
 const {logRequestDetails} = require('./middleware/log')
 const {connectRoutes, provideApiDocRoute} = require('./utils/api_route_provider')
