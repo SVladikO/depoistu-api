@@ -11,8 +11,8 @@ const FIELD_REQUIREMENTS_FOR = {
             MAX: 12
         },
         PHONE: {
-            MIN: 12,
-            MAX: 12
+            MIN: 10,
+            MAX: 13
         },
         EMAIL: {
             MAX: 30
@@ -51,8 +51,8 @@ const FIELD_REQUIREMENTS_FOR = {
             MAX: 60
         },
         PHONE: {
-            MIN: 12,
-            MAX: 12
+            MIN: 10,
+            MAX: 13
         },
         SCHEDULE: {
             MIN: 7 //length 6 equal ',,,,,,'
@@ -63,16 +63,16 @@ const FIELD_REQUIREMENTS_FOR = {
 const VALIDATION = {
     CUSTOMER: {
         name: Yup.string()
+            .required(`Name is required!`)
             .min(FIELD_REQUIREMENTS_FOR.USER.NAME.MIN, `Name too Short! Min length ${FIELD_REQUIREMENTS_FOR.USER.NAME.MIN}`)
-            .max(FIELD_REQUIREMENTS_FOR.USER.NAME.MAX, `Name too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.NAME.MAX}`)
-            .required(`Name is required!`),
+            .max(FIELD_REQUIREMENTS_FOR.USER.NAME.MAX, `Name too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.NAME.MAX}`),
         email: Yup.string()
             .email(`Invalid email`)
             .max(FIELD_REQUIREMENTS_FOR.USER.EMAIL.MAX, `Email too Long! Max length ${FIELD_REQUIREMENTS_FOR.USER.EMAIL.MAX}`)
             .required(`Email is required`),
         phone: Yup.string()
-            .min(FIELD_REQUIREMENTS_FOR.USER.PHONE.MIN, `Example: 380971234567`)
-            .max(FIELD_REQUIREMENTS_FOR.USER.PHONE.MAX, `Example: 380971234567`)
+            .min(FIELD_REQUIREMENTS_FOR.USER.PHONE.MIN, `Example: 0971234567`)
+            .max(FIELD_REQUIREMENTS_FOR.USER.PHONE.MAX, `Example: +380971234567`)
             .required(`Phone is required!`),
         password: Yup.string()
             .min(FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MIN, `Password too Short! Min length ${FIELD_REQUIREMENTS_FOR.USER.PASSWORD.MIN}`)
@@ -127,14 +127,12 @@ const VALIDATION = {
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX, `Street max length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX}`),
         phone1: Yup.string()
             .required()
-            .min(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MIN, `Phone 1 Example: 380971234567`)
-            .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Phone 1 Example: 380971234567`),
+            .min(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MIN, `Phone 1 Example: 0971234567`)
+            .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Phone 1 Example: +380971234567`),
         phone2: Yup.string()
-            .notRequired()
-            .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Phone 2 Example: 380971234567`),
+            .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Phone 2 Example: +380971234567`),
         phone3: Yup.string()
-            .notRequired()
-            .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Phone 3 Example: 380971234567`),
+            .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Phone 3 Example: +380971234567`),
         schedule: Yup.string()
             .required('Schedule is required')
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.SCHEDULE.MIN, 'Schedule should not be empty. Minimum one day should be scheduled.')
