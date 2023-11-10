@@ -14,7 +14,7 @@ const provideApiDocRoute = (app, routes) => {
             })
     );
 
-    app.get('/api', function (req, res) {
+    app.get('/api-list', function (req, res) {
         res.json(api);
     })
 }

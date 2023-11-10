@@ -2,15 +2,14 @@ const {dbRequest} = require("../utils/connection");
 const QUERY = require("../utils/query");
 const {VALIDATOR, VALIDATION} = require("../utils/validation");
 const {catchHandler, sendHandler} = require("../utils/handler");
-const {getFirstCustomer} = require("../utils/customers.utils");
+const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.utils");
 const {DESCRIPTION} = require("../utils/description");
-const {Token} = require("../middleware/auth");
-// const nodemailer = require('nodemailer');
+const {Token, verifyToken} = require("../middleware/auth");
+const {TRANSLATION, resolve} = require("../utils/translations");
 
 const addToken = customer => {
-    const {ID, EMAIL, PASSWORD} = customer;
-    const token =
-        Token.encode(ID, EMAIL, PASSWORD);
+    const {id, email, password} = customer;
+    const token = Token.encode(id, email, password);
 
     return {...customer, token};
 }
@@ -35,7 +34,8 @@ const routes = {
                 const {email, password} = req.body;
 
                 dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))
-                    .then(getFirstCustomer)
+                    .then(convertCustomerFields)
+                    .then(getFirstCustomer(req))
                     .then(addToken)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_IN, {email, password}))
@@ -52,53 +52,50 @@ const routes = {
                     email: VALIDATION.CUSTOMER.email.type,
                     phone: VALIDATION.CUSTOMER.phone.type,
                     password: VALIDATION.CUSTOMER.password.type,
+                    isBusinessOwner: VALIDATION.CUSTOMER.isBusinessOwner.type,
                 }
             },
             description: DESCRIPTION.CUSTOMER.SING_UP,
             callbacks: [ function (req, res) {
-                const {name, phone, password, email} = req.body;
+                const {name, phone, password, email, isBusinessOwner} = req.body;
                 const join_date = new Date().getTime();
-                const customer = {name, phone, password, email, join_date};
+                const customer = {name, phone, password, email, join_date, can_create_companies: 1, isBusinessOwner};
 
                 VALIDATOR.CUSTOMER.SING_UP(customer)
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL(email)))
                     .then(response => {
                             if (response.length) {
-                                throw new Error('This email is already used. Please login.')
+                                throw new Error(resolve(TRANSLATION.CUSTOMER.EMAIL_USED, req))
                             }
                         }
                     )
-                    // .then(() => {
-                    //
-                    //     var transporter = nodemailer.createTransport({
-                    //         service: 'gmail',
-                    //         auth: {
-                    //             user: 'vlad.serhiychuk@gmail.com',
-                    //             pass: '/XNMiwr111'
-                    //         }
-                    //     });
-                    //
-                    //     var mailOptions = {
-                    //         from: 'vlad.serhiychuk@gmail.com',
-                    //         to: 'serhiichuk.irina@gmail.com',
-                    //         subject: 'Verification code for your email',
-                    //         text: '1686300364887'
-                    //     };
-                    //
-                    //     transporter.sendMail(mailOptions, function(error, info){
-                    //         if (error) {
-                    //             throw new Error(error);
-                    //         } else {
-                    //             console.log('Email sent: ' + info.response);
-                    //         }
-                    //     });
-                    // })
                     .then(() => dbRequest(QUERY.CUSTOMER.INSERT(customer)))
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
-                    .then(getFirstCustomer)
+                    .then(convertCustomerFields)
+                    .then(getFirstCustomer(req))
                     .then(addToken)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_UP, customer))
+            }]
+        },
+        {
+            method: "post",
+            url: "/edit-business-type",
+            url_example: "/edit-business-type",
+            details: {
+                bodyValidation: true,
+                requestBody: {
+                    isBusinessOwner: VALIDATION.CUSTOMER.isBusinessOwner.type,
+                }
+            },
+            description: DESCRIPTION.CUSTOMER.EDIT_BUSINESS_TYPE,
+            callbacks: [verifyToken, function (req, res) {
+                const {isBusinessOwner} = req.body;
+                const customerId = req.customer.id;
+
+                dbRequest(QUERY.CUSTOMER.CHANGE_IS_BUSINESS_OWNER(customerId, isBusinessOwner))
+                    .then(sendHandler(res))
+                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.EDIT_BUSINESS_TYPE, {customerId, isBusinessOwner}))
             }]
         },
         {
@@ -121,13 +118,14 @@ const routes = {
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
                     .then(response => {
                             if (!response.length) {
-                                throw new Error('Wrong old password.')
+                                throw new Error(resolve(TRANSLATION.CUSTOMER.WRONG_OLD_PASSWORD, req))
                             }
                         }
                     )
                     .then(() => dbRequest(QUERY.CUSTOMER.UPDATE_PASSWORD(customer)))
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, newPassword)))
-                    .then(getFirstCustomer)
+                    .then(convertCustomerFields)
+                    .then(getFirstCustomer(req))
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.CUSTOMER.CHANGE_PASSWORD, customer))
             }]
@@ -138,13 +136,12 @@ const routes = {
             "description": DESCRIPTION.CUSTOMER.VERIFY_EMAIL,
             callbacks: [function (req, res) {
                 const {email, emailVerificationCode} = req.body;
-                console.log(1111, {email, emailVerificationCode})
 
                 VALIDATOR.CUSTOMER.VALIDATE_EMAIL({email, emailVerificationCode})
                     .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_EMAIL_VERIFICATION_CODE(email, emailVerificationCode)))
                     .then(response => {
                             if (!response.length) {
-                                throw new Error('Wrong email verification code.')
+                                throw new Error(resolve(TRANSLATION.CUSTOMER.WRONG_EMAIL_VERIFICATION_CODE, req))
                             }
                         }
                     )
@@ -156,6 +153,8 @@ const routes = {
         }
     ]
 }
+
+
 
 
 

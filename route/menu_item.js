@@ -1,11 +1,13 @@
-const {dbRequest} = require("../utils/connection");
-const QUERY = require("../utils/query");
-const {VALIDATOR, VALIDATION} = require("../utils/validation");
-const {catchHandler, sendHandler} = require("../utils/handler");
-const {DESCRIPTION, PERMISSION} = require("../utils/description");
 const {verifyToken} = require("../middleware/auth");
+const {checkCompanyOwner} = require("../middleware/company");
 const {checkMenuItemOwner} = require("../middleware/menu_item");
 
+const QUERY = require("../utils/query");
+const {dbRequest} = require("../utils/connection");
+const {VALIDATOR, VALIDATION} = require("../utils/validation");
+const {TRANSLATION, resolve} = require("../utils/translations");
+const {catchHandler, sendHandler} = require("../utils/handler");
+const {DESCRIPTION, PERMISSION} = require("../utils/description");
 /**
  * The problem started from DB. IS_VISIBLE field is BOOLEAN type but save 0 / 1 . We should save only these values.
  *
@@ -14,13 +16,11 @@ const {checkMenuItemOwner} = require("../middleware/menu_item");
  */
 const validateIsVisible = value => +(!!value);
 
-
 const getParamMessageRequirements = (paramName, requiredType = 'number') => {
     const message = `Error: Param ${paramName} should be ${requiredType}`;
     console.log('???? ' + message)
     return message;
 }
-
 
 const routes = {
     "name": "Menu",
@@ -36,7 +36,7 @@ const routes = {
 
                 if (!companyId) {
                     return res.status(400).send({
-                        message: 'Bad request.'
+                        message: resolve(TRANSLATION.MENU_ITEM.COMPANY_ID_REQUIRED, req)
                     })
                 }
 
@@ -46,6 +46,7 @@ const routes = {
                 }
 
                 dbRequest(QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID(companyId))
+                    .then(convertMenuItemFields)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID, companyId))
             }]
@@ -60,7 +61,7 @@ const routes = {
 
                 if (!companyId) {
                     return res.status(400).send({
-                        message: 'Bad request.'
+                        message: resolve(TRANSLATION.MENU_ITEM.COMPANY_ID_REQUIRED, req)
                     })
                 }
 
@@ -70,6 +71,14 @@ const routes = {
                 }
 
                 dbRequest(QUERY.MENU_ITEM.SELECT_ALL_ONLY_VISIABLE_BY_COMPANY_ID(companyId))
+                    .then(res => {
+                        if (!res.length) {
+                            throw new Error(resolve(TRANSLATION.COMPANY.NO_MENU, req));
+                        }
+
+                        return res;
+                    })
+                    .then(convertMenuItemFields)
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.GET_BY_COMPANY_ID, companyId))
             }]
@@ -79,36 +88,57 @@ const routes = {
             url: "/menu",
             url_example: "/menu",
             details: {
-                ...PERMISSION(),
+                ...PERMISSION(['4. Check company ownership. Customer can create menu items to company which he own.']),
                 bodyValidation: true,
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
                     name: VALIDATION.MENU_ITEM.name.type,
-                    category_id: VALIDATION.MENU_ITEM.category_id.type,
-                    company_id: VALIDATION.MENU_ITEM.company_id.type,
+                    categoryId: VALIDATION.MENU_ITEM.categoryId.type,
+                    companyId: VALIDATION.MENU_ITEM.companyId.type,
                     description: VALIDATION.MENU_ITEM.description.type,
-                    cookingTime: VALIDATION.MENU_ITEM.cookingTime.type,
-                    price: VALIDATION.MENU_ITEM.price.type,
-                    size: VALIDATION.MENU_ITEM.size.type,
-                    image_url: VALIDATION.MENU_ITEM.image_url.type,
+                    size_1: VALIDATION.MENU_ITEM.size_1.type,
+                    price_1: VALIDATION.MENU_ITEM.price_1.type,
+                    size_2: VALIDATION.MENU_ITEM.size_2.type,
+                    price_2: VALIDATION.MENU_ITEM.price_2.type,
+                    size_3: VALIDATION.MENU_ITEM.size_3.type,
+                    price_3: VALIDATION.MENU_ITEM.price_3.type,
+                    imageUrl: VALIDATION.MENU_ITEM.imageUrl.type,
                 }
             },
             "description": DESCRIPTION.MENU_ITEM.CREATE,
-            callbacks: [verifyToken, function (req, res) {
-                const {id, category_id, company_id, name, description, cookingTime, price, size, image_url} = req.body;
-                const menuItem = {
+            callbacks: [
+                verifyToken,
+                checkCompanyOwner,
+                function (req, res) {
+                const {
                     id,
-                    category_id,
-                    company_id,
+                    categoryId,
+                    companyId,
                     name,
                     description,
-                    cookingTime,
-                    price,
-                    size,
-                    image_url,
-                    is_visible: 1
+                    size_1,
+                    price_1,
+                    size_2,
+                    price_2,
+                    size_3,
+                    price_3,
+                    imageUrl,
+                } = req.body;
+                const menuItem = {
+                    id,
+                    categoryId,
+                    companyId,
+                    name,
+                    description,
+                    size_1,
+                    price_1,
+                    size_2,
+                    price_2,
+                    size_3,
+                    price_3,
+                    imageUrl,
+                    isVisible: 1
                 };
-
                 VALIDATOR.MENU_ITEM.CREATE(menuItem)
                     .then(() => dbRequest(QUERY.MENU_ITEM.INSERT(menuItem)))
                     .then(sendHandler(res))
@@ -124,29 +154,57 @@ const routes = {
                 bodyValidation: true,
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
-                    category_id: VALIDATION.MENU_ITEM.category_id.type,
+                    categoryId: VALIDATION.MENU_ITEM.categoryId.type,
                     name: VALIDATION.MENU_ITEM.name.type,
                     description: VALIDATION.MENU_ITEM.description.type,
-                    cookingTime: VALIDATION.MENU_ITEM.cookingTime.type,
-                    price: VALIDATION.MENU_ITEM.price.type,
-                    size: VALIDATION.MENU_ITEM.size.type,
-                    image_url: VALIDATION.MENU_ITEM.image_url.type,
+                    size_1: VALIDATION.MENU_ITEM.size_1.type,
+                    price_1: VALIDATION.MENU_ITEM.price_1.type,
+                    size_2: VALIDATION.MENU_ITEM.size_2.type,
+                    price_2: VALIDATION.MENU_ITEM.price_2.type,
+                    size_3: VALIDATION.MENU_ITEM.size_3.type,
+                    price_3: VALIDATION.MENU_ITEM.price_3.type,
+                    imageUrl: VALIDATION.MENU_ITEM.imageUrl.type,
                 }
             },
             "description": DESCRIPTION.MENU_ITEM.UPDATE,
             callbacks: [
                 verifyToken,
-                checkMenuItemOwner('Only owner can update menu item'),
+                checkMenuItemOwner(),
                 function (req, res) {
-                    const {id, name, category_id, description, cookingTime, price, size, image_url} = req.body;
-                    const menuItem = {id, name, category_id, description, cookingTime, price, size, image_url};
+                    const {
+                        id,
+                        name,
+                        categoryId,
+                        description,
+                        size_1,
+                        price_1,
+                        size_2,
+                        price_2,
+                        size_3,
+                        price_3,
+                        imageUrl
+                    } = req.body;
+
+                    const menuItem = {
+                        id,
+                        name,
+                        categoryId,
+                        description,
+                        size_1,
+                        price_1,
+                        size_2,
+                        price_2,
+                        size_3,
+                        price_3,
+                        imageUrl
+                    };
 
                     VALIDATOR.MENU_ITEM.UPDATE(menuItem)
                         .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE(menuItem)))
                         .then(() => dbRequest(QUERY.MENU_ITEM.SELECT_BY_ID(id)))
+                        .then(convertMenuItemFields)
                         .then(sendHandler(res))
                         .catch(catchHandler(res, DESCRIPTION.MENU_ITEM.UPDATE, id))
-
                 }]
         },
         {
@@ -158,15 +216,15 @@ const routes = {
                 ...PERMISSION(['4. Check ownership.']),
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
-                    is_visible: VALIDATION.MENU_ITEM.is_visible.type,
+                    isVisible: VALIDATION.MENU_ITEM.isVisible.type,
                 }
             },
             callbacks: [
                 verifyToken,
-                checkMenuItemOwner('Only owner can update menu item visibility'),
+                checkMenuItemOwner(),
                 function (req, res) {
-                    const {id, company_id, is_visible} = req.body;
-                    const menuItem = {id, company_id, is_visible: validateIsVisible(is_visible)};
+                    const {id, companyId, isVisible} = req.body;
+                    const menuItem = {id, companyId, isVisible: validateIsVisible(isVisible)};
 
                     VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
                         .then(() => dbRequest(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)))
@@ -188,7 +246,7 @@ const routes = {
             description: DESCRIPTION.MENU_ITEM.DELETE,
             callbacks: [
                 verifyToken,
-                checkMenuItemOwner('Only owner can delete menu item'),
+                checkMenuItemOwner(),
                 function (req, res) {
                     const {id} = req.body;
 
@@ -199,6 +257,42 @@ const routes = {
         },
 
     ]
+}
+
+
+function convertMenuItemFields(res) {
+    return res.map(mi => {
+        const {
+            ID: id,
+            CATEGORY_ID: categoryId,
+            COMPANY_ID: companyId,
+            NAME: name,
+            IS_VISIBLE: isVisible,
+            DESCRIPTION: description,
+            SIZE_1: size_1,
+            PRICE_1: price_1,
+            SIZE_2: size_2,
+            PRICE_2: price_2,
+            SIZE_3: size_3,
+            PRICE_3: price_3,
+            IMAGE_URL: imageUrl,
+        } = mi;
+        return {
+            id,
+            categoryId,
+            companyId,
+            name,
+            isVisible,
+            description,
+            size_1,
+            price_1,
+            size_2,
+            price_2,
+            size_3,
+            price_3,
+            imageUrl,
+        }
+    })
 }
 
 module.exports = routes;
