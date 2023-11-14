@@ -13,7 +13,7 @@ const {
 } = process.env;
 
 console.log(
-    'ENV VARIABLES: '.bold.blue,
+    'ENV VARIABLES: ',
     {
         DB_HOST,
         DB_USER,
@@ -45,8 +45,8 @@ function dbRequest(query) {
             (err, results) => {
 
                 if (err) {
-                    log(`DB REQUEST ERROR`.bold.red, err);
-                    log(query.bold.red)
+                    log(`DB REQUEST ERROR`);
+                    log(query)
                     reject(err)
                 }
                 // log(
@@ -54,7 +54,6 @@ function dbRequest(query) {
                 //         .replace(/(?:\r\n|\r|\n)/g, ' ')
                 //         .replace(/\s{2,}/g, ' ')
                 //         .trim()
-                //         .bold.green
                 // )
                 // log('DB REQUEST SUCCESS: '.bold.green, results)
                 resolve(results)

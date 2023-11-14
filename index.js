@@ -1,7 +1,5 @@
 const express = require('express')
 const cors = require('cors');
-const colors = require('colors');
-// const open = require('open'); // open browser after run
 
 const {logRequestDetails} = require('./middleware/log')
 const {connectRoutes, provideApiDocRoute} = require('./utils/api_route_provider')
@@ -24,8 +22,10 @@ app.use(logRequestDetails);
 connectRoutes(app, routes);
 provideApiDocRoute(app, routes);
 
-app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/index.html');
+
+
+app.get('/api-list2', function (req, res) {
+    res.sendFile(__dirname + '/public/api_list.html');
 })
 
 app.get('/db-mode', function (req, res) {
