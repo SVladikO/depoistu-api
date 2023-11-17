@@ -19,7 +19,7 @@ const routes = {
     "routes": [
         {
             method: "get",
-            url: "/companies/by/city_id/:city_id",
+            url: "/companies/cities/:city_id",
             url_example: "/companies/by/city_id/102",
             description: DESCRIPTION.COMPANY.GET_BY_CITY_ID,
             callbacks: [function (req, res) {
@@ -39,7 +39,7 @@ const routes = {
         },
         {
             method: "get",
-            url: "/companies/by/id/:companyId",
+            url: "/companies/:companyId",
             url_example: "/companies/by/id/2",
             description: DESCRIPTION.COMPANY.GET_BY_COMPANY_ID,
             callbacks: [function (req, res) {
