@@ -27,6 +27,9 @@ const verifyToken = (req, res, next) => {
     try {
         customer = Token.verify(token);
     } catch (err) {
+        console.log(
+            '---->', customer.id, customer.email, customer.password
+        )
         return catchHandler(res)({errorMessage: resolve(TRANSLATION.TOKEN.INVALID, req)});
     }
 

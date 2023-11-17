@@ -1,4 +1,10 @@
-const sendHandler = res => data => res.status(200).send(data);
+const sendHandler = res => data => {
+    console.log('response 200')
+    console.log(data)
+    console.log('----> end of request <----')
+    console.log('')
+    res.status(200).send(data);
+}
 
 const catchHandler = (res, description = '', dbRequestData) => obj => {
     const {errorMessage, message} = obj;

@@ -35,10 +35,12 @@ const pool = mysql.createPool({
 
 log('DB environment: ', DB_MODE, DB_HOST);
 
-pool.on('connection', () => log("==== DB CONNECTED"))
-pool.on('end', () => log("==== DB DISCONNECTED"))
+pool.on('connection', () => log("DB CONNECTED"))
+pool.on('end', () => log("DB DISCONNECTED"))
 
 function dbRequest(query) {
+    console.log('db query: ', query.split(/\s/g).filter(Boolean).join(' '))
+
     return new Promise((resolve, reject) => {
         pool.query(
             query,
