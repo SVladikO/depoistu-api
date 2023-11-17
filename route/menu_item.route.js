@@ -36,7 +36,7 @@ const routes = {
 
                 if (!companyId) {
                     return res.status(400).send({
-                        message: resolve(TRANSLATION.MENU_ITEM.COMPANY_ID_REQUIRED, req)
+                        errorMessage: resolve(TRANSLATION.MENU_ITEM.COMPANY_ID_REQUIRED, req)
                     })
                 }
 
@@ -61,7 +61,7 @@ const routes = {
 
                 if (!companyId) {
                     return res.status(400).send({
-                        message: resolve(TRANSLATION.MENU_ITEM.COMPANY_ID_REQUIRED, req)
+                        errorMessage: resolve(TRANSLATION.MENU_ITEM.COMPANY_ID_REQUIRED, req)
                     })
                 }
 

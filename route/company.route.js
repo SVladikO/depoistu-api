@@ -20,7 +20,7 @@ const routes = {
         {
             method: "get",
             url: "/available-city-ids",
-            url_example: "/companies/cities",
+            url_example: "/available-city-ids",
             description: DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES,
             callbacks: [function (req, res) {
                 dbRequest(QUERY.COMPANY.SELECT_AVAILABLE_CITIES())
@@ -33,14 +33,14 @@ const routes = {
         {
             method: "get",
             url: "/companies/cities/:city_id",
-            url_example: "/companies/by/city_id/102",
+            url_example: "/companies/cities/204",
             description: DESCRIPTION.COMPANY.GET_BY_CITY_ID,
             callbacks: [function (req, res) {
                 const {city_id} = req.params;
 
                 if (city_id === 'undefined') {
                     return res.status(400).send({
-                        message: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)
+                        errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)
                     })
                 }
 
@@ -53,14 +53,14 @@ const routes = {
         {
             method: "get",
             url: "/companies/:companyId",
-            url_example: "/companies/by/id/2",
+            url_example: "/companies/2",
             description: DESCRIPTION.COMPANY.GET_BY_COMPANY_ID,
             callbacks: [function (req, res) {
                 const companyId = +req.params.companyId;
 
                 if (!companyId) {
                     return res.status(400).send({
-                        message: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)
+                        errorMessage: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)
                     })
                 }
 
@@ -77,11 +77,10 @@ const routes = {
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_COMPANY_ID, companyId));
             }]
         },
-
         {
             method: "get",
             url: "/companies/by/customer",
-            url_example: "/companies/by/customer/2",
+            url_example: "/companies/by/customer",
             details: {
                 ...PERMISSION(),
             },
@@ -91,7 +90,7 @@ const routes = {
 
                 if (!customerId) {
                     return res.status(400).send({
-                        message: 'Bad request.'
+                        errorMessage: 'Bad request.'
                     })
                 }
 
