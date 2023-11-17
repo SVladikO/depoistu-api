@@ -1,4 +1,4 @@
-const {resolve, TRANSLATION} = require("./translations");
+const {resolve, TRANSLATION} = require("./translations.utils");
 
 function getFirstCustomer(req) {
     return customers => {

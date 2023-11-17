@@ -1,7 +1,7 @@
-const menuItemEntity = require('./menu_item.js');
-const customerEntity = require('./customer.js');
-const companyEntity = require('./company.js');
-const favoriteCompanyEntity = require('./favorite_company.js');
-const orderEntity = require('./order.js');
+const menuItemEntity = require('./menu_item.route.js');
+const customerEntity = require('./customer.route.js');
+const companyEntity = require('./company.route.js');
+const favoriteCompanyEntity = require('./favorite_company.route.js');
+const orderEntity = require('./order.route.js');
 
 module.exports = [menuItemEntity, companyEntity, customerEntity, orderEntity, favoriteCompanyEntity];

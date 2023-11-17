@@ -1,4 +1,4 @@
-const QUERY = {
+const QueryUtils = {
     MENU_ITEM: {
         SELECT_BY_ID: companyId => `SELECT *
                                     from MENU_ITEM
@@ -218,4 +218,4 @@ const QUERY = {
     // DELETE: `DROP TABLE IF EXISTS COMPANY`,
 }
 
-module.exports = QUERY;
+module.exports = QueryUtils;

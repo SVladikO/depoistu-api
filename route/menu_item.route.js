@@ -1,13 +1,13 @@
-const {verifyToken} = require("../middleware/auth");
-const {checkCompanyOwner} = require("../middleware/company");
-const {checkMenuItemOwner} = require("../middleware/menu_item");
+const {verifyToken} = require("../middleware/auth.middleware");
+const {checkCompanyOwner} = require("../middleware/company.middleware");
+const {checkMenuItemOwner} = require("../middleware/menu_item.middleware");
 
-const QUERY = require("../utils/query");
-const {dbRequest} = require("../utils/connection");
-const {VALIDATOR, VALIDATION} = require("../utils/validation");
-const {TRANSLATION, resolve} = require("../utils/translations");
-const {catchHandler, sendHandler} = require("../utils/handler");
-const {DESCRIPTION, PERMISSION} = require("../utils/description");
+const QUERY = require("../utils/query.utils");
+const {dbRequest} = require("../utils/connection.utils");
+const {VALIDATOR, VALIDATION} = require("../utils/validation.utils");
+const {TRANSLATION, resolve} = require("../utils/translations.utils");
+const {catchHandler, sendHandler} = require("../utils/handler.utils");
+const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 /**
  * The problem started from DB. IS_VISIBLE field is BOOLEAN type but save 0 / 1 . We should save only these values.
  *
