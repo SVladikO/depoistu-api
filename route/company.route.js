@@ -19,6 +19,19 @@ const routes = {
     "routes": [
         {
             method: "get",
+            url: "/available-city-ids",
+            url_example: "/companies/cities",
+            description: DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES,
+            callbacks: [function (req, res) {
+                dbRequest(QUERY.COMPANY.SELECT_AVAILABLE_CITIES())
+                    .then(convertCompanyFields)
+                    .then(r => r.map(o => o.cityId) || [])
+                    .then(sendHandler(res))
+                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES));
+            }]
+        },
+        {
+            method: "get",
             url: "/companies/cities/:city_id",
             url_example: "/companies/by/city_id/102",
             description: DESCRIPTION.COMPANY.GET_BY_CITY_ID,
@@ -64,19 +77,7 @@ const routes = {
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_COMPANY_ID, companyId));
             }]
         },
-        {
-            method: "get",
-            url: "/companies/cities",
-            url_example: "/companies/cities",
-            description: DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES,
-            callbacks: [function (req, res) {
-                dbRequest(QUERY.COMPANY.SELECT_AVAILABLE_CITIES())
-                    .then(convertCompanyFields)
-                    .then(r => r.map(o => o.cityId) || [])
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES));
-            }]
-        },
+
         {
             method: "get",
             url: "/companies/by/customer",
