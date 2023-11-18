@@ -12,6 +12,7 @@ const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 const {convertCompanyFields} = require("../utils/company.utils")
 
 const {sendHandler, catchHandler} = require("../utils/handler.utils")
+const {Loggger} = require("../middleware/log.middleware");
 
 const routes = {
     "name": "Company",
@@ -24,17 +25,17 @@ const routes = {
             description: DESCRIPTION.COMPANY.GET_BY_CITY_ID,
             callbacks: [function (req, res) {
                 const {city_id} = req.params;
+                const logger = new Loggger();
+                logger.addLog()
 
                 if (city_id === 'undefined') {
-                    return res.status(400).send({
-                        message: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)
-                    })
+                    return catchHandler({res, status: 400, logger})({errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)})
                 }
 
-                dbRequest(QUERY.COMPANY.SELECT_BY_CITY_ID(city_id))
+                dbRequest(logger.addLog(QUERY.COMPANY.SELECT_BY_CITY_ID(city_id)))
                     .then(convertCompanyFields)
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CITY_ID, city_id))
+                    .then(sendHandler(res, logger))
+                    .catch(catchHandler({res, logger, status: 400}))
             }]
         },
         {
@@ -178,7 +179,7 @@ const routes = {
             callbacks: [verifyToken, checkCompanyOwner, function (req, res) {
                 const {companyId} = req.body;
 
-               dbRequest(QUERY.MENU_ITEM.DELETE_BY_COMPANY_ID(companyId))
+                dbRequest(QUERY.MENU_ITEM.DELETE_BY_COMPANY_ID(companyId))
                     .then(() => dbRequest(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId)))
                     .then(sendHandler(res))
                     .catch(catchHandler(res, DESCRIPTION.COMPANY.DELETE, companyId));

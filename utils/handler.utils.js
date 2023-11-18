@@ -1,22 +1,19 @@
-const sendHandler = res => data => {
-    console.log('response 200')
-    console.log(data)
-    console.log('----> end of request <----')
-    console.log('')
+const sendHandler = (res, logger) => data => {
+    logger.addLog('response 200')
+    logger.addLog(data)
+    logger.writeLog();
     res.status(200).send(data);
 }
 
-const catchHandler = (res, description = '', dbRequestData) => obj => {
-    const {errorMessage, message} = obj;
-    console.log('_______________________________')
-    console.log('_______________________________')
-    console.log('_______________________________')
-    console.log('****! ERROR IN -> ', description, dbRequestData || ' ', (errorMessage || message));
-    console.log('_______________________________')
-    console.log('_______________________________')
-    console.log('_______________________________')
-    res.status(400).send(JSON.stringify({errorMessage: errorMessage || message}))
-}
+const catchHandler = ({res, status, logger}) =>
+    e => {
+        const errorMessage = e.errorMessage || e.message;
+        logger.addLog('ERROR')
+        logger.addLog(errorMessage)
+        logger.addLog('---------------')
+        logger.writeLog();
+        res.status(status).send(JSON.stringify({errorMessage}))
+    }
 
 module.exports = {
     sendHandler,

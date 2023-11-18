@@ -13,7 +13,7 @@ module.exports = {
  * @param req
  * @return {string[]}
  */
-class Log {
+export class Loggger {
     constructor(req) {
         this.log = [
             '',
@@ -27,11 +27,15 @@ class Log {
         }
     }
 
-    addLog() {
-
+    addLog(event) {
+        this.log.push(event)
+        return event;
     }
 
     writeLog() {
-
+        let result = '';
+        this.log.push('----> end of request <----')
+        this.log.forEach(log => result + log + '\n')
+        console.log(result);
     }
 }
