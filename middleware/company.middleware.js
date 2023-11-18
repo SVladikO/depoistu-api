@@ -9,7 +9,7 @@ const checkCompanyOwner = (req, res, next) => {
 
     if (!companyId) {
         return catchHandler(res, 'Check company id in middleware')({
-            message: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)
+            errorMessage: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)
         })
     }
 
