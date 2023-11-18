@@ -33,7 +33,7 @@ const pool = mysql.createPool({
     connectionLimit: 100
 });
 
-log('DB environment: ', DB_MODE, DB_HOST);
+log('DB environment credentials: ', DB_MODE, DB_HOST);
 
 pool.on('connection', () => log("DB CONNECTED"))
 pool.on('end', () => log("DB DISCONNECTED"))
@@ -45,10 +45,9 @@ function dbRequest(query) {
             (err, results) => {
 
                 if (err) {
-                    log(`DB REQUEST ERROR`);
-                    log(query)
-                    reject(err)
+                    reject({errorMessage: 'DB error: ' + err.message})
                 }
+
                 resolve(results)
             }
         )

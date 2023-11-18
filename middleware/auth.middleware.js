@@ -3,6 +3,7 @@ const {catchHandler} = require('../utils/handler.utils')
 const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.utils");
 const {dbRequest} = require("../utils/connection.utils");
 const QUERY = require("../utils/query.utils");
+const {Logger} = require("./log.middleware");
 const {TRANSLATION, resolve} = require("../utils/translations.utils")
 
 const X_ACCESS_TOKEN_NAME = "x-access-token";
@@ -16,10 +17,13 @@ Token.encode = (id, email, password) => jwt.sign({id, email, password}, TOKEN_SE
 Token.verify = token => jwt.verify(token, TOKEN_SECRET_KEY);
 
 const verifyToken = (req, res, next) => {
+    const logger = new Logger(req);
+    logger.addLog('VERIFY TOKEN')
+
     const token = req.headers[X_ACCESS_TOKEN_NAME];
 
     if (!token) {
-        return catchHandler(res)({errorMessage: resolve(TRANSLATION.TOKEN.REQUIRED, req)})
+        return catchHandler({res, logger, status: 401})({errorMessage: resolve(TRANSLATION.TOKEN.REQUIRED, req)})
     }
 
     let customer;
@@ -27,21 +31,20 @@ const verifyToken = (req, res, next) => {
     try {
         customer = Token.verify(token);
     } catch (err) {
-        console.log(
-            '---->', customer.id, customer.email, customer.password
-        )
-        return catchHandler(res)({errorMessage: resolve(TRANSLATION.TOKEN.INVALID, req)});
+        logger.addLog('customerId: ' + customer.id)
+        logger.addLog('customerEmail: ' + customer.email)
+        logger.addLog('customerPassword: ' + customer.password)
+        return catchHandler({res, logger, status: 401})({errorMessage: resolve(TRANSLATION.TOKEN.INVALID, req)})
     }
 
-    dbRequest(QUERY.CUSTOMER.SELECT_BY_ID_AND_EMAIL_AND_PASSWORD(customer.id, customer.email, customer.password))
+    dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SELECT_BY_ID_AND_EMAIL_AND_PASSWORD(customer.id, customer.email, customer.password)))
         .then(convertCustomerFields)
         .then(getFirstCustomer(req))
         .then(res => {
             req.customer = res;
-            console.log('verifyToken ', res);
             next();
         })
-        .catch(catchHandler(res, resolve(TRANSLATION.TOKEN.FAKE, req)))
+        .catch(catchHandler({res, logger, status: 401}))
 }
 
 module.exports = {

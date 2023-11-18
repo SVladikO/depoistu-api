@@ -46,7 +46,11 @@ const routes = {
                 const {city_id} = req.params;
 
                 if (city_id === 'undefined') {
-                    return catchHandler({res, status: 400, logger})({errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)})
+                    return catchHandler({
+                        res,
+                        status: 400,
+                        logger
+                    })({errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)})
                 }
 
                 dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_CITY_ID(city_id)))
@@ -68,7 +72,11 @@ const routes = {
 
 
                 if (!companyId) {
-                    return catchHandler({res, status: 400, logger})({errorMessage: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)})
+                    return catchHandler({
+                        res,
+                        status: 400,
+                        logger
+                    })({errorMessage: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)})
                 }
 
                 dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId)))
@@ -89,21 +97,25 @@ const routes = {
             url: "/companies/customers/:customerId",
             url_example: "/companies/customers/1",
             description: DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID,
-            callbacks: [function (req, res) {
-                const logger = new Logger(req);
-                logger.addLog(DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID)
+            details: {
+                ...PERMISSION(['4. Check ownership.']),
+            },
+            callbacks: [
+                function (req, res) {
+                    const logger = new Logger(req);
+                    logger.addLog(DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID)
 
-                const {customerId} = req.params;
+                    const {customerId} = req.params;
 
-                if (!customerId) {
-                    return catchHandler({res, status: 400, logger})({errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)})
-                }
+                    if (!customerId) {
+                        return catchHandler({res, status: 400, logger})({errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)})
+                    }
 
-                dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId)))
-                    .then(convertCompanyFields)
-                    .then(sendHandler(res, logger))
-                    .catch(catchHandler({res, logger, status: 400}));
-            }]
+                    dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId)))
+                        .then(convertCompanyFields)
+                        .then(sendHandler(res, logger))
+                        .catch(catchHandler({res, logger, status: 400}));
+                }]
         },
         {
             method: "post",
