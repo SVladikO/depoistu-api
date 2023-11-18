@@ -39,8 +39,6 @@ pool.on('connection', () => log("DB CONNECTED"))
 pool.on('end', () => log("DB DISCONNECTED"))
 
 function dbRequest(query) {
-    console.log('db query: ', query.split(/\s/g).filter(Boolean).join(' '))
-
     return new Promise((resolve, reject) => {
         pool.query(
             query,
@@ -51,13 +49,6 @@ function dbRequest(query) {
                     log(query)
                     reject(err)
                 }
-                // log(
-                //     query
-                //         .replace(/(?:\r\n|\r|\n)/g, ' ')
-                //         .replace(/\s{2,}/g, ' ')
-                //         .trim()
-                // )
-                // log('DB REQUEST SUCCESS: '.bold.green, results)
                 resolve(results)
             }
         )

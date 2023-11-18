@@ -3,9 +3,7 @@ const logRequestDetails = (req, res, next) => {
     next();
 }
 
-module.exports = {
-    logRequestDetails,
-};
+
 
 /**
  * Generate standard of start request log.
@@ -13,8 +11,8 @@ module.exports = {
  * @param req
  * @return {string[]}
  */
-export class Loggger {
-    constructor(req) {
+class Logger {
+    constructor(req = {method: 'default', url: 'default', body: {}}) {
         this.log = [
             '',
             '----> start of request <----',
@@ -27,6 +25,11 @@ export class Loggger {
         }
     }
 
+    addQueryDB(query) {
+        this.log.push(query.split(/\s/g).filter(Boolean).join(' '))
+        return query;
+    }
+
     addLog(event) {
         this.log.push(event)
         return event;
@@ -35,7 +38,14 @@ export class Loggger {
     writeLog() {
         let result = '';
         this.log.push('----> end of request <----')
-        this.log.forEach(log => result + log + '\n')
+        this.log.push('')
+
+        this.log.forEach(log => result += log + ' \n ')
         console.log(result);
     }
 }
+
+module.exports = {
+    logRequestDetails,
+    Logger
+};

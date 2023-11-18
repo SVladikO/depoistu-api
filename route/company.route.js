@@ -12,7 +12,7 @@ const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 const {convertCompanyFields} = require("../utils/company.utils")
 
 const {sendHandler, catchHandler} = require("../utils/handler.utils")
-const {Loggger} = require("../middleware/log.middleware");
+const {Logger} = require("../middleware/log.middleware");
 
 const routes = {
     "name": "Company",
@@ -24,11 +24,14 @@ const routes = {
             url_example: "/available-city-ids",
             description: DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES,
             callbacks: [function (req, res) {
-                dbRequest(QUERY.COMPANY.SELECT_AVAILABLE_CITIES())
+                const logger = new Logger(req);
+                logger.addLog(DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES)
+
+                dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_AVAILABLE_CITIES()))
                     .then(convertCompanyFields)
                     .then(r => r.map(o => o.cityId) || [])
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES));
+                    .then(sendHandler(res, logger))
+                    .catch(catchHandler({res, logger, status: 400}));
             }]
         },
         {
@@ -37,15 +40,16 @@ const routes = {
             url_example: "/companies/cities/204",
             description: DESCRIPTION.COMPANY.GET_BY_CITY_ID,
             callbacks: [function (req, res) {
+                const logger = new Logger(req);
+                logger.addLog(DESCRIPTION.COMPANY.GET_BY_CITY_ID)
+
                 const {city_id} = req.params;
-                const logger = new Loggger();
-                logger.addLog()
 
                 if (city_id === 'undefined') {
                     return catchHandler({res, status: 400, logger})({errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)})
                 }
 
-                dbRequest(logger.addLog(QUERY.COMPANY.SELECT_BY_CITY_ID(city_id)))
+                dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_CITY_ID(city_id)))
                     .then(convertCompanyFields)
                     .then(sendHandler(res, logger))
                     .catch(catchHandler({res, logger, status: 400}))
@@ -57,15 +61,17 @@ const routes = {
             url_example: "/companies/2",
             description: DESCRIPTION.COMPANY.GET_BY_COMPANY_ID,
             callbacks: [function (req, res) {
+                const logger = new Logger(req);
+                logger.addLog(DESCRIPTION.COMPANY.GET_BY_COMPANY_ID)
+
                 const companyId = +req.params.companyId;
 
+
                 if (!companyId) {
-                    return res.status(400).send({
-                        errorMessage: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)
-                    })
+                    return catchHandler({res, status: 400, logger})({errorMessage: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)})
                 }
 
-                dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId))
+                dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId)))
                     .then(res => {
                         if (!res.length) {
                             throw new Error(resolve(TRANSLATION.COMPANY.DESNT_EXIST, req));
@@ -74,8 +80,8 @@ const routes = {
                         return res;
                     })
                     .then(convertCompanyFields)
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_COMPANY_ID, companyId));
+                    .then(sendHandler(res, logger))
+                    .catch(catchHandler({res, logger, status: 400}));
             }]
         },
         {
@@ -84,18 +90,19 @@ const routes = {
             url_example: "/companies/customers/1",
             description: DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID,
             callbacks: [function (req, res) {
+                const logger = new Logger(req);
+                logger.addLog(DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID)
+
                 const {customerId} = req.params;
 
                 if (!customerId) {
-                    return res.status(400).send({
-                        errorMessage: 'Bad request.'
-                    })
+                    return catchHandler({res, status: 400, logger})({errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)})
                 }
 
-                dbRequest(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId))
+                dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId)))
                     .then(convertCompanyFields)
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID, customerId));
+                    .then(sendHandler(res, logger))
+                    .catch(catchHandler({res, logger, status: 400}));
             }]
         },
         {
@@ -120,15 +127,18 @@ const routes = {
                 verifyToken,
                 checkAvailableCompany,
                 function (req, res) {
+                    const logger = new Logger(req);
+                    logger.addLog(DESCRIPTION.COMPANY.CREATE)
+
                     const customerId = req.customer.id;
                     const {name, cityId, street, phone1, phone2, phone3, schedule} = req.body;
                     const joinDate = '' + new Date().getTime();
                     const company = {customerId, name, phone1, phone2, phone3, cityId, street, joinDate, schedule};
 
                     VALIDATOR.COMPANY.CREATE(company)
-                        .then(() => dbRequest(QUERY.COMPANY.INSERT(company)))
-                        .then(sendHandler(res))
-                        .catch(catchHandler(res, DESCRIPTION.COMPANY.CREATE, company));
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.INSERT(company))))
+                        .then(sendHandler(res, logger))
+                        .catch(catchHandler({res, logger, status: 400}));
                 }]
         },
         {
@@ -154,15 +164,18 @@ const routes = {
                 verifyToken,
                 checkCompanyOwner,
                 function (req, res) {
+                    const logger = new Logger(req);
+                    logger.addLog(DESCRIPTION.COMPANY.UPDATE)
+
                     const {id, name, phone1, phone2, phone3, cityId, street, schedule} = req.body;
                     const company = {id, name, phone1, phone2, phone3, cityId, street, schedule};
 
                     VALIDATOR.COMPANY.UPDATE(company)
-                        .then(() => dbRequest(QUERY.COMPANY.UPDATE(company)))
-                        .then(() => dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id)))
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.UPDATE(company))))
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id))))
                         .then(convertCompanyFields)
-                        .then(sendHandler(res))
-                        .catch(catchHandler(res, DESCRIPTION.COMPANY.UPDATE, company))
+                        .then(sendHandler(res, logger))
+                        .catch(catchHandler({res, logger, status: 400}))
                 }]
         },
         {
@@ -180,12 +193,15 @@ const routes = {
                 verifyToken,
                 checkCompanyOwner,
                 function (req, res) {
+                    const logger = new Logger(req);
+                    logger.addLog(DESCRIPTION.COMPANY.DELETE)
+
                     const {companyId} = req.body;
 
-                    dbRequest(QUERY.MENU_ITEM.DELETE_BY_COMPANY_ID(companyId))
-                        .then(() => dbRequest(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId)))
-                        .then(sendHandler(res))
-                        .catch(catchHandler(res, DESCRIPTION.COMPANY.DELETE, companyId));
+                    dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.DELETE_BY_COMPANY_ID(companyId)))
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId))))
+                        .then(sendHandler(res, logger))
+                        .catch(catchHandler({res, logger, status: 400}));
                 }]
         },
     ]
