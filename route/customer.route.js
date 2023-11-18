@@ -6,6 +6,7 @@ const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.ut
 const {DESCRIPTION} = require("../utils/description.utils");
 const {Token, verifyToken} = require("../middleware/auth.middleware");
 const {TRANSLATION, resolve} = require("../utils/translations.utils");
+const {Logger} = require("../middleware/log.middleware");
 
 const addToken = customer => {
     const {id, email, password} = customer;
@@ -22,6 +23,7 @@ const routes = {
             method: "post",
             url: "/sign-in",
             url_example: "/sign-in",
+            description: DESCRIPTION.CUSTOMER.SING_IN,
             details: {
                 bodyValidation: true,
                 requestBody: {
@@ -29,22 +31,26 @@ const routes = {
                     password: VALIDATION.CUSTOMER.password.type
                 }
             },
-            description: DESCRIPTION.CUSTOMER.SING_IN,
-            callbacks: [ function (req, res) {
-                const {email, password} = req.body;
+            callbacks: [
+                function (req, res) {
+                    const logger = new Logger(req);
+                    logger.addLog(DESCRIPTION.CUSTOMER.SING_IN)
 
-                dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))
-                    .then(convertCustomerFields)
-                    .then(getFirstCustomer(req))
-                    .then(addToken)
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_IN, {email, password}))
-            }]
+                    const {email, password} = req.body;
+
+                    dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
+                        .then(convertCustomerFields)
+                        .then(getFirstCustomer(req))
+                        .then(addToken)
+                        .then(sendHandler(res, logger))
+                        .catch(catchHandler({res, logger, status: 400}));
+                }]
         },
         {
             method: "post",
             url: "/sign-up",
             url_example: "/sign-up",
+            description: DESCRIPTION.CUSTOMER.SING_UP,
             details: {
                 bodyValidation: true,
                 requestBody: {
@@ -55,53 +61,70 @@ const routes = {
                     isBusinessOwner: VALIDATION.CUSTOMER.isBusinessOwner.type,
                 }
             },
-            description: DESCRIPTION.CUSTOMER.SING_UP,
-            callbacks: [ function (req, res) {
-                const {name, phone, password, email, isBusinessOwner} = req.body;
-                const join_date = new Date().getTime();
-                const customer = {name, phone, password, email, join_date, can_create_companies: 1, isBusinessOwner};
+            callbacks: [
+                function (req, res) {
+                    const logger = new Logger(req);
+                    logger.addLog(DESCRIPTION.CUSTOMER.SING_UP)
 
-                VALIDATOR.CUSTOMER.SING_UP(customer)
-                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL(email)))
-                    .then(response => {
-                            if (response.length) {
-                                throw new Error(resolve(TRANSLATION.CUSTOMER.EMAIL_USED, req))
+                    const {name, phone, password, email, isBusinessOwner} = req.body;
+                    const join_date = new Date().getTime();
+                    const customer = {
+                        name,
+                        phone,
+                        password,
+                        email,
+                        join_date,
+                        can_create_companies: 1,
+                        isBusinessOwner
+                    };
+
+                    VALIDATOR.CUSTOMER.SING_UP(customer)
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SELECT_BY_EMAIL(email))))
+                        .then(response => {
+                                if (response.length) {
+                                    throw new Error(resolve(TRANSLATION.CUSTOMER.EMAIL_USED, req))
+                                }
                             }
-                        }
-                    )
-                    .then(() => dbRequest(QUERY.CUSTOMER.INSERT(customer)))
-                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
-                    .then(convertCustomerFields)
-                    .then(getFirstCustomer(req))
-                    .then(addToken)
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.SING_UP, customer))
-            }]
+                        )
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.CUSTOMER.INSERT(customer))))
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))))
+                        .then(convertCustomerFields)
+                        .then(getFirstCustomer(req))
+                        .then(addToken)
+                        .then(sendHandler(res, logger))
+                        .catch(catchHandler({res, logger, status: 400}));
+                }]
         },
         {
             method: "post",
             url: "/edit-business-type",
             url_example: "/edit-business-type",
+            description: DESCRIPTION.CUSTOMER.EDIT_BUSINESS_TYPE,
             details: {
                 bodyValidation: true,
                 requestBody: {
                     isBusinessOwner: VALIDATION.CUSTOMER.isBusinessOwner.type,
                 }
             },
-            description: DESCRIPTION.CUSTOMER.EDIT_BUSINESS_TYPE,
-            callbacks: [verifyToken, function (req, res) {
-                const {isBusinessOwner} = req.body;
-                const customerId = req.customer.id;
+            callbacks: [
+                verifyToken,
+                function (req, res) {
+                    const logger = new Logger(req);
+                    logger.addLog(DESCRIPTION.CUSTOMER.EDIT_BUSINESS_TYPE)
 
-                dbRequest(QUERY.CUSTOMER.CHANGE_IS_BUSINESS_OWNER(customerId, isBusinessOwner))
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.EDIT_BUSINESS_TYPE, {customerId, isBusinessOwner}))
-            }]
+                    const {isBusinessOwner} = req.body;
+                    const customerId = req.customer.id;
+
+                    dbRequest(logger.addQueryDB(QUERY.CUSTOMER.CHANGE_IS_BUSINESS_OWNER(customerId, isBusinessOwner)))
+                        .then(sendHandler(res, logger))
+                        .catch(catchHandler({res, logger, status: 400}));
+                }]
         },
         {
             method: "post",
             url: "/change-password",
             url_example: "/change-password",
+            description: DESCRIPTION.CUSTOMER.CHANGE_PASSWORD,
             details: {
                 requestBody: {
                     email: VALIDATION.CUSTOMER.email.type,
@@ -109,55 +132,57 @@ const routes = {
                     newPassword: VALIDATION.CUSTOMER.password.type,
                 }
             },
-            description: DESCRIPTION.CUSTOMER.CHANGE_PASSWORD,
-            callbacks: [ function (req, res) {
-                const {password, email, newPassword} = req.body;
-                const customer = {password, email, newPassword};
+            callbacks: [
+                function (req, res) {
+                    const logger = new Logger(req);
+                    logger.addLog(DESCRIPTION.CUSTOMER.CHANGE_PASSWORD)
 
-                VALIDATOR.CUSTOMER.CHANGE_PASSWORD(customer)
-                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
-                    .then(response => {
-                            if (!response.length) {
-                                throw new Error(resolve(TRANSLATION.CUSTOMER.WRONG_OLD_PASSWORD, req))
+                    const {password, email, newPassword} = req.body;
+                    const customer = {password, email, newPassword};
+
+                    VALIDATOR.CUSTOMER.CHANGE_PASSWORD(customer)
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))))
+                        .then(response => {
+                                if (!response.length) {
+                                    throw new Error(resolve(TRANSLATION.CUSTOMER.WRONG_OLD_PASSWORD, req))
+                                }
                             }
-                        }
-                    )
-                    .then(() => dbRequest(QUERY.CUSTOMER.UPDATE_PASSWORD(customer)))
-                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, newPassword)))
-                    .then(convertCustomerFields)
-                    .then(getFirstCustomer(req))
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.CHANGE_PASSWORD, customer))
-            }]
+                        )
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.CUSTOMER.UPDATE_PASSWORD(customer))))
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, newPassword))))
+                        .then(convertCustomerFields)
+                        .then(getFirstCustomer(req))
+                        .then(sendHandler(res, logger))
+                        .catch(catchHandler({res, logger, status: 400}));
+                }]
         },
         {
             "method": "put",
             "url": "/verify-email",
             "description": DESCRIPTION.CUSTOMER.VERIFY_EMAIL,
-            callbacks: [function (req, res) {
-                const {email, emailVerificationCode} = req.body;
+            callbacks: [
+                function (req, res) {
+                    const logger = new Logger(req);
+                    logger.addLog(DESCRIPTION.CUSTOMER.VERIFY_EMAIL)
 
-                VALIDATOR.CUSTOMER.VALIDATE_EMAIL({email, emailVerificationCode})
-                    .then(() => dbRequest(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_EMAIL_VERIFICATION_CODE(email, emailVerificationCode)))
-                    .then(response => {
-                            if (!response.length) {
-                                throw new Error(resolve(TRANSLATION.CUSTOMER.WRONG_EMAIL_VERIFICATION_CODE, req))
+                    const {email, emailVerificationCode} = req.body;
+
+                    VALIDATOR.CUSTOMER.VALIDATE_EMAIL({email, emailVerificationCode})
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_EMAIL_VERIFICATION_CODE(email, emailVerificationCode))))
+                        .then(response => {
+                                if (!response.length) {
+                                    throw new Error(resolve(TRANSLATION.CUSTOMER.WRONG_EMAIL_VERIFICATION_CODE, req))
+                                }
                             }
-                        }
-                    )
-                    .then(() => dbRequest(QUERY.CUSTOMER.SET_IS_VERIFFIED_EMAIL_TRUE(email)))
-                    .then(() => ({isEmailVerified: true}))
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.CUSTOMER.CHANGE_PASSWORD, {email, emailVerificationCode}))
-            }]
+                        )
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SET_IS_VERIFFIED_EMAIL_TRUE(email))))
+                        .then(() => ({isEmailVerified: true}))
+                        .then(sendHandler(res, logger))
+                        .catch(catchHandler({res, logger, status: 400}));
+                }]
         }
     ]
 }
-
-
-
-
-
 
 
 module.exports = routes;

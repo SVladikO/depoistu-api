@@ -37,7 +37,6 @@ class Logger {
 
     writeLog() {
         let result = '';
-        this.log.push('----> end of request <----')
         this.log.push('')
 
         this.log.forEach(log => result += log + ' \n ')
