@@ -1,17 +1,17 @@
-const {dbRequest} = require("../utils/connection");
+const {dbRequest} = require("../utils/connection.utils");
 
-const {checkCompanyOwner} = require("../middleware/company");
+const {checkCompanyOwner} = require("../middleware/company.middleware");
 
-const {verifyToken} = require("../middleware/auth");
-const {checkAvailableCompany} = require("../middleware/company");
+const {verifyToken} = require("../middleware/auth.middleware");
+const {checkAvailableCompany} = require("../middleware/company.middleware");
 
-const QUERY = require("../utils/query");
-const {VALIDATOR, VALIDATION} = require("../utils/validation")
-const {TRANSLATION, resolve} = require("../utils/translations");
-const {DESCRIPTION, PERMISSION} = require("../utils/description");
+const QUERY = require("../utils/query.utils");
+const {VALIDATOR, VALIDATION} = require("../utils/validation.utils")
+const {TRANSLATION, resolve} = require("../utils/translations.utils");
+const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 const {convertCompanyFields} = require("../utils/company.utils")
 
-const {sendHandler, catchHandler} = require("../utils/handler")
+const {sendHandler, catchHandler} = require("../utils/handler.utils")
 
 const routes = {
     "name": "Company",

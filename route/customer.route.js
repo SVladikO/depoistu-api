@@ -1,11 +1,11 @@
-const {dbRequest} = require("../utils/connection");
-const QUERY = require("../utils/query");
-const {VALIDATOR, VALIDATION} = require("../utils/validation");
-const {catchHandler, sendHandler} = require("../utils/handler");
+const {dbRequest} = require("../utils/connection.utils");
+const QUERY = require("../utils/query.utils");
+const {VALIDATOR, VALIDATION} = require("../utils/validation.utils");
+const {catchHandler, sendHandler} = require("../utils/handler.utils");
 const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.utils");
-const {DESCRIPTION} = require("../utils/description");
-const {Token, verifyToken} = require("../middleware/auth");
-const {TRANSLATION, resolve} = require("../utils/translations");
+const {DESCRIPTION} = require("../utils/description.utils");
+const {Token, verifyToken} = require("../middleware/auth.middleware");
+const {TRANSLATION, resolve} = require("../utils/translations.utils");
 
 const addToken = customer => {
     const {id, email, password} = customer;

@@ -1,6 +1,6 @@
-const {TOKEN_NAME} = require("../middleware/auth");
+const {TOKEN_NAME} = require("../middleware/auth.middleware");
 
-const DESCRIPTION = {
+const DescriptionUtils = {
     CUSTOMER: {
         SING_IN: "Customer Sing IN.",
         SING_UP: "Customer Sing UP.",
@@ -49,6 +49,6 @@ const PERMISSION = (extra) => {
 };
 
 module.exports = {
-    DESCRIPTION,
+    DESCRIPTION: DescriptionUtils,
     PERMISSION,
 };

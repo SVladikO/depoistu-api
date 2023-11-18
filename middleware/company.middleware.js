@@ -1,7 +1,7 @@
-const {dbRequest} = require("../utils/connection");
-const QUERY = require("../utils/query");
-const {catchHandler} = require("../utils/handler");
-const {resolve, TRANSLATION} = require("../utils/translations");
+const {dbRequest} = require("../utils/connection.utils");
+const QUERY = require("../utils/query.utils");
+const {catchHandler} = require("../utils/handler.utils");
+const {resolve, TRANSLATION} = require("../utils/translations.utils");
 
 const checkCompanyOwner = (req, res, next) => {
     const customerId = req.customer.id;

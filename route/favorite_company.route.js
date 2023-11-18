@@ -1,10 +1,10 @@
-const {dbRequest} = require("../utils/connection");
+const {dbRequest} = require("../utils/connection.utils");
 
-const QUERY = require("../utils/query");
-const {DESCRIPTION} = require("../utils/description");
-const {verifyToken} = require("../middleware/auth");
+const QUERY = require("../utils/query.utils");
+const {DESCRIPTION} = require("../utils/description.utils");
+const {verifyToken} = require("../middleware/auth.middleware");
 const {convertCompanyFields} = require("../utils/company.utils")
-const {sendHandler, catchHandler} = require("../utils/handler")
+const {sendHandler, catchHandler} = require("../utils/handler.utils")
 
 const routes = {
     "name": "Favorite company",
