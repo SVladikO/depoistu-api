@@ -19,15 +19,28 @@ const routes = {
     "routes": [
         {
             method: "get",
-            url: "/companies/by/city_id/:city_id",
-            url_example: "/companies/by/city_id/102",
+            url: "/available-city-ids",
+            url_example: "/available-city-ids",
+            description: DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES,
+            callbacks: [function (req, res) {
+                dbRequest(QUERY.COMPANY.SELECT_AVAILABLE_CITIES())
+                    .then(convertCompanyFields)
+                    .then(r => r.map(o => o.cityId) || [])
+                    .then(sendHandler(res))
+                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES));
+            }]
+        },
+        {
+            method: "get",
+            url: "/companies/cities/:city_id",
+            url_example: "/companies/cities/204",
             description: DESCRIPTION.COMPANY.GET_BY_CITY_ID,
             callbacks: [function (req, res) {
                 const {city_id} = req.params;
 
                 if (city_id === 'undefined') {
                     return res.status(400).send({
-                        message: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)
+                        errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)
                     })
                 }
 
@@ -39,15 +52,15 @@ const routes = {
         },
         {
             method: "get",
-            url: "/companies/by/id/:companyId",
-            url_example: "/companies/by/id/2",
+            url: "/companies/:companyId",
+            url_example: "/companies/2",
             description: DESCRIPTION.COMPANY.GET_BY_COMPANY_ID,
             callbacks: [function (req, res) {
                 const companyId = +req.params.companyId;
 
                 if (!companyId) {
                     return res.status(400).send({
-                        message: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)
+                        errorMessage: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)
                     })
                 }
 
@@ -66,31 +79,15 @@ const routes = {
         },
         {
             method: "get",
-            url: "/companies/cities",
-            url_example: "/companies/cities",
-            description: DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES,
-            callbacks: [function (req, res) {
-                dbRequest(QUERY.COMPANY.SELECT_AVAILABLE_CITIES())
-                    .then(convertCompanyFields)
-                    .then(r => r.map(o => o.cityId) || [])
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.GET_AVAILABLE_CITIES));
-            }]
-        },
-        {
-            method: "get",
-            url: "/companies/by/customer",
-            url_example: "/companies/by/customer/2",
-            details: {
-                ...PERMISSION(),
-            },
+            url: "/companies/customers/:customerId",
+            url_example: "/companies/customers/1",
             description: DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID,
-            callbacks: [verifyToken, function (req, res) {
-                const customerId = req.customer.id;
+            callbacks: [function (req, res) {
+                const {customerId} = req.params;
 
                 if (!customerId) {
                     return res.status(400).send({
-                        message: 'Bad request.'
+                        errorMessage: 'Bad request.'
                     })
                 }
 
@@ -152,17 +149,20 @@ const routes = {
                     schedule: VALIDATION.COMPANY.schedule.type,
                 },
             },
-            callbacks: [verifyToken, checkCompanyOwner, function (req, res) {
-                const {id, name, phone1, phone2, phone3, cityId, street, schedule} = req.body;
-                const company = {id, name, phone1, phone2, phone3, cityId, street, schedule};
+            callbacks: [
+                verifyToken,
+                checkCompanyOwner,
+                function (req, res) {
+                    const {id, name, phone1, phone2, phone3, cityId, street, schedule} = req.body;
+                    const company = {id, name, phone1, phone2, phone3, cityId, street, schedule};
 
-                VALIDATOR.COMPANY.UPDATE(company)
-                    .then(() => dbRequest(QUERY.COMPANY.UPDATE(company)))
-                    .then(() => dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id)))
-                    .then(convertCompanyFields)
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.UPDATE, company))
-            }]
+                    VALIDATOR.COMPANY.UPDATE(company)
+                        .then(() => dbRequest(QUERY.COMPANY.UPDATE(company)))
+                        .then(() => dbRequest(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id)))
+                        .then(convertCompanyFields)
+                        .then(sendHandler(res))
+                        .catch(catchHandler(res, DESCRIPTION.COMPANY.UPDATE, company))
+                }]
         },
         {
             method: "delete",
@@ -175,14 +175,17 @@ const routes = {
                 }
             },
             description: DESCRIPTION.COMPANY.DELETE,
-            callbacks: [verifyToken, checkCompanyOwner, function (req, res) {
-                const {companyId} = req.body;
+            callbacks: [
+                verifyToken,
+                checkCompanyOwner,
+                function (req, res) {
+                    const {companyId} = req.body;
 
-               dbRequest(QUERY.MENU_ITEM.DELETE_BY_COMPANY_ID(companyId))
-                    .then(() => dbRequest(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId)))
-                    .then(sendHandler(res))
-                    .catch(catchHandler(res, DESCRIPTION.COMPANY.DELETE, companyId));
-            }]
+                    dbRequest(QUERY.MENU_ITEM.DELETE_BY_COMPANY_ID(companyId))
+                        .then(() => dbRequest(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId)))
+                        .then(sendHandler(res))
+                        .catch(catchHandler(res, DESCRIPTION.COMPANY.DELETE, companyId));
+                }]
         },
     ]
 };
