@@ -60,7 +60,7 @@ class Logger {
      */
     writeLog() {
         let result = '';
-        this.log.forEach(log => result += this.marker + log + this.marker + ' \n ')
+        this.log.forEach(log => result += this.marker + log + ' \n ')
         console.log( ' \n ' + ' \n ' + result);
     }
 }

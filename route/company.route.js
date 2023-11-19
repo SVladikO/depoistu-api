@@ -46,11 +46,7 @@ const routes = {
                 const {city_id} = req.params;
 
                 if (city_id === 'undefined') {
-                    return catchHandler({
-                        res,
-                        status: 400,
-                        logger
-                    })({errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)})
+                    return catchHandler({res, status: 400, logger})({errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)})
                 }
 
                 dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_CITY_ID(city_id)))
