@@ -3,7 +3,7 @@ const QUERY = require("../utils/query.utils");
 const {VALIDATOR, VALIDATION} = require("../utils/validation.utils");
 const {catchHandler, sendHandler} = require("../utils/handler.utils");
 const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.utils");
-const {DESCRIPTION} = require("../utils/description.utils");
+const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 const {Token, verifyToken} = require("../middleware/auth.middleware");
 const {TRANSLATION, resolve} = require("../utils/translations.utils");
 const {Logger} = require("../middleware/log.middleware");
@@ -102,6 +102,7 @@ const routes = {
             description: DESCRIPTION.CUSTOMER.EDIT_BUSINESS_TYPE,
             details: {
                 bodyValidation: true,
+                ...PERMISSION(['4. Check ownership.']),
                 requestBody: {
                     isBusinessOwner: VALIDATION.CUSTOMER.isBusinessOwner.type,
                 }
@@ -130,9 +131,11 @@ const routes = {
                     email: VALIDATION.CUSTOMER.email.type,
                     password: VALIDATION.CUSTOMER.password.type,
                     newPassword: VALIDATION.CUSTOMER.password.type,
-                }
+                },
+                ...PERMISSION(['4. Check ownership.']),
             },
             callbacks: [
+                verifyToken,
                 function (req, res) {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.CUSTOMER.CHANGE_PASSWORD)

@@ -93,9 +93,6 @@ const routes = {
             url: "/companies/customers/:customerId",
             url_example: "/companies/customers/1",
             description: DESCRIPTION.COMPANY.GET_BY_CUSTOMER_ID,
-            details: {
-                ...PERMISSION(['4. Check ownership.']),
-            },
             callbacks: [
                 function (req, res) {
                     const logger = new Logger(req);
