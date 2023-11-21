@@ -79,7 +79,6 @@ const QueryUtils = {
                           ON CUSTOMER.ID = COMPANY.CUSTOMER_ID
             WHERE CUSTOMER.ID = ${customerId}
               AND MENU_ITEM.ID = ${menuItemId};
-
         `
     },
     HISTORY: {

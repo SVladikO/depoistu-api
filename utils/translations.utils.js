@@ -3,8 +3,9 @@ const CURRENT_LANGUAGE = "current-language";
 const resolve = (tr, req) => {
     const currentLanguage = req.headers[CURRENT_LANGUAGE];
 
-    console.log(11111, 'TRANSLATION OBJECT: ',  tr)
-    console.log(22222, 'SELECTED LANGUAGE: ',currentLanguage)
+    console.log('RESOLVE TRANSLATION:')
+    console.log(tr)
+    console.log('currentLanguage: ', currentLanguage)
 
     if (!currentLanguage) {
         return tr['en']
@@ -55,6 +56,10 @@ const TRANSLATION = {
         COMPANY_ID_REQUIRED: {
             en: "Bad request. Company id is required",
             ua: "Не правильний запит. Company id обовязкове.",
+        },
+        CUSTOMER_ID_REQUIRED: {
+            en: "Bad request. Customer id is required",
+            ua: "Не правильний запит. Customer id обовязкове.",
         },
         ONLY_OWNER_CAN: {
             en: "Only company owner can edit information.",

@@ -11,7 +11,6 @@ function getFirstCustomer(req) {
 }
 
 function convertCustomerFields(res) {
-    console.log(6000, 'convertCustomerFields: ', res);
     return res.map(customer => {
         const {
             ID: id,

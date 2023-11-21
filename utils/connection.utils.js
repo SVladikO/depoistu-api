@@ -33,10 +33,10 @@ const pool = mysql.createPool({
     connectionLimit: 100
 });
 
-log('DB environment: ', DB_MODE, DB_HOST);
+log('DB environment credentials: ', DB_MODE, DB_HOST);
 
-pool.on('connection', () => log("==== DB CONNECTED"))
-pool.on('end', () => log("==== DB DISCONNECTED"))
+pool.on('connection', () => log("DB CONNECTED"))
+pool.on('end', () => log("DB DISCONNECTED"))
 
 function dbRequest(query) {
     return new Promise((resolve, reject) => {
@@ -45,17 +45,9 @@ function dbRequest(query) {
             (err, results) => {
 
                 if (err) {
-                    log(`DB REQUEST ERROR`);
-                    log(query)
-                    reject(err)
+                    reject({errorMessage: 'DB error: ' + err.message})
                 }
-                // log(
-                //     query
-                //         .replace(/(?:\r\n|\r|\n)/g, ' ')
-                //         .replace(/\s{2,}/g, ' ')
-                //         .trim()
-                // )
-                // log('DB REQUEST SUCCESS: '.bold.green, results)
+
                 resolve(results)
             }
         )

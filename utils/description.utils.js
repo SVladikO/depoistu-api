@@ -18,7 +18,7 @@ const DescriptionUtils = {
         GET_BY_CITY: "Get companies by city uniq identifier.",
         GET_BY_CITY_ID: "Get companies by city id which have visible menu.",
         GET_BY_COMPANY_ID: "Get company by companyId.",
-        GET_BY_CUSTOMER_ID: "Get companies by customer id. We take customer id from access token.",
+        GET_BY_CUSTOMER_ID: "Get companies by customer id.",
         GET_AVAILABLE_CITIES: "Get array of city ids which have company with available menu. Without duplication ids.",
         CREATE: "Create company. We take customer id from token.",
         UPDATE: "Update company.",
