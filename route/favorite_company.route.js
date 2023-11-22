@@ -36,12 +36,12 @@ const routes = {
             details: {
                 ...PERMISSION(['4. Check ownership.']),
             },
-            description: DESCRIPTION.FAVORITE_COMPANY.ADD,
+            description: DESCRIPTION.FAVORITE_COMPANY.CREATE,
             callbacks: [
                 verifyToken,
                 function (req, res) {
                     const logger = new Logger(req);
-                    logger.addLog(DESCRIPTION.FAVORITE_COMPANY.ADD)
+                    logger.addLog(DESCRIPTION.FAVORITE_COMPANY.CREATE)
 
                     const {id: customer_id} = req.customer;
                     const {company_id} = req.body;
