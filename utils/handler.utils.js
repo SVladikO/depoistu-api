@@ -11,12 +11,13 @@ const catchHandler = ({res, status, logger = new Logger()}) =>
     e => {
         logger.changeMarker()
         const errorMessage = e.errorMessage || e.message;
+        const _status = e.status || status;
         logger.addLog('ERROR')
         logger.addLog('ERROR MESSAGE:')
         logger.addLog(errorMessage)
         logger.addLog('end of request ERROR')
         logger.writeLog();
-        res.status(status).send(JSON.stringify({errorMessage}))
+        res.status(_status).send(JSON.stringify({errorMessage}))
     }
 
 module.exports = {

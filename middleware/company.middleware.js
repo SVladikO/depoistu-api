@@ -4,6 +4,13 @@ const {catchHandler} = require("../utils/handler.utils");
 const {resolve, TRANSLATION} = require("../utils/translations.utils");
 const {Logger} = require("./log.middleware");
 
+/**
+ * Check permission to change company data. Is it owner ?
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 const checkCompanyOwner = (req, res, next) => {
     const logger = new Logger(req);
 
@@ -11,7 +18,7 @@ const checkCompanyOwner = (req, res, next) => {
     const companyId = req.body.companyId || req.body.id;
 
     if (!companyId) {
-        return catchHandler({res, logger})({errorMessage: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)})
+        return catchHandler({res, logger})({errorMessage: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req), status: 400})
     }
 
     dbRequest(logger.addQueryDB(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(companyId, customerId)))
@@ -21,7 +28,7 @@ const checkCompanyOwner = (req, res, next) => {
             }
         })
         .then(() => next())
-        .catch(catchHandler({res, logger}))
+        .catch(catchHandler({res, logger, status: 403}))
 }
 
 const checkAvailableCompany = (req, res, next) => {
