@@ -1,4 +1,4 @@
-const SELECTED_LANGUAGE_ON_FE = "current-language";
+export const SELECTED_LANGUAGE_ON_FE = "current-language";
 
 const resolve = (translationObject, req) => {
     const currentLanguage = req.headers[SELECTED_LANGUAGE_ON_FE];
