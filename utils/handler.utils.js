@@ -4,13 +4,12 @@ const {SHOW_LOGS = true} = process.env;
 const sendHandler = (res, logger = new Logger(), status = 200) => data => {
     logger.addLog('data: ' + data);
     logger.addLog('end of request SUCCESS');
-    logger.writeLog();
+//    logger.writeLog();
     res.status(status).send(data);
 }
 
 const catchHandler = ({res, status, logger = new Logger()}) =>
     e => {
-        Object.keys(e).map(key => console.log(key))
         logger.changeMarker()
         const errorMessage = e.errorMessage || e.message;
         const _status = e.status || status;
@@ -19,7 +18,8 @@ const catchHandler = ({res, status, logger = new Logger()}) =>
         logger.addLog('ERROR MESSAGE:');
         logger.addLog(errorMessage);
         logger.addLog('end of request');
-        logger.writeLog();
+//        logger.writeLog();
+
         res.status(_status).send(JSON.stringify({errorMessage}));
     }
 

@@ -120,43 +120,39 @@ describe('MENU', function () {
              .expect(401, done);
      });
  });
- })
-//
-// const menuVisibleUrlPUT = '/menu/visiable'
-// describe(`PUT ${menuVisibleUrlPUT}`, function () {
-//     it('request success with token', function (done) {
-//         request(app)
-//             .put(menuVisibleUrlPUT)
-//             .set('Accept', 'application/json')
-//             .set(TOKEN_NAME, TOKEN.OWNER)
-//
-//             .expect(200, done);
-//     });
-//     it('request error without token', function (done) {
-//         request(app)
-//             .put(menuVisibleUrlPUT)
-//             .set('Accept', 'application/json')
-//
-//             .expect(400, done);
-//     });
-//     it('request error with broken token', function (done) {
-//         request(app)
-//             .put(menuVisibleUrlPUT)
-//             .set('Accept', 'application/json')
-//             .set(TOKEN_NAME, TOKEN.BROKEN)
-//
-//             .expect(400, done);
-//     });
-//     it('request error with wrong owner', function (done) {
-//         request(app)
-//             .put(menuVisibleUrlPUT)
-//             .set('Accept', 'application/json')
-//             .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-//
-//             .expect(400, done);
-//     });
-// });
-//
+
+ const menuVisibleUrlPUT = '/menu/visible'
+ describe(`PUT ${menuVisibleUrlPUT}`, function () {
+     it('request success with token', function (done) {
+         request(app)
+             .put(menuVisibleUrlPUT)
+             .set('Accept', 'application/json')
+             .set(TOKEN_NAME, TOKEN.OWNER)
+             .expect(200, done);
+     });
+     it('request error without token', function (done) {
+         request(app)
+             .put(menuVisibleUrlPUT)
+             .set('Accept', 'application/json')
+             .expect(401, done);
+     });
+     it('request error with broken token', function (done) {
+         request(app)
+             .put(menuVisibleUrlPUT)
+             .set('Accept', 'application/json')
+             .set(TOKEN_NAME, TOKEN.BROKEN)
+             .expect(401, done);
+     });
+     it('request error with wrong owner', function (done) {
+         request(app)
+             .put(menuVisibleUrlPUT)
+             .set('Accept', 'application/json')
+             .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
+             .expect(401, done);
+     });
+ });
+ });
+
 //     const menuUrlDELETE = '/menu'
 //     describe(`PUT ${menuUrlDELETE}`, function () {
 //         it('request success with token', function (done) {
