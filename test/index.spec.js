@@ -15,6 +15,7 @@ const TOKEN = {
 
 
 describe('MENU', function () {
+
     describe('GET /menu', function () {
         it('request success', function (done) {
             request(app)
@@ -46,7 +47,8 @@ describe('MENU', function () {
         });
     });
 
-    const menuItem = {
+  const menuItem = {
+        id: 1,
         categoryId: 1,
         companyId: 1,
         name: 'testFoodName',
@@ -67,57 +69,58 @@ describe('MENU', function () {
                 .send(menuItem)
                 .set(TOKEN_NAME, TOKEN.OWNER)
                 .set('Accept', 'application/json')
-                .expect(200, done);
+                .expect(201, done);
         });
         it('request error without token', function (done) {
             request(app)
                 .post('/menu')
+                .send(menuItem)
                 .set('Accept', 'application/json')
-
                 .expect(401, done);
         });
         it('request error with broken token', function (done) {
             request(app)
                 .post('/menu')
+                .send(menuItem)
                 .set('Accept', 'application/json')
                 .set(TOKEN_NAME, TOKEN.BROKEN)
                 .expect(401, done);
         });
     });
-})
-// describe('PUT /menu', function () {
-//     it('request success with token', function (done) {
-//         request(app)
-//             .post('/menu')
-//             .set('Accept', 'application/json')
-//             .set(TOKEN_NAME, TOKEN.OWNER)
-//
-//             .expect(200, done);
-//     });
-//     it('request error without token', function (done) {
-//         request(app)
-//             .post('/menu')
-//             .set('Accept', 'application/json')
-//
-//             .expect(400, done);
-//     });
-//     it('request error with broken token', function (done) {
-//         request(app)
-//             .post('/menu')
-//             .set('Accept', 'application/json')
-//             .set(TOKEN_NAME, TOKEN.BROKEN)
-//
-//             .expect(400, done);
-//     });
-//     it('request error with wrong owner', function (done) {
-//         request(app)
-//             .post('/menu')
-//             .set('Accept', 'application/json')
-//             .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-//
-//             .expect(400, done);
-//     });
-// });
+ describe('PUT /menu', function () {
+     it('request success with token', function (done) {
+         request(app)
+             .put('/menu')
+             .send(menuItem)
+             .set(TOKEN_NAME, TOKEN.OWNER)
+             .set('Accept', 'application/json')
+             .expect(200, done);
+     });
+     it('request error without token', function (done) {
+         request(app)
+             .put('/menu')
+             .send(menuItem)
+             .set('Accept', 'application/json')
+             .expect(401, done);
+     });
+     it('request error with broken token', function (done) {
+         request(app)
+             .put('/menu')
+             .send(menuItem)
+             .set('Accept', 'application/json')
+             .set(TOKEN_NAME, TOKEN.BROKEN)
+             .expect(401, done);
+     });
+     it('request error with wrong owner', function (done) {
+         request(app)
+             .put('/menu')
+             .send(menuItem)
+             .set('Accept', 'application/json')
+             .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
+             .expect(401, done);
+     });
+ });
+ })
 //
 // const menuVisibleUrlPUT = '/menu/visiable'
 // describe(`PUT ${menuVisibleUrlPUT}`, function () {
