@@ -88,7 +88,8 @@ describe('MENU', function () {
                 .expect(401, done);
         });
     });
- describe('PUT /menu', function () {
+
+    describe('PUT /menu', function () {
      it('request success with token', function (done) {
          request(app)
              .put('/menu')
