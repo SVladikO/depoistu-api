@@ -13,7 +13,6 @@ const TOKEN = {
     WRONG_OWNER: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjgsImVtYWlsIjoidmxhZC5zZWVoaXljaHVrQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiZWVlZWVlIiwiaWF0IjoxNzAwNzI1OTUwfQ.MiiNa15tFGkuDBj_FwqHM3JmQWZ4RFp94Gck5oKSA5c`,
 }
 
-
 describe('MENU', function () {
 
     describe('GET /menu', function () {
@@ -123,39 +122,38 @@ describe('MENU', function () {
      });
  });
 
- const menuVisibleUrlPUT = '/menu/visible'
- describe(`PUT ${menuVisibleUrlPUT}`, function () {
-     it('request success with token', function (done) {
-         request(app)
-             .put(menuVisibleUrlPUT)
-             .send(menuItem)
-             .set('Accept', 'application/json')
-             .set(TOKEN_NAME, TOKEN.OWNER)
-             .expect(200, done);
-     });
-     it('request error without token', function (done) {
-         request(app)
-             .put(menuVisibleUrlPUT)
-             .set('Accept', 'application/json')
-             .expect(401, done);
-     });
-     it('request error with broken token', function (done) {
-         request(app)
-             .put(menuVisibleUrlPUT)
-             .set('Accept', 'application/json')
-             .set(TOKEN_NAME, TOKEN.BROKEN)
-             .expect(401, done);
-     });
-     it('request error with wrong owner', function (done) {
-         request(app)
-             .put(menuVisibleUrlPUT)
-             .send(menuItem)
-             .set('Accept', 'application/json')
-             .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-             .expect(401, done);
-     });
- });
- });
+    const menuVisibleUrlPUT = '/menu/visible'
+    describe(`PUT ${menuVisibleUrlPUT}`, function () {
+        it('request success with token', function (done) {
+            request(app)
+                .put(menuVisibleUrlPUT)
+                .send(menuItem)
+                .set('Accept', 'application/json')
+                .set(TOKEN_NAME, TOKEN.OWNER)
+                .expect(200, done);
+        });
+        it('request error without token', function (done) {
+            request(app)
+                .put(menuVisibleUrlPUT)
+                .set('Accept', 'application/json')
+                .expect(401, done);
+        });
+        it('request error with broken token', function (done) {
+            request(app)
+                .put(menuVisibleUrlPUT)
+                .set('Accept', 'application/json')
+                .set(TOKEN_NAME, TOKEN.BROKEN)
+                .expect(401, done);
+        });
+        it('request error with wrong owner', function (done) {
+            request(app)
+                .put(menuVisibleUrlPUT)
+                .send(menuItem)
+                .set('Accept', 'application/json')
+                .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
+                .expect(401, done);
+        });
+    });
 
 //     const menuUrlDELETE = '/menu'
 //     describe(`PUT ${menuUrlDELETE}`, function () {
@@ -192,70 +190,70 @@ describe('MENU', function () {
 //         });
 //     });
 //
-//     const availableCityIdsUrlGET = '/available-city-ids'
-//     describe(`GET ${availableCityIdsUrlGET}`, function () {
-//         it('response success', function (done) {
-//             request(app)
-//                 .get(availableCityIdsUrlGET)
-//                 .set('Accept', 'application/json')
-//
-//                 .expect(200, done);
-//         });
-//     })
-//
-//     const companiesByCityIdUrGET = '/companies/cities'
-//     describe(`GET ${availableCityIdsUrlGET}`, function () {
-//         it('response success', function (done) {
-//             request(app)
-//                 .get(`${companiesByCityIdUrGET}/204`)
-//                 .set('Accept', 'application/json')
-//
-//                 .expect(200, done);
-//         });
-//         it('response error', function (done) {
-//             request(app)
-//                 .get(`${companiesByCityIdUrGET}/scr`)
-//                 .set('Accept', 'application/json')
-//
-//                 .expect(200, done);
-//         });
-//     })
-// })
-//
-// describe(`COMPANY`, function () {
-//     describe(`POST company`, function () {
-//         it('request success with token', function (done) {
-//             request(app)
-//                 .delete(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.OWNER)
-//
-//                 .expect(200, done);
-//         });
-//         it('request error without token', function (done) {
-//             request(app)
-//                 .delete(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//
-//                 .expect(401, done);
-//         });
-//         it('request error with broken token', function (done) {
-//             request(app)
-//                 .delete(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.BROKEN)
-//
-//                 .expect(401, done);
-//         });
-//         it('request error with wrong owner', function (done) {
-//             request(app)
-//                 .delete(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-//
-//                 .expect(401, done);
-//         });
-//     });
+    const availableCityIdsUrlGET = '/available-city-ids'
+    describe(`GET ${availableCityIdsUrlGET}`, function () {
+        it('response success', function (done) {
+            request(app)
+                .get(availableCityIdsUrlGET)
+                .set('Accept', 'application/json')
+
+                .expect(200, done);
+        });
+    })
+
+    const companiesByCityIdUrGET = '/companies/cities'
+    describe(`GET ${availableCityIdsUrlGET}`, function () {
+        it('response success', function (done) {
+            request(app)
+                .get(`${companiesByCityIdUrGET}/204`)
+                .set('Accept', 'application/json')
+
+                .expect(200, done);
+        });
+        it('response error', function (done) {
+            request(app)
+                .get(`${companiesByCityIdUrGET}/scr`)
+                .set('Accept', 'application/json')
+
+                .expect(200, done);
+        });
+    })
+
+describe(`COMPANY`, function () {
+    describe(`POST company`, function () {
+        it('request success with token', function (done) {
+            request(app)
+                .delete(menuUrlDELETE)
+                .set('Accept', 'application/json')
+                .set(TOKEN_NAME, TOKEN.OWNER)
+
+                .expect(200, done);
+        });
+        it('request error without token', function (done) {
+            request(app)
+                .delete(menuUrlDELETE)
+                .set('Accept', 'application/json')
+
+                .expect(401, done);
+        });
+        it('request error with broken token', function (done) {
+            request(app)
+                .delete(menuUrlDELETE)
+                .set('Accept', 'application/json')
+                .set(TOKEN_NAME, TOKEN.BROKEN)
+
+                .expect(401, done);
+        });
+        it('request error with wrong owner', function (done) {
+            request(app)
+                .delete(menuUrlDELETE)
+                .set('Accept', 'application/json')
+                .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
+
+                .expect(401, done);
+        });
+    });
+})
 //
 //     describe(`PUT company`, function () {
 //         it('request success with token', function (done) {
