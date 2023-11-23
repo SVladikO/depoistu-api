@@ -46,7 +46,7 @@ describe('MENU', function () {
         });
     });
 
-  const menuItem = {
+   const menuItem = {
         id: 1,
         categoryId: 1,
         companyId: 1,
@@ -118,7 +118,7 @@ describe('MENU', function () {
              .send(menuItem)
              .set('Accept', 'application/json')
              .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-             .expect(401, done);
+             .expect(403, done);
      });
  });
 
@@ -151,7 +151,7 @@ describe('MENU', function () {
                 .send(menuItem)
                 .set('Accept', 'application/json')
                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-                .expect(401, done);
+                .expect(403, done);
         });
     });
 
@@ -190,105 +190,123 @@ describe('MENU', function () {
 //         });
 //     });
 //
-    const availableCityIdsUrlGET = '/available-city-ids'
+})
+
+describe(`COMPANY`, function () {
+const availableCityIdsUrlGET = '/available-city-ids'
     describe(`GET ${availableCityIdsUrlGET}`, function () {
         it('response success', function (done) {
             request(app)
                 .get(availableCityIdsUrlGET)
                 .set('Accept', 'application/json')
-
                 .expect(200, done);
         });
     })
 
     const companiesByCityIdUrGET = '/companies/cities'
-    describe(`GET ${availableCityIdsUrlGET}`, function () {
+    describe(`GET /companies/cities/:cityId`, function () {
         it('response success', function (done) {
             request(app)
-                .get(`${companiesByCityIdUrGET}/204`)
+                .get(`/companies/cities/204`)
                 .set('Accept', 'application/json')
-
                 .expect(200, done);
         });
         it('response error', function (done) {
             request(app)
-                .get(`${companiesByCityIdUrGET}/scr`)
+                .get(`/companies/cities/scr`)
                 .set('Accept', 'application/json')
-
                 .expect(200, done);
         });
     })
 
-describe(`COMPANY`, function () {
-    describe(`POST company`, function () {
+   const company = {
+                       id: 1,
+                        name: 'testCompanyName',
+                        phone1: '280970668830',
+                        phone2: '280970668830',
+                        phone3: '280970668830',
+                        cityId: 204,
+                        street: 'street Test 2',
+                        schedule: ', , , , , , , , , ,,',
+   }
+
+   const companiesUrl = '/companies';
+
+    describe(`POST ${companiesUrl}`, function () {
         it('request success with token', function (done) {
             request(app)
-                .delete(menuUrlDELETE)
+                .post(companiesUrl)
+                .send(company)
                 .set('Accept', 'application/json')
                 .set(TOKEN_NAME, TOKEN.OWNER)
-
                 .expect(200, done);
         });
         it('request error without token', function (done) {
             request(app)
-                .delete(menuUrlDELETE)
+                .post(companiesUrl)
+                .send(company)
                 .set('Accept', 'application/json')
-
                 .expect(401, done);
         });
         it('request error with broken token', function (done) {
             request(app)
-                .delete(menuUrlDELETE)
+                .post(companiesUrl)
+                .send(company)
                 .set('Accept', 'application/json')
                 .set(TOKEN_NAME, TOKEN.BROKEN)
-
                 .expect(401, done);
         });
-        it('request error with wrong owner', function (done) {
-            request(app)
-                .delete(menuUrlDELETE)
-                .set('Accept', 'application/json')
-                .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
 
-                .expect(401, done);
-        });
+//       TODO: CHECK LIMITED ABOUT OF CREATE COMPANY
+//        it('request error with wrong owner', function (done) {
+//            request(app)
+//                .post('/companies')
+//                .send(company)
+//                .set('Accept', 'application/json')
+//                .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
+//                .expect(401, done);
+//        });
     });
-})
-//
-//     describe(`PUT company`, function () {
-//         it('request success with token', function (done) {
-//             request(app)
-//                 .put(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.OWNER)
-//
-//                 .expect(200, done);
-//         });
-//         it('request error without token', function (done) {
-//             request(app)
-//                 .put(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//
-//                 .expect(401, done);
-//         });
-//         it('request error with broken token', function (done) {
-//             request(app)
-//                 .delete(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.BROKEN)
-//
-//                 .expect(401, done);
-//         });
-//         it('request error with wrong owner', function (done) {
-//             request(app)
-//                 .put(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-//
-//                 .expect(401, done);
-//         });
-//     });
-//
+
+
+     describe(`PUT company`, function () {
+         it('request success with token', function (done) {
+             request(app)
+                 .put(companiesUrl)
+                 .send(company)
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.OWNER)
+
+                 .expect(200, done);
+         });
+         it('request error without token', function (done) {
+             request(app)
+                 .put(companiesUrl)
+                 .send(company)
+                 .set('Accept', 'application/json')
+
+                 .expect(401, done);
+         });
+         it('request error with broken token', function (done) {
+             request(app)
+                 .put(companiesUrl)
+                 .send(company)
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.BROKEN)
+
+                 .expect(401, done);
+         });
+         it('request error with wrong owner', function (done) {
+             request(app)
+                 .put(companiesUrl)
+                 .send(company)
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
+                 .expect(403, done);
+         });
+     });
+     });
+
 //     describe(`DELETE company`, function () {
 //         it('request success with token', function (done) {
 //             request(app)
@@ -319,169 +337,165 @@ describe(`COMPANY`, function () {
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
 //
-//                 .expect(401, done);
+//                 .expect(403, done);
 //         });
 //     });
 // })
-//
-// describe(`CUSTOMER`, function () {
-//     describe(`POST sing-in`, function () {
-//         it('request success', function (done) {
-//             request(app)
-//                 .post(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.OWNER)
-//
-//                 .expect(200, done);
-//         });
-//         it('request broken validation', function (done) {
-//             request(app)
-//                 .post(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.OWNER)
-//
-//                 .expect(200, done);
-//         });
-//     })
-//
-//     describe(`POST sing-un`, function () {
-//         it('request success', function (done) {
-//             request(app)
-//                 .post(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.OWNER)
-//
-//                 .expect(200, done);
-//         });
-//         it('request broken validation', function (done) {
-//             request(app)
-//                 .post(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.OWNER)
-//
-//                 .expect(200, done);
-//         });
-//     })
-//     describe(`POST /edit-business-type`, function () {
-//         it('request success with token', function (done) {
-//             request(app)
-//                 .delete(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.OWNER)
-//
-//                 .expect(200, done);
-//         });
-//         it('request error without token', function (done) {
-//             request(app)
-//                 .delete(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//
-//                 .expect(401, done);
-//         });
-//         it('request error with broken token', function (done) {
-//             request(app)
-//                 .delete(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.BROKEN)
-//
-//                 .expect(401, done);
-//         });
-//         it('request error with wrong owner', function (done) {
-//             request(app)
-//                 .delete(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-//
-//                 .expect(401, done);
-//         });
-//     });
-// })
-//
-// describe(`FAVORITE-COMCPANIES`, function () {
-//         describe(`GET ${availableCityIdsUrlGET}`, function () {
-//             it('response success', function (done) {
-//                 request(app)
-//                     .get(availableCityIdsUrlGET)
-//                     .set('Accept', 'application/json')
-//
-//                     .expect(200, done);
-//             });
-//
-//             it('response success', function (done) {
-//                 request(app)
-//                     .get(availableCityIdsUrlGET)
-//                     .set('Accept', 'application/json')
-//
-//                     .expect(200, done);
-//             });
-//         })
-//
-//     describe(`POST FAVORITE COMPNAY`, function () {
-//         it('request success with token', function (done) {
-//             request(app)
-//                 .put(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.OWNER)
-//
-//                 .expect(200, done);
-//         });
-//         it('request error without token', function (done) {
-//             request(app)
-//                 .put(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//
-//                 .expect(401, done);
-//         });
-//         it('request error with broken token', function (done) {
-//             request(app)
-//                 .delete(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.BROKEN)
-//
-//                 .expect(401, done);
-//         });
-//         it('request error with wrong owner', function (done) {
-//             request(app)
-//                 .put(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-//
-//                 .expect(401, done);
-//         });
-//     });
-//
-//     describe(`GET FAVORITE COMPNAY`, function () {
-//         it('request success with token', function (done) {
-//             request(app)
-//                 .put(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.OWNER)
-//
-//                 .expect(200, done);
-//         });
-//         it('request error without token', function (done) {
-//             request(app)
-//                 .put(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//
-//                 .expect(401, done);
-//         });
-//         it('request error with broken token', function (done) {
-//             request(app)
-//                 .delete(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.BROKEN)
-//
-//                 .expect(401, done);
-//         });
-//         it('request error with wrong owner', function (done) {
-//             request(app)
-//                 .put(menuUrlDELETE)
-//                 .set('Accept', 'application/json')
-//                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-//
-//                 .expect(401, done);
-//         });
-//     });
-//     }
-// )
+
+ describe(`CUSTOMER`, function () {
+     describe(`POST /sing-in`, function () {
+         it('request success', function (done) {
+             request(app)
+                 .post('sing-in')
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.OWNER)
+
+                 .expect(200, done);
+         });
+         it('request broken validation', function (done) {
+             request(app)
+                 .post('/sing-in')
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.OWNER)
+                 .expect(200, done);
+         });
+     })
+
+     describe(`POST /sing-up`, function () {
+         it('request success', function (done) {
+             request(app)
+                 .post('/sing-up')
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.OWNER)
+
+                 .expect(200, done);
+         });
+         it('request broken validation', function (done) {
+             request(app)
+                 .post('/sing-up')
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.OWNER)
+
+                 .expect(200, done);
+         });
+     })
+     describe(`POST /edit-business-type`, function () {
+         it('request success with token', function (done) {
+             request(app)
+                 .post(/edit-business-type)
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.OWNER)
+
+                 .expect(200, done);
+         });
+         it('request error without token', function (done) {
+             request(app)
+                 .delete(menuUrlDELETE)
+                 .set('Accept', 'application/json')
+
+                 .expect(401, done);
+         });
+         it('request error with broken token', function (done) {
+             request(app)
+                 .delete(menuUrlDELETE)
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.BROKEN)
+
+                 .expect(401, done);
+         });
+         it('request error with wrong owner', function (done) {
+             request(app)
+                 .delete(menuUrlDELETE)
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
+
+                 .expect(403, done);
+         });
+     });
+ })
+
+
+ describe(`FAVORITE-COMPANIES `, function () {
+ const favoriteCompanyUrl = '/favorite-companies';
+
+         describe(`GET ${favoriteCompanyUrl}/:customerId}`, function () {
+             it('response success', function (done) {
+                 request(app)
+                     .get('/favorite-companies/1')
+                     .set('Accept', 'application/json')
+                     .expect(200, done);
+             });
+
+             it('response error', function (done) {
+                 request(app)
+                     .get('/favorite-companies/customerId')
+                     .set('Accept', 'application/json')
+                     .expect(200, done);
+             });
+         })
+
+     describe(`POST /favorite-companies`, function () {
+         it('request success with token', function (done) {
+             request(app)
+                 .post(favoriteCompanyUrl)
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.OWNER)
+                 .expect(200, done);
+         });
+         it('request error without token', function (done) {
+             request(app)
+                 .post(favoriteCompanyUrl)
+                 .set('Accept', 'application/json')
+                 .expect(401, done);
+         });
+         it('request error with broken token', function (done) {
+             request(app)
+                 .post(favoriteCompanyUrl)
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.BROKEN)
+                 .expect(401, done);
+         });
+         it('request error with wrong owner', function (done) {
+             request(app)
+                 .post(favoriteCompanyUrl)
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
+                 .expect(403, done);
+         });
+     });
+
+     describe(`PUT FAVORITE-COMPANY`, function () {
+         it('request success with token', function (done) {
+             request(app)
+                 .put(favoriteCompanyUrl)
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.OWNER)
+
+                 .expect(200, done);
+         });
+         it('request error without token', function (done) {
+             request(app)
+                 .put(favoriteCompanyUrl)
+                 .set('Accept', 'application/json')
+
+                 .expect(401, done);
+         });
+
+         it('request error with broken token', function (done) {
+             request(app)
+                 .put(favoriteCompanyUrl)
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.BROKEN)
+                 .expect(401, done);
+         });
+
+         it('request error with wrong owner', function (done) {
+             request(app)
+                 .put(favoriteCompanyUrl)
+                 .set('Accept', 'application/json')
+                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
+                 .expect(403, done);
+         });
+     });
+     }
+ )

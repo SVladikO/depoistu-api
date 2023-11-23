@@ -121,7 +121,7 @@ const ERROR_TRANSLATION = {
             en: "Only company owner can edit information.",
             ua: "Тільки власник закладу може змінювати інформацію.",
         },
-        status: 400,
+        status: 403,
     },
     "COMPANY.MAX_COMPANY_AMOUNT": {
         errorMessage: {
@@ -156,7 +156,7 @@ const ERROR_TRANSLATION = {
             en: "Only owner can bring changes.",
             ua: "Тільки власник може вносити зміни.",
         },
-        status: 400,
+        status: 403,
     },
 }
 

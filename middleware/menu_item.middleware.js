@@ -18,7 +18,7 @@ const checkMenuItemOwner = () => (req, res, next) => {
             }
         })
         .then(() => next())
-        .catch(catchHandler({res, logger, status: 401}))
+        .catch(catchHandler({res, logger}))
 }
 
 module.exports = {

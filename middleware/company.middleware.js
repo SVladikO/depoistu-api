@@ -28,7 +28,7 @@ const checkCompanyOwner = (req, res, next) => {
             }
         })
         .then(() => next())
-        .catch(catchHandler({res, logger, status: 403}))
+        .catch(catchHandler({res, logger}))
 }
 
 const checkAvailableCompany = (req, res, next) => {
