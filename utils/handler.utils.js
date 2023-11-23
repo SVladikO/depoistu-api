@@ -10,6 +10,7 @@ const sendHandler = (res, logger = new Logger(), status = 200) => data => {
 
 const catchHandler = ({res, status, logger = new Logger()}) =>
     e => {
+        Object.keys(e).map(key => console.log(key))
         logger.changeMarker()
         const errorMessage = e.errorMessage || e.message;
         const _status = e.status || status;

@@ -39,6 +39,12 @@ const resolveError = (translationKey, req) => {
     }
 }
 
+const throwError = (translationKey, req) => {
+    const {errorMessage, status} = resolveError(translationKey, req)
+
+    throw new Error(errorMessage, {status})
+}
+
 const ERROR_TRANSLATION = {
     "CUSTOMER.TOKEN.REQUIRED": {
         errorMessage: {
@@ -157,6 +163,7 @@ const ERROR_TRANSLATION = {
 
 module.exports = {
     resolve,
+    throwError,
     resolveError,
-    SELECTED_LANGUAGE_ON_FE
+    SELECTED_LANGUAGE_ON_FE,
 }

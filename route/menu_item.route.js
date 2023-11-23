@@ -5,7 +5,7 @@ const {checkMenuItemOwner} = require("../middleware/menu_item.middleware");
 const QUERY = require("../utils/query.utils");
 const {dbRequest} = require("../utils/connection.utils");
 const {VALIDATOR, VALIDATION} = require("../utils/validation.utils");
-const {resolveError} = require("../utils/translations.utils");
+const {resolveError, throwError} = require("../utils/translations.utils");
 const {catchHandler, sendHandler} = require("../utils/handler.utils");
 const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 const {Logger} = require("../middleware/log.middleware");
@@ -80,7 +80,7 @@ const routes = {
                     dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.SELECT_ALL_ONLY_VISIABLE_BY_COMPANY_ID(companyId)))
                         .then(res => {
                             if (!res.length) {
-                                throw new Error(resolveError("COMPANY.NO_MENU", req));
+                                throwError("COMPANY.NO_MENU", req);
                             }
 
                             return res;

@@ -7,7 +7,7 @@ const {checkAvailableCompany} = require("../middleware/company.middleware");
 
 const QUERY = require("../utils/query.utils");
 const {VALIDATOR, VALIDATION} = require("../utils/validation.utils")
-const {resolveError} = require("../utils/translations.utils");
+const {resolveError, throwError} = require("../utils/translations.utils");
 const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 const {convertCompanyFields} = require("../utils/company.utils")
 
@@ -78,7 +78,7 @@ const routes = {
                 dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId)))
                     .then(res => {
                         if (!res.length) {
-                            throw new Error(resolveError("COMPANY.DESNT_EXIST", req));
+                            throwError("COMPANY.DESNT_EXIST", req);
                         }
 
                         return res;

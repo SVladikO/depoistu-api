@@ -1,7 +1,7 @@
 const {dbRequest} = require("../utils/connection.utils");
 const QUERY = require("../utils/query.utils");
 const {catchHandler} = require("../utils/handler.utils");
-const {resolveError} = require("../utils/translations.utils");
+const {throwError} = require("../utils/translations.utils");
 const {Logger} = require("./log.middleware");
 
 const checkMenuItemOwner = () => (req, res, next) => {
@@ -14,7 +14,7 @@ const checkMenuItemOwner = () => (req, res, next) => {
     )
         .then(res => {
             if (!res.length) {
-                throw new Error(resolveError("MENU_ITEM.ONLY_OWNER_CAN", req));
+                throwError("MENU_ITEM.ONLY_OWNER_CAN", req);
             }
         })
         .then(() => next())
