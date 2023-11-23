@@ -121,7 +121,6 @@ const routes = {
                     logger.addLog(DESCRIPTION.MENU_ITEM.CREATE)
 
                     const {
-                        id,
                         categoryId,
                         companyId,
                         name,
@@ -135,7 +134,6 @@ const routes = {
                         imageUrl,
                     } = req.body;
                     const menuItem = {
-                        id,
                         categoryId,
                         companyId,
                         name,
