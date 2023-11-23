@@ -1,11 +1,11 @@
 const {Logger} = require("../middleware/log.middleware");
 const {SHOW_LOGS = true} = process.env;
 
-const sendHandler = (res, logger = new Logger()) => data => {
+const sendHandler = (res, logger = new Logger(), status = 200) => data => {
     logger.addLog('data: ' + data)
     logger.addLog('end of request SUCCESS')
     !SHOW_LOGS && logger.writeLog();
-    res.status(200).send(data);
+    res.status(status).send(data);
 }
 
 const catchHandler = ({res, status, logger = new Logger()}) =>

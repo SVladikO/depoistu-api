@@ -47,111 +47,112 @@ describe('MENU', function () {
     });
 
     const menuItem = {
-    categoryId: 1,
-                                  companyId,
-                                  name,
-                                  description,
-                                  size_1,
-                                  price_1,
-                                  size_2,
-                                  price_2,
-                                  size_3,
-                                  price_3,
-                                  imageUrl
-                                  }
-     describe('POST /menu', function () {
-         it('request success with token', function (done) {
-             request(app)
-                 .post('/menu')
-                 .set('Accept', 'application/json')
-                 .set(TOKEN_NAME, TOKEN.OWNER)
-                 
-                 .expect(200, done);
-         });
-         it('request error without token', function (done) {
-             request(app)
-                 .post('/menu')
-                 .set('Accept', 'application/json')
-                 
-                 .expect(401, done);
-         });
-         it('request error with broken token', function (done) {
-             request(app)
-                 .post('/menu')
-                 .set('Accept', 'application/json')
-                 .set(TOKEN_NAME, TOKEN.BROKEN)
-                 .expect(401, done);
-         });
-     });
+        categoryId: 1,
+        companyId: 1,
+        name: 'testFoodName',
+        description: 'testFood description',
+        size_1: 300,
+        price_1: 100,
+        size_2: 500,
+        price_2: 150,
+        size_3: 700,
+        price_3: 200,
+        imageUrl: '',
+    }
+
+    describe('POST /menu', function () {
+        it('request success with token', function (done) {
+            request(app)
+                .post('/menu')
+                .send(menuItem)
+                .set(TOKEN_NAME, TOKEN.OWNER)
+                .set('Accept', 'application/json')
+                .expect(200, done);
+        });
+        it('request error without token', function (done) {
+            request(app)
+                .post('/menu')
+                .set('Accept', 'application/json')
+
+                .expect(401, done);
+        });
+        it('request error with broken token', function (done) {
+            request(app)
+                .post('/menu')
+                .set('Accept', 'application/json')
+                .set(TOKEN_NAME, TOKEN.BROKEN)
+                .expect(401, done);
+        });
+    });
 })
-    // describe('PUT /menu', function () {
-    //     it('request success with token', function (done) {
-    //         request(app)
-    //             .post('/menu')
-    //             .set('Accept', 'application/json')
-    //             .set(TOKEN_NAME, TOKEN.OWNER)
-    //             
-    //             .expect(200, done);
-    //     });
-    //     it('request error without token', function (done) {
-    //         request(app)
-    //             .post('/menu')
-    //             .set('Accept', 'application/json')
-    //             
-    //             .expect(400, done);
-    //     });
-    //     it('request error with broken token', function (done) {
-    //         request(app)
-    //             .post('/menu')
-    //             .set('Accept', 'application/json')
-    //             .set(TOKEN_NAME, TOKEN.BROKEN)
-    //             
-    //             .expect(400, done);
-    //     });
-    //     it('request error with wrong owner', function (done) {
-    //         request(app)
-    //             .post('/menu')
-    //             .set('Accept', 'application/json')
-    //             .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-    //             
-    //             .expect(400, done);
-    //     });
-    // });
-    //
-    // const menuVisibleUrlPUT = '/menu/visiable'
-    // describe(`PUT ${menuVisibleUrlPUT}`, function () {
-    //     it('request success with token', function (done) {
-    //         request(app)
-    //             .put(menuVisibleUrlPUT)
-    //             .set('Accept', 'application/json')
-    //             .set(TOKEN_NAME, TOKEN.OWNER)
-    //             
-    //             .expect(200, done);
-    //     });
-    //     it('request error without token', function (done) {
-    //         request(app)
-    //             .put(menuVisibleUrlPUT)
-    //             .set('Accept', 'application/json')
-    //             
-    //             .expect(400, done);
-    //     });
-    //     it('request error with broken token', function (done) {
-    //         request(app)
-    //             .put(menuVisibleUrlPUT)
-    //             .set('Accept', 'application/json')
-    //             .set(TOKEN_NAME, TOKEN.BROKEN)
-    //             
-    //             .expect(400, done);
-    //     });
-    //     it('request error with wrong owner', function (done) {
-    //         request(app)
-    //             .put(menuVisibleUrlPUT)
-    //             .set('Accept', 'application/json')
-    //             .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-    //             
-    //             .expect(400, done);
-    //     });
-    // });
+// describe('PUT /menu', function () {
+//     it('request success with token', function (done) {
+//         request(app)
+//             .post('/menu')
+//             .set('Accept', 'application/json')
+//             .set(TOKEN_NAME, TOKEN.OWNER)
+//
+//             .expect(200, done);
+//     });
+//     it('request error without token', function (done) {
+//         request(app)
+//             .post('/menu')
+//             .set('Accept', 'application/json')
+//
+//             .expect(400, done);
+//     });
+//     it('request error with broken token', function (done) {
+//         request(app)
+//             .post('/menu')
+//             .set('Accept', 'application/json')
+//             .set(TOKEN_NAME, TOKEN.BROKEN)
+//
+//             .expect(400, done);
+//     });
+//     it('request error with wrong owner', function (done) {
+//         request(app)
+//             .post('/menu')
+//             .set('Accept', 'application/json')
+//             .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
+//
+//             .expect(400, done);
+//     });
+// });
+//
+// const menuVisibleUrlPUT = '/menu/visiable'
+// describe(`PUT ${menuVisibleUrlPUT}`, function () {
+//     it('request success with token', function (done) {
+//         request(app)
+//             .put(menuVisibleUrlPUT)
+//             .set('Accept', 'application/json')
+//             .set(TOKEN_NAME, TOKEN.OWNER)
+//
+//             .expect(200, done);
+//     });
+//     it('request error without token', function (done) {
+//         request(app)
+//             .put(menuVisibleUrlPUT)
+//             .set('Accept', 'application/json')
+//
+//             .expect(400, done);
+//     });
+//     it('request error with broken token', function (done) {
+//         request(app)
+//             .put(menuVisibleUrlPUT)
+//             .set('Accept', 'application/json')
+//             .set(TOKEN_NAME, TOKEN.BROKEN)
+//
+//             .expect(400, done);
+//     });
+//     it('request error with wrong owner', function (done) {
+//         request(app)
+//             .put(menuVisibleUrlPUT)
+//             .set('Accept', 'application/json')
+//             .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
+//
+//             .expect(400, done);
+//     });
+// });
 //
 //     const menuUrlDELETE = '/menu'
 //     describe(`PUT ${menuUrlDELETE}`, function () {
@@ -160,14 +161,14 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.OWNER)
-//                 
+//
 //                 .expect(200, done);
 //         });
 //         it('request error without token', function (done) {
 //             request(app)
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
-//                 
+//
 //                 .expect(401, done);
 //         });
 //         it('request error with broken token', function (done) {
@@ -175,7 +176,7 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.BROKEN)
-//                 
+//
 //                 .expect(401, done);
 //         });
 //         it('request error with wrong owner', function (done) {
@@ -183,7 +184,7 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-//                 
+//
 //                 .expect(401, done);
 //         });
 //     });
@@ -194,7 +195,7 @@ describe('MENU', function () {
 //             request(app)
 //                 .get(availableCityIdsUrlGET)
 //                 .set('Accept', 'application/json')
-//                 
+//
 //                 .expect(200, done);
 //         });
 //     })
@@ -205,14 +206,14 @@ describe('MENU', function () {
 //             request(app)
 //                 .get(`${companiesByCityIdUrGET}/204`)
 //                 .set('Accept', 'application/json')
-//                 
+//
 //                 .expect(200, done);
 //         });
 //         it('response error', function (done) {
 //             request(app)
 //                 .get(`${companiesByCityIdUrGET}/scr`)
 //                 .set('Accept', 'application/json')
-//                 
+//
 //                 .expect(200, done);
 //         });
 //     })
@@ -225,14 +226,14 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.OWNER)
-//                 
+//
 //                 .expect(200, done);
 //         });
 //         it('request error without token', function (done) {
 //             request(app)
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
-//                 
+//
 //                 .expect(401, done);
 //         });
 //         it('request error with broken token', function (done) {
@@ -240,7 +241,7 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.BROKEN)
-//                 
+//
 //                 .expect(401, done);
 //         });
 //         it('request error with wrong owner', function (done) {
@@ -248,7 +249,7 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-//                 
+//
 //                 .expect(401, done);
 //         });
 //     });
@@ -259,14 +260,14 @@ describe('MENU', function () {
 //                 .put(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.OWNER)
-//                 
+//
 //                 .expect(200, done);
 //         });
 //         it('request error without token', function (done) {
 //             request(app)
 //                 .put(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
-//                 
+//
 //                 .expect(401, done);
 //         });
 //         it('request error with broken token', function (done) {
@@ -274,7 +275,7 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.BROKEN)
-//                 
+//
 //                 .expect(401, done);
 //         });
 //         it('request error with wrong owner', function (done) {
@@ -282,7 +283,7 @@ describe('MENU', function () {
 //                 .put(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-//                 
+//
 //                 .expect(401, done);
 //         });
 //     });
@@ -293,14 +294,14 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.OWNER)
-//                 
+//
 //                 .expect(200, done);
 //         });
 //         it('request error without token', function (done) {
 //             request(app)
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
-//                 
+//
 //                 .expect(401, done);
 //         });
 //         it('request error with broken token', function (done) {
@@ -308,7 +309,7 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.BROKEN)
-//                 
+//
 //                 .expect(401, done);
 //         });
 //         it('request error with wrong owner', function (done) {
@@ -316,7 +317,7 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-//                 
+//
 //                 .expect(401, done);
 //         });
 //     });
@@ -329,7 +330,7 @@ describe('MENU', function () {
 //                 .post(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.OWNER)
-//                 
+//
 //                 .expect(200, done);
 //         });
 //         it('request broken validation', function (done) {
@@ -337,7 +338,7 @@ describe('MENU', function () {
 //                 .post(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.OWNER)
-//                 
+//
 //                 .expect(200, done);
 //         });
 //     })
@@ -348,7 +349,7 @@ describe('MENU', function () {
 //                 .post(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.OWNER)
-//                 
+//
 //                 .expect(200, done);
 //         });
 //         it('request broken validation', function (done) {
@@ -356,7 +357,7 @@ describe('MENU', function () {
 //                 .post(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.OWNER)
-//                 
+//
 //                 .expect(200, done);
 //         });
 //     })
@@ -366,14 +367,14 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.OWNER)
-//                 
+//
 //                 .expect(200, done);
 //         });
 //         it('request error without token', function (done) {
 //             request(app)
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
-//                 
+//
 //                 .expect(401, done);
 //         });
 //         it('request error with broken token', function (done) {
@@ -381,7 +382,7 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.BROKEN)
-//                 
+//
 //                 .expect(401, done);
 //         });
 //         it('request error with wrong owner', function (done) {
@@ -389,7 +390,7 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-//                 
+//
 //                 .expect(401, done);
 //         });
 //     });
@@ -401,7 +402,7 @@ describe('MENU', function () {
 //                 request(app)
 //                     .get(availableCityIdsUrlGET)
 //                     .set('Accept', 'application/json')
-//                     
+//
 //                     .expect(200, done);
 //             });
 //
@@ -409,7 +410,7 @@ describe('MENU', function () {
 //                 request(app)
 //                     .get(availableCityIdsUrlGET)
 //                     .set('Accept', 'application/json')
-//                     
+//
 //                     .expect(200, done);
 //             });
 //         })
@@ -420,14 +421,14 @@ describe('MENU', function () {
 //                 .put(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.OWNER)
-//                 
+//
 //                 .expect(200, done);
 //         });
 //         it('request error without token', function (done) {
 //             request(app)
 //                 .put(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
-//                 
+//
 //                 .expect(401, done);
 //         });
 //         it('request error with broken token', function (done) {
@@ -435,7 +436,7 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.BROKEN)
-//                 
+//
 //                 .expect(401, done);
 //         });
 //         it('request error with wrong owner', function (done) {
@@ -443,7 +444,7 @@ describe('MENU', function () {
 //                 .put(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-//                 
+//
 //                 .expect(401, done);
 //         });
 //     });
@@ -454,14 +455,14 @@ describe('MENU', function () {
 //                 .put(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.OWNER)
-//                 
+//
 //                 .expect(200, done);
 //         });
 //         it('request error without token', function (done) {
 //             request(app)
 //                 .put(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
-//                 
+//
 //                 .expect(401, done);
 //         });
 //         it('request error with broken token', function (done) {
@@ -469,7 +470,7 @@ describe('MENU', function () {
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.BROKEN)
-//                 
+//
 //                 .expect(401, done);
 //         });
 //         it('request error with wrong owner', function (done) {
@@ -477,7 +478,7 @@ describe('MENU', function () {
 //                 .put(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-//                 
+//
 //                 .expect(401, done);
 //         });
 //     });

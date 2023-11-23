@@ -150,7 +150,7 @@ const routes = {
 
                     VALIDATOR.MENU_ITEM.CREATE(menuItem)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.INSERT(menuItem))))
-                        .then(sendHandler(res, logger))
+                        .then(sendHandler(res, logger, 201))
                         .catch(catchHandler({res, logger, status: 400}));
                 }]
         },
