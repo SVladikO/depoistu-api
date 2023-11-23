@@ -67,7 +67,7 @@ describe('MENU', function () {
                 .send(menuItem)
                 .set(TOKEN_NAME, TOKEN.OWNER)
                 .set('Accept', 'application/json')
-                .expect(200, done);
+                .expect(201, done);
         });
         it('request error without token', function (done) {
             request(app)
