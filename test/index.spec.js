@@ -346,25 +346,23 @@ const availableCityIdsUrlGET = '/available-city-ids'
      describe(`POST /sing-in`, function () {
          it('request success', function (done) {
              request(app)
-                 .post('sing-in')
+                 .post('/sign-in')
+                 .send({email: 'vlad.serhiychuk@gmail.com', password: 'pma1111'})
                  .set('Accept', 'application/json')
-                 .set(TOKEN_NAME, TOKEN.OWNER)
-
                  .expect(200, done);
          });
          it('request broken validation', function (done) {
              request(app)
-                 .post('/sing-in')
+                 .post('/sign-in')
                  .set('Accept', 'application/json')
-                 .set(TOKEN_NAME, TOKEN.OWNER)
-                 .expect(200, done);
+                 .expect(400, done);
          });
      })
 
-     describe(`POST /sing-up`, function () {
+     describe(`POST /sign-up`, function () {
          it('request success', function (done) {
              request(app)
-                 .post('/sing-up')
+                 .post('/sign-up')
                  .set('Accept', 'application/json')
                  .set(TOKEN_NAME, TOKEN.OWNER)
 
@@ -372,7 +370,7 @@ const availableCityIdsUrlGET = '/available-city-ids'
          });
          it('request broken validation', function (done) {
              request(app)
-                 .post('/sing-up')
+                 .post('/sign-up')
                  .set('Accept', 'application/json')
                  .set(TOKEN_NAME, TOKEN.OWNER)
 

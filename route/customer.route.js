@@ -38,6 +38,8 @@ const routes = {
 
                     const {email, password} = req.body;
 
+
+
                     dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
                         .then(convertCustomerFields)
                         .then(getFirstCustomer(req))
