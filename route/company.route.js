@@ -7,7 +7,7 @@ const {checkAvailableCompany} = require("../middleware/company.middleware");
 
 const QUERY = require("../utils/query.utils");
 const {VALIDATOR, VALIDATION} = require("../utils/validation.utils")
-const {TRANSLATION, resolve} = require("../utils/translations.utils");
+const {resolveError} = require("../utils/translations.utils");
 const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 const {convertCompanyFields} = require("../utils/company.utils")
 
@@ -46,7 +46,7 @@ const routes = {
                 const {city_id} = req.params;
 
                 if (city_id === 'undefined') {
-                    return catchHandler({res, status: 400, logger})({errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)})
+                    return catchHandler({res, logger})(resolveError("COMPANY.CITY_ID_REQUIRED", req))
                 }
 
                 dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_CITY_ID(city_id)))
@@ -72,13 +72,13 @@ const routes = {
                         res,
                         status: 400,
                         logger
-                    })({errorMessage: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)})
+                    })(resolveError("COMPANY.COMPANY_ID_REQUIRED", req))
                 }
 
                 dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId)))
                     .then(res => {
                         if (!res.length) {
-                            throw new Error(resolve(TRANSLATION.COMPANY.DESNT_EXIST, req));
+                            throw new Error(resolveError("COMPANY.DESNT_EXIST", req));
                         }
 
                         return res;
@@ -101,7 +101,7 @@ const routes = {
                     const {customerId} = req.params;
 
                     if (!customerId) {
-                        return catchHandler({res, status: 400, logger})({errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)})
+                        return catchHandler({res, status: 400, logger})(resolveError("COMPANY.CITY_ID_REQUIRED", req))
                     }
 
                     dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId)))

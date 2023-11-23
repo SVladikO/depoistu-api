@@ -12,10 +12,11 @@ const catchHandler = ({res, status, logger = new Logger()}) =>
         logger.changeMarker()
         const errorMessage = e.errorMessage || e.message;
         const _status = e.status || status;
-        logger.addLog('ERROR')
+        logger.addLog('ERROR STATUS:')
+        logger.addLog(_status)
         logger.addLog('ERROR MESSAGE:')
         logger.addLog(errorMessage)
-        logger.addLog('end of request ERROR')
+        logger.addLog('end of request')
         logger.writeLog();
         res.status(_status).send(JSON.stringify({errorMessage}))
     }

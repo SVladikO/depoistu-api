@@ -5,7 +5,7 @@ const {checkMenuItemOwner} = require("../middleware/menu_item.middleware");
 const QUERY = require("../utils/query.utils");
 const {dbRequest} = require("../utils/connection.utils");
 const {VALIDATOR, VALIDATION} = require("../utils/validation.utils");
-const {TRANSLATION, resolve} = require("../utils/translations.utils");
+const {resolveError} = require("../utils/translations.utils");
 const {catchHandler, sendHandler} = require("../utils/handler.utils");
 const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 const {Logger} = require("../middleware/log.middleware");
@@ -40,7 +40,7 @@ const routes = {
                         res,
                         logger,
                         status: 400
-                    })({errorMessage: resolve(TRANSLATION.MENU_ITEM.COMPANY_ID_REQUIRED, req)})
+                    })(resolveError("MENU_ITEM.COMPANY_ID_REQUIRED", req))
                 }
 
                 if (isNaN(companyId)) {
@@ -70,7 +70,7 @@ const routes = {
                     const companyId = +req.params.companyId;
 
                     if (!companyId) {
-                        return catchHandler({res, status: 400, logger})({errorMessage: resolve(TRANSLATION.MENU_ITEM.COMPANY_ID_REQUIRED, req)})
+                        return catchHandler({res, status: 400, logger})(resolveError("MENU_ITEM.COMPANY_ID_REQUIRED", req))
                     }
 
                     if (isNaN(companyId)) {
@@ -80,7 +80,7 @@ const routes = {
                     dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.SELECT_ALL_ONLY_VISIABLE_BY_COMPANY_ID(companyId)))
                         .then(res => {
                             if (!res.length) {
-                                throw new Error(resolve(TRANSLATION.COMPANY.NO_MENU, req));
+                                throw new Error(resolveError("COMPANY.NO_MENU", req));
                             }
 
                             return res;

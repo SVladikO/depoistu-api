@@ -4,7 +4,7 @@ const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.ut
 const {dbRequest} = require("../utils/connection.utils");
 const QUERY = require("../utils/query.utils");
 const {Logger} = require("./log.middleware");
-const {TRANSLATION, resolve} = require("../utils/translations.utils")
+const {resolveError} = require("../utils/translations.utils")
 
 const X_ACCESS_TOKEN_NAME = "x-access-token";
 const TOKEN_SECRET_KEY = process.env.TOKEN_KEY || 'secret-key'
@@ -23,7 +23,9 @@ const verifyToken = (req, res, next) => {
     const token = req.headers[X_ACCESS_TOKEN_NAME];
 
     if (!token) {
-        return catchHandler({res, logger, status: 401})({errorMessage: resolve(TRANSLATION.TOKEN.REQUIRED, req)})
+        return catchHandler(
+            {res, logger}
+        )(resolveError("CUSTOMER.TOKEN.REQUIRED", req))
     }
 
     let customer;
@@ -34,17 +36,23 @@ const verifyToken = (req, res, next) => {
         logger.addLog('customerId: ' + customer?.id)
         logger.addLog('customerEmail: ' + customer?.email)
         logger.addLog('customerPassword: ' + customer?.password)
-        return catchHandler({res, logger, status: 401})({errorMessage: resolve(TRANSLATION.TOKEN.INVALID, req)})
+        return catchHandler(
+            {res, logger}
+        )(resolveError("CUSTOMER.TOKEN.INVALID", req))
     }
 
-    dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SELECT_BY_ID_AND_EMAIL_AND_PASSWORD(customer.id, customer.email, customer.password)))
+    dbRequest(
+        logger.addQueryDB(
+            QUERY.CUSTOMER.SELECT_BY_ID_AND_EMAIL_AND_PASSWORD(customer.id, customer.email, customer.password)
+        )
+    )
         .then(convertCustomerFields)
         .then(getFirstCustomer(req))
         .then(res => {
             req.customer = res;
             next();
         })
-        .catch(catchHandler({res, logger, status: 401}))
+        .catch(catchHandler({res, logger}))
 }
 
 module.exports = {

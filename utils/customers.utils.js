@@ -1,4 +1,4 @@
-const {resolve, TRANSLATION} = require("./translations.utils");
+const {resolveError} = require("./translations.utils");
 
 function getFirstCustomer(req) {
     return customers => {
@@ -6,7 +6,7 @@ function getFirstCustomer(req) {
             return customers[0];
         }
 
-        throw new Error(resolve(TRANSLATION.CUSTOMER.WRONG_CREDENTIALS, req));
+        throw new Error(resolveError("CUSTOMER.WRONG_CREDENTIALS", req));
     }
 }
 
