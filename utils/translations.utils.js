@@ -1,4 +1,4 @@
-export const SELECTED_LANGUAGE_ON_FE = "current-language";
+const SELECTED_LANGUAGE_ON_FE = "current-language";
 
 const resolve = (translationObject, req) => {
     const currentLanguage = req.headers[SELECTED_LANGUAGE_ON_FE];
@@ -157,5 +157,6 @@ const ERROR_TRANSLATION = {
 
 module.exports = {
     resolve,
-    resolveError
+    resolveError,
+    SELECTED_LANGUAGE_ON_FE
 }

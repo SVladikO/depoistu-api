@@ -5,6 +5,7 @@
   "scripts": {
     "build": "npm i",
     "start": "node index.js",
+    "test": "cross-env DB_HOST=mysql-152836-0.cloudclusters.net  DB_USER=admin  DB_PASSWORD=JJfZUF3R  DB_DATABASE=root  DB_PORT=19976  DB_MODE=develop SHOW_LOGS=false mocha",
     "dev": "cross-env DB_HOST=mysql-152836-0.cloudclusters.net  DB_USER=admin  DB_PASSWORD=JJfZUF3R  DB_DATABASE=root  DB_PORT=19976  DB_MODE=develop  node index.js"
   },
   "dependencies": {
@@ -20,6 +21,9 @@
     "yup": "^1.1.1"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "supertest": "6.3.3",
+    "assert": "2.1.0",
+    "mocha": "10.2.0"
   }
 }
