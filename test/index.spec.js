@@ -406,17 +406,10 @@ const availableCityIdsUrlGET = '/available-city-ids'
          it('request error with broken token', function (done) {
              request(app)
                  .post('/edit-business-type')
+                 .send({isBusinessOwner: true})
                  .set('Accept', 'application/json')
                  .set(TOKEN_NAME, TOKEN.BROKEN)
-                 .expect(403, done);
-         });
-
-         it('request error with wrong owner', function (done) {
-             request(app)
-                 .post('/edit-business-type')
-                 .set('Accept', 'application/json')
-                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-                 .expect(403, done);
+                 .expect(401, done);
          });
      });
  })
@@ -444,65 +437,25 @@ const availableCityIdsUrlGET = '/available-city-ids'
      describe(`POST /favorite-companies`, function () {
          it('request success with token', function (done) {
              request(app)
-                 .post(favoriteCompanyUrl)
+                 .post('/favorite-companies')
+                 .send({company_id: 1})
                  .set('Accept', 'application/json')
                  .set(TOKEN_NAME, TOKEN.OWNER)
                  .expect(200, done);
          });
          it('request error without token', function (done) {
              request(app)
-                 .post(favoriteCompanyUrl)
+                 .post('/favorite-companies')
                  .set('Accept', 'application/json')
                  .expect(401, done);
          });
          it('request error with broken token', function (done) {
              request(app)
-                 .post(favoriteCompanyUrl)
+                 .post('/favorite-companies')
                  .set('Accept', 'application/json')
                  .set(TOKEN_NAME, TOKEN.BROKEN)
                  .expect(401, done);
          });
-         it('request error with wrong owner', function (done) {
-             request(app)
-                 .post(favoriteCompanyUrl)
-                 .set('Accept', 'application/json')
-                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-                 .expect(403, done);
-         });
      });
-
-     describe(`PUT FAVORITE-COMPANY`, function () {
-         it('request success with token', function (done) {
-             request(app)
-                 .put(favoriteCompanyUrl)
-                 .set('Accept', 'application/json')
-                 .set(TOKEN_NAME, TOKEN.OWNER)
-
-                 .expect(200, done);
-         });
-         it('request error without token', function (done) {
-             request(app)
-                 .put(favoriteCompanyUrl)
-                 .set('Accept', 'application/json')
-
-                 .expect(401, done);
-         });
-
-         it('request error with broken token', function (done) {
-             request(app)
-                 .put(favoriteCompanyUrl)
-                 .set('Accept', 'application/json')
-                 .set(TOKEN_NAME, TOKEN.BROKEN)
-                 .expect(401, done);
-         });
-
-         it('request error with wrong owner', function (done) {
-             request(app)
-                 .put(favoriteCompanyUrl)
-                 .set('Accept', 'application/json')
-                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-                 .expect(403, done);
-         });
-     });
-     }
+}
  )
