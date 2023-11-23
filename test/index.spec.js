@@ -45,6 +45,20 @@ describe('MENU', function () {
                 .expect(400, done);
         });
     });
+
+    const menuItem = {
+    categoryId: 1,
+                                  companyId,
+                                  name,
+                                  description,
+                                  size_1,
+                                  price_1,
+                                  size_2,
+                                  price_2,
+                                  size_3,
+                                  price_3,
+                                  imageUrl
+                                  }
      describe('POST /menu', function () {
          it('request success with token', function (done) {
              request(app)
