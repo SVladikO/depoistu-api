@@ -70,11 +70,19 @@ const routes = {
                     const companyId = +req.params.companyId;
 
                     if (!companyId) {
-                        return catchHandler({res, status: 400, logger})(resolveError("MENU_ITEM.COMPANY_ID_REQUIRED", req))
+                        return catchHandler({
+                            res,
+                            logger,
+                            status: 400,
+                        })(resolveError("MENU_ITEM.COMPANY_ID_REQUIRED", req))
                     }
 
                     if (isNaN(companyId)) {
-                        return catchHandler({res, status: 400, logger})({errorMessage: getParamMessageRequirements('companyId')})
+                        return catchHandler({
+                            res,
+                            logger,
+                            status: 400,
+                        })({errorMessage: getParamMessageRequirements('companyId')})
                     }
 
                     dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.SELECT_ALL_ONLY_VISIABLE_BY_COMPANY_ID(companyId)))
@@ -184,31 +192,11 @@ const routes = {
                     logger.addLog(DESCRIPTION.MENU_ITEM.UPDATE)
 
                     const {
-                        id,
-                        name,
-                        categoryId,
-                        description,
-                        size_1,
-                        price_1,
-                        size_2,
-                        price_2,
-                        size_3,
-                        price_3,
-                        imageUrl
+                        id, name, categoryId, description, size_1, price_1, size_2, price_2, size_3, price_3, imageUrl
                     } = req.body;
 
                     const menuItem = {
-                        id,
-                        name,
-                        categoryId,
-                        description,
-                        size_1,
-                        price_1,
-                        size_2,
-                        price_2,
-                        size_3,
-                        price_3,
-                        imageUrl
+                        id, name, categoryId, description, size_1, price_1, size_2, price_2, size_3, price_3, imageUrl
                     };
 
                     VALIDATOR.MENU_ITEM.UPDATE(menuItem)
@@ -238,8 +226,8 @@ const routes = {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE)
 
-                    const {id, companyId, isVisible} = req.body;
-                    const menuItem = {id, companyId, isVisible: validateIsVisible(isVisible)};
+                    const {id, isVisible} = req.body;
+                    const menuItem = {id, isVisible: validateIsVisible(isVisible)};
 
                     VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem))))
