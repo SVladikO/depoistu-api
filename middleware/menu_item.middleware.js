@@ -7,10 +7,7 @@ const {Logger} = require("./log.middleware");
 const checkMenuItemOwner = message => (req, res, next) => {
     const logger = new Logger(req);
 
-    const customerId = req.customer.id;
-    const {id: menuItemId} = req.body;
-
-    dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.CHECK_OWNERSHIP_SELECT_BY_CUSTOMER_ID_AND_MENU_ITEM_ID(customerId, menuItemId)))
+    dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.CHECK_OWNERSHIP_SELECT_BY_CUSTOMER_ID_AND_MENU_ITEM_ID(req.customer.id, req.body.menuItemId)))
         .then(res => {
             if (!res.length) {
                 throw new Error(resolveError("MENU_ITEM.ONLY_OWNER_CAN", req));
