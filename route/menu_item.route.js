@@ -239,6 +239,7 @@ const routes = {
                     logger.addLog(DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE)
 
                     const {id, companyId, isVisible} = req.body;
+
                     const menuItem = {id, companyId, isVisible: validateIsVisible(isVisible)};
 
                     VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)

@@ -59,6 +59,7 @@ describe('MENU', function () {
         price_2: 150,
         size_3: 700,
         price_3: 200,
+        isVisible: true,
         imageUrl: '',
     }
 
@@ -126,6 +127,7 @@ describe('MENU', function () {
      it('request success with token', function (done) {
          request(app)
              .put(menuVisibleUrlPUT)
+             .send(menuItem)
              .set('Accept', 'application/json')
              .set(TOKEN_NAME, TOKEN.OWNER)
              .expect(200, done);
@@ -146,6 +148,7 @@ describe('MENU', function () {
      it('request error with wrong owner', function (done) {
          request(app)
              .put(menuVisibleUrlPUT)
+             .send(menuItem)
              .set('Accept', 'application/json')
              .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
              .expect(401, done);
