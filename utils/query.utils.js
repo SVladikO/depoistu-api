@@ -204,7 +204,6 @@ const QueryUtils = {
                               '${+c.isBusinessOwner}',
                               '${c.can_create_companies}')
         ;`
-            console.log(5555, t);
         return t;
         },
         UPDATE_PASSWORD: c => `UPDATE CUSTOMER
