@@ -382,33 +382,30 @@ const availableCityIdsUrlGET = '/available-city-ids'
      describe(`POST /edit-business-type`, function () {
          it('request success with token', function (done) {
              request(app)
-                 .post(/edit-business-type)
+                 .post('/edit-business-type')
                  .set('Accept', 'application/json')
                  .set(TOKEN_NAME, TOKEN.OWNER)
-
                  .expect(200, done);
          });
          it('request error without token', function (done) {
              request(app)
-                 .delete(menuUrlDELETE)
+                 .post('/edit-business-type')
                  .set('Accept', 'application/json')
-
                  .expect(401, done);
          });
          it('request error with broken token', function (done) {
              request(app)
-                 .delete(menuUrlDELETE)
+                 .post('/edit-business-type')
                  .set('Accept', 'application/json')
                  .set(TOKEN_NAME, TOKEN.BROKEN)
-
-                 .expect(401, done);
+                 .expect(403, done);
          });
+
          it('request error with wrong owner', function (done) {
              request(app)
-                 .delete(menuUrlDELETE)
+                 .post('/edit-business-type')
                  .set('Accept', 'application/json')
                  .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-
                  .expect(403, done);
          });
      });
