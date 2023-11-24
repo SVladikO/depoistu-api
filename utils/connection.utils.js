@@ -20,7 +20,7 @@ console.log(
         DB_PASSWORD,
         DB_DATABASE,
         DB_PORT,
-        DB_MODE
+        DB_MODE,
     },
 )
 
