@@ -11,7 +11,7 @@ const sendHandler = (res, logger = new Logger(), status = 200) => data => {
 const catchHandler = ({res, status, logger = new Logger()}) =>
     e => {
         logger.changeMarker()
-        const errorMessage = e.errorMessage || e.message;
+        const errorMessage = e.message;
         const _status = e.code || status;
         logger.addLog('ERROR STATUS:');
         logger.addLog(_status);
