@@ -201,7 +201,7 @@ const routes = {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.COMPANY.DELETE)
 
-                    const {companyId} = req.body;
+                    const companyId = req.body.id;
 
                     dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.DELETE_BY_COMPANY_ID(companyId)))
                         .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId))))
