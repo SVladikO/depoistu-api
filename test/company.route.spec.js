@@ -8,17 +8,15 @@ const {TOKEN} = require("./utils.spec.js")
 
 
 describe(`COMPANY`, function () {
-    const availableCityIdsUrlGET = '/available-city-ids'
-        describe(`GET ${availableCityIdsUrlGET}`, function () {
+        describe(`GET /available-city-ids`, function () {
             it('response success', function (done) {
                 request(app)
-                    .get(availableCityIdsUrlGET)
+                    .get('/available-city-ids')
                     .set('Accept', 'application/json')
                     .expect(200, done);
             });
         })
     
-        const companiesByCityIdUrGET = '/companies/cities'
         describe(`GET /companies/cities/:cityId`, function () {
             it('response success', function (done) {
                 request(app)
@@ -35,7 +33,7 @@ describe(`COMPANY`, function () {
         })
     
        const company = {
-                           id: 1,
+                            id: 1,
                             name: 'testCompanyName',
                             phone1: '280970668830',
                             phone2: '280970668830',
@@ -84,14 +82,13 @@ describe(`COMPANY`, function () {
         });
     
     
-         describe(`PUT company`, function () {
+         describe(`PUT /company`, function () {
              it('request success with token', function (done) {
                  request(app)
                      .put(companiesUrl)
                      .send(company)
                      .set('Accept', 'application/json')
                      .set(TOKEN_NAME, TOKEN.OWNER)
-    
                      .expect(200, done);
              });
              it('request error without token', function (done) {
@@ -99,7 +96,6 @@ describe(`COMPANY`, function () {
                      .put(companiesUrl)
                      .send(company)
                      .set('Accept', 'application/json')
-    
                      .expect(401, done);
              });
              it('request error with broken token', function (done) {
@@ -108,7 +104,6 @@ describe(`COMPANY`, function () {
                      .send(company)
                      .set('Accept', 'application/json')
                      .set(TOKEN_NAME, TOKEN.BROKEN)
-    
                      .expect(401, done);
              });
              it('request error with wrong owner', function (done) {

@@ -19,7 +19,7 @@ describe(`CUSTOMER`, function () {
             request(app)
                 .post('/sign-in')
                 .set('Accept', 'application/json')
-                .expect(400, done);
+                .expect(401, done);
         });
     })
 
