@@ -79,6 +79,14 @@ describe('MENU', function () {
                 .set(TOKEN_NAME, TOKEN.BROKEN)
                 .expect(401, done);
         });
+        it('request error with wrong owner', function (done) {
+            request(app)
+                .post('/menu')
+                .send(menuItem)
+                .set('Accept', 'application/json')
+                .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
+                .expect(403, done);
+        });
     });
 
     describe('PUT /menu', function () {
