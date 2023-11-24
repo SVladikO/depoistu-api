@@ -2,7 +2,6 @@ const request = require('supertest');
 const assert = require('assert');
 const app = require('../index.js');
 const mocha = require('mocha');
-const SELECTED_LANGUAGE_ON_FE = request('../utils/translation.utils.js')
 const {TOKEN_NAME} = require("../middleware/auth.middleware.js");
 const {TOKEN} = require("./utils.spec.js")
 
@@ -25,15 +24,15 @@ describe(`CUSTOMER`, function () {
 
 
     describe(`POST /sign-up`, function () {
-    const customer = {
-    name: 'testName',
-                            phone: '380970668830',
-                            password: '120291vv',
-                            email: new Date().getTime() + '@gmail.com',
-                            join_date: new Date().getTime(),
-                            can_create_companies: 1,
-                            isBusinessOwner: true
-                            }
+        const customer = {
+            name: 'testName',
+            phone: '380970668830',
+            password: '120291vv',
+            email: new Date().getTime() + '@gmail.com',
+            join_date: new Date().getTime(),
+            can_create_companies: 1,
+            isBusinessOwner: true
+        }
         it('request success', function (done) {
             request(app)
                 .post('/sign-up')
