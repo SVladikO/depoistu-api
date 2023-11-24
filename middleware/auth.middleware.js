@@ -23,6 +23,7 @@ const verifyToken = (req, res, next) => {
     const token = req.headers[X_ACCESS_TOKEN_NAME];
 
     if (!token) {
+        logger.addLog(`TOKEN: ${token}`)
         return catchHandler(
             {res, logger}
         )(resolveError("CUSTOMER.TOKEN.REQUIRED", req))
@@ -33,6 +34,7 @@ const verifyToken = (req, res, next) => {
     try {
         customer = Token.verify(token);
     } catch (err) {
+        logger.addLog(`TOKEN: ${token}`)
         logger.addLog('customerId: ' + customer?.id)
         logger.addLog('customerEmail: ' + customer?.email)
         logger.addLog('customerPassword: ' + customer?.password)
