@@ -12,7 +12,7 @@ const catchHandler = ({res, status, logger = new Logger()}) =>
     e => {
         logger.changeMarker()
         const errorMessage = e.errorMessage || e.message;
-        const _status = e.status || status;
+        const _status = e.code || status;
         logger.addLog('ERROR STATUS:');
         logger.addLog(_status);
         logger.addLog('ERROR MESSAGE:');

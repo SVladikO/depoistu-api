@@ -18,145 +18,136 @@ const resolve = (translationObject, req) => {
 const resolveError = (translationKey, req) => {
     const selectedLanguageOnFE = req.headers[SELECTED_LANGUAGE_ON_FE];
 
-    //If translationKey is broken
+    //If translationKey doesn't exist
     if (!ERROR_TRANSLATION[translationKey]) {
         return {
-            errorMessage: translationKey + ' ' + selectedLanguageOnFE,
-        }
-    }
-
-    // If selectedLanguageOnFE isn't set
-    if (!selectedLanguageOnFE) {
-        return {
-            errorMessage: ERROR_TRANSLATION[translationKey]?.errorMessage['en'],
-            status: ERROR_TRANSLATION[translationKey].status
+            message: translationKey + ' ' + selectedLanguageOnFE,
+            code: 500
         }
     }
 
     return {
-        errorMessage: ERROR_TRANSLATION[translationKey]?.errorMessage[selectedLanguageOnFE],
-        status: ERROR_TRANSLATION[translationKey].status
+        message: ERROR_TRANSLATION[translationKey]?.message[selectedLanguageOnFE || 'en'],
+        code: ERROR_TRANSLATION[translationKey].code
     }
 }
 
 const throwError = (translationKey, req) => {
-    const {errorMessage, status} = resolveError(translationKey, req)
-
-    throw new Error(errorMessage, {status})
+    throw resolveError(translationKey, req)
 }
 
 const ERROR_TRANSLATION = {
     "CUSTOMER.TOKEN.REQUIRED": {
-        errorMessage: {
+        message: {
             en: "A token is required. Check 'Are you signed in?'.",
             ua: "Для даної операції потрібен токен. Перевірте чи ви залогінились."
         },
-        status: 401,
+        code: 401,
     },
     "CUSTOMER.TOKEN.INVALID": {
-        errorMessage: {
+        message: {
             en: "Invalid Token. Check 'Are you signed in?'.",
             ua: "Пошкоджений токен. Перевірте чи ви залогінились."
         },
-        status: 401,
+        code: 401,
     },
     "CUSTOMER.TOKEN.FAKE": {
-        errorMessage: {
+        message: {
             en: "Verification is failed. Check 'Are you signed in?'.",
             ua: 'Доступ обмежено. Перевірте чи ви залогінились.',
         },
-        status: 401,
+        code: 401,
     },
     "CUSTOMER.EMAIL_USED": {
-        errorMessage: {
+        message: {
             en: "This email is already used. Please login if you remember password.",
             ua: "Даний email уже використовується. Ви можете ввійти в систему якщо памятаєте пароль.",
         },
-        status: 400,
+        code: 400,
     },
     "CUSTOMER.WRONG_OLD_PASSWORD": {
-        errorMessage: {
+        message: {
             en: "Wrong old password.",
             ua: "Не вірний старий пароль.",
         },
-        status: 400,
+        code: 400,
     },
     "CUSTOMER.WRONG_EMAIL_VERIFICATION_CODE": {
-        errorMessage: {
+        message: {
             en: 'Wrong email verification code.',
             ua: "Не вірний код веріфікації email.",
         },
-        status: 400,
+        code: 400,
     },
     "CUSTOMER.WRONG_CREDENTIALS": {
-        errorMessage: {
+        message: {
             en: "Wrong credentials. Customer doesn't exist.",
             ua: "Не правильні логін чи пароль. Клієн не існує.",
         },
-        status: 401,
+        code: 401,
     },
     "COMPANY.CITY_ID_REQUIRED": {
-        errorMessage: {
+        message: {
             en: "Bad request. City id is required",
             ua: "Не правильний запит. City id обовязкове.",
         },
-        status: 400,
+        code: 400,
     },
     "COMPANY.COMPANY_ID_REQUIRED": {
-        errorMessage: {
+        message: {
             en: "Bad request. Company id is required",
             ua: "Не правильний запит. Company id обовязкове.",
         },
-        status: 400,
+        code: 400,
     },
     "COMPANY.CUSTOMER_ID_REQUIRED": {
-        errorMessage: {
+        message: {
             en: "Bad request. Customer id is required",
             ua: "Не правильний запит. Customer id обовязкове.",
         },
-        status: 400,
+        code: 400,
     },
     "COMPANY.ONLY_OWNER_CAN": {
-        errorMessage: {
+        message: {
             en: "Only company owner can edit information.",
             ua: "Тільки власник закладу може змінювати інформацію.",
         },
-        status: 403,
+        code: 403,
     },
     "COMPANY.MAX_COMPANY_AMOUNT": {
-        errorMessage: {
+        message: {
             en: "You can create only 1 company. If you need more contact us by email.",
             ua: "Ви можете створити один заклад. Якщо вам потрібно більше напишіть нам на email.",
         },
-        status: 400,
+        code: 400,
     },
     "COMPANY.NO_MENU": {
-        errorMessage: {
+        message: {
             en: "Menu wasn't found.",
             ua: "Меню не знайдено.",
         },
-        status: 400,
+        code: 400,
     },
     "COMPANY.DESNT_EXIST": {
-        errorMessage: {
+        message: {
             en: "Company wasn't found.",
             ua: "Заклад не знайдено.",
         },
-        status: 400,
+        code: 400,
     },
     "MENU_ITEM.COMPANY_ID_REQUIRED": {
-        errorMessage: {
+        message: {
             en: "Bad request. Company id is required",
             ua: "Не правильний запит. Company id обовязкове.",
         },
-        status: 400,
+        code: 400,
     },
     "MENU_ITEM.ONLY_OWNER_CAN": {
-        errorMessage: {
+        message: {
             en: "Only owner can bring changes.",
             ua: "Тільки власник може вносити зміни.",
         },
-        status: 403,
+        code: 403,
     },
 }
 
