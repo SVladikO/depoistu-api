@@ -115,7 +115,7 @@ const routes = {
             },
             callbacks: [
                 verifyToken,
-                checkCompanyOwner,
+                checkCompanyOwner(req => req.body.companyId),
                 function (req, res) {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.MENU_ITEM.CREATE)
@@ -178,7 +178,7 @@ const routes = {
             },
             callbacks: [
                 verifyToken,
-                checkMenuItemOwner(),
+                checkCompanyOwner(req => req.body.companyId),
                 function (req, res) {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.MENU_ITEM.UPDATE)

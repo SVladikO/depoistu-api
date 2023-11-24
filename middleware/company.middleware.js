@@ -11,11 +11,12 @@ const {Logger} = require("./log.middleware");
  * @param res
  * @param next
  */
-const checkCompanyOwner = (req, res, next) => {
+const checkCompanyOwner = (getCompanyId) => (req, res, next) => {
     const logger = new Logger(req);
 
     const customerId = req.customer.id;
-    const companyId = req.body.companyId || req.body.id;
+    const companyId = getCompanyId(req); 
+    
 
     if (!companyId) {
         throwError("COMPANY.COMPANY_ID_REQUIRED", req)

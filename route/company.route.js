@@ -167,7 +167,7 @@ const routes = {
             },
             callbacks: [
                 verifyToken,
-                checkCompanyOwner,
+                checkCompanyOwner(req => req.body.id),
                 function (req, res) {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.COMPANY.UPDATE)
@@ -196,7 +196,7 @@ const routes = {
             description: DESCRIPTION.COMPANY.DELETE,
             callbacks: [
                 verifyToken,
-                checkCompanyOwner,
+                checkCompanyOwner(req => req.body.id),
                 function (req, res) {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.COMPANY.DELETE)
