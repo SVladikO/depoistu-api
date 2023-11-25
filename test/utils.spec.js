@@ -1,4 +1,5 @@
 const app = require("../index");
+const request = require('supertest');
 
 const {TOKEN_NAME} = require("../middleware/auth.middleware");
 const TOKEN = {
@@ -10,7 +11,7 @@ const TOKEN = {
 }
 
 function requestWithoutToken (method, url) {
-    it('request error without token', function (done) {
+    it('request error without token 401', function (done) {
         request(app)[method](url)
             .send(url)
             .set('Accept', 'application/json')
@@ -19,7 +20,7 @@ function requestWithoutToken (method, url) {
 }
 
 function requestWithBrokenToken (method, url) {
-    it('request error with broken token', function (done) {
+    it('request error with broken token 401', function (done) {
         request(app)[method](url)
             .send(url)
             .set('Accept', 'application/json')

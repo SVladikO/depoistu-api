@@ -3,8 +3,8 @@ const mocha = require('mocha');
 const expect = require('expect.js');
 const app = require('../index.js');
 
-const {TOKEN} = require("./utils.spec.js")
-const {TOKEN_NAME,  requestWithoutToken, requestWithBrokenToken } = require("../middleware/auth.middleware.js");
+const {TOKEN, requestWithoutToken, requestWithBrokenToken} = require("./utils.spec.js")
+const {TOKEN_NAME} = require("../middleware/auth.middleware.js");
 
 describe(`COMPANY`, function () {
     describe(`GET /available-city-ids`, function () {

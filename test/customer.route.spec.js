@@ -3,7 +3,7 @@ const assert = require('assert');
 const app = require('../index.js');
 const mocha = require('mocha');
 const {TOKEN_NAME} = require("../middleware/auth.middleware.js");
-const {TOKEN} = require("./utils.spec.js")
+const {TOKEN, requestWithoutToken, requestWithBrokenToken} = require("./utils.spec.js")
 
 describe(`CUSTOMER`, function () {
     describe(`POST /sing-in`, function () {
@@ -60,20 +60,9 @@ describe(`CUSTOMER`, function () {
                 .set(TOKEN_NAME, TOKEN.OWNER)
                 .expect(200, done);
         });
-        it('request error without token', function (done) {
-            request(app)
-                .post('/edit-business-type')
-                .set('Accept', 'application/json')
-                .expect(401, done);
-        });
-        it('request error with broken token', function (done) {
-            request(app)
-                .post('/edit-business-type')
-                .send({isBusinessOwner: true})
-                .set('Accept', 'application/json')
-                .set(TOKEN_NAME, TOKEN.BROKEN)
-                .expect(401, done);
-        });
+        requestWithoutToken('post', '/edit-business-type')
+        requestWithBrokenToken('post', '/edit-business-type')
+        
     });
 })
 

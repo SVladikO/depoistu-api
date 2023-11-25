@@ -3,7 +3,7 @@ const assert = require('assert');
 const app = require('../index.js');
 const mocha = require('mocha');
 const {TOKEN_NAME} = require("../middleware/auth.middleware.js");
-const {TOKEN} = require("./utils.spec.js")
+const {TOKEN, requestWithoutToken, requestWithBrokenToken} = require("./utils.spec.js")
 
 describe(`FAVORITE-COMPANIES `, function () {
         const favoriteCompanyUrl = '/favorite-companies';
@@ -33,19 +33,10 @@ describe(`FAVORITE-COMPANIES `, function () {
                     .set(TOKEN_NAME, TOKEN.OWNER)
                     .expect(200, done);
             });
-            it('request error without token', function (done) {
-                request(app)
-                    .post('/favorite-companies')
-                    .set('Accept', 'application/json')
-                    .expect(401, done);
-            });
-            it('request error with broken token', function (done) {
-                request(app)
-                    .post('/favorite-companies')
-                    .set('Accept', 'application/json')
-                    .set(TOKEN_NAME, TOKEN.BROKEN)
-                    .expect(401, done);
-            });
+            
+            requestWithoutToken('post', '/favorite-companies')
+            requestWithBrokenToken('post', '/favorite-companies')
+            
         });
     }
 )

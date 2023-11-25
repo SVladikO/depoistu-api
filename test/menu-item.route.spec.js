@@ -3,7 +3,7 @@ const assert = require('assert');
 const app = require('../index.js');
 const mocha = require('mocha');
 const {TOKEN_NAME} = require("../middleware/auth.middleware.js");
-const {TOKEN} = require("./utils.spec.js")
+const {TOKEN, requestWithoutToken, requestWithBrokenToken} = require("./utils.spec.js")
 
 
 describe('MENU', function () {
@@ -64,21 +64,10 @@ describe('MENU', function () {
                 .set('Accept', 'application/json')
                 .expect(201, done);
         });
-        it('request error without token', function (done) {
-            request(app)
-                .post('/menu')
-                .send(menuItem)
-                .set('Accept', 'application/json')
-                .expect(401, done);
-        });
-        it('request error with broken token', function (done) {
-            request(app)
-                .post('/menu')
-                .send(menuItem)
-                .set('Accept', 'application/json')
-                .set(TOKEN_NAME, TOKEN.BROKEN)
-                .expect(401, done);
-        });
+
+            requestWithoutToken('post', '/menu')
+            requestWithBrokenToken('post', '/menu')
+
         it('request error with wrong owner', function (done) {
             request(app)
                 .post('/menu')
@@ -98,21 +87,10 @@ describe('MENU', function () {
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
-        it('request error without token', function (done) {
-            request(app)
-                .put('/menu')
-                .send(menuItem)
-                .set('Accept', 'application/json')
-                .expect(401, done);
-        });
-        it('request error with broken token', function (done) {
-            request(app)
-                .put('/menu')
-                .send(menuItem)
-                .set('Accept', 'application/json')
-                .set(TOKEN_NAME, TOKEN.BROKEN)
-                .expect(401, done);
-        });
+        
+        requestWithoutToken('put', '/menu')
+        requestWithBrokenToken('put', '/menu')
+
         it('request error with wrong owner', function (done) {
             request(app)
                 .put('/menu')
@@ -133,19 +111,10 @@ describe('MENU', function () {
                 .set(TOKEN_NAME, TOKEN.OWNER)
                 .expect(200, done);
         });
-        it('request error without token', function (done) {
-            request(app)
-                .put(menuVisibleUrlPUT)
-                .set('Accept', 'application/json')
-                .expect(401, done);
-        });
-        it('request error with broken token', function (done) {
-            request(app)
-                .put(menuVisibleUrlPUT)
-                .set('Accept', 'application/json')
-                .set(TOKEN_NAME, TOKEN.BROKEN)
-                .expect(401, done);
-        });
+        
+        requestWithoutToken('put', menuVisibleUrlPUT)
+        requestWithBrokenToken('put', menuVisibleUrlPUT)
+
         it('request error with wrong owner', function (done) {
             request(app)
                 .put(menuVisibleUrlPUT)
