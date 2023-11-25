@@ -1,28 +1,31 @@
 const request = require('supertest');
-const assert = require('assert');
-const app = require('../index.js');
 const mocha = require('mocha');
+const expect = require('expect.js');
+const app = require('../index.js');
+
 const {TOKEN_NAME} = require("../middleware/auth.middleware.js");
 const {TOKEN} = require("./utils.spec.js")
 
-
 describe(`COMPANY`, function () {
     describe(`GET /available-city-ids`, function () {
-        it.only('response success', async function (done) {
+        it('response success', async function () {
             const response = await request(app)
                 .get('/available-city-ids')
                 .set('Accept', 'application/json')
 
-                expect(response.status).toEqual(200);
+                expect(response.status).to.be.equal(200);
+                expect(response.body).to.be.a('array');
         });
     })
 
     describe(`GET /companies/cities/:cityId`, function () {
-        it('response success', function (done) {
-            request(app)
+        it('response success', async function () {
+            const response = await request(app)
                 .get(`/companies/cities/204`)
                 .set('Accept', 'application/json')
-                .expect(200, done);
+
+                expect(response.status).to.be.equal(200);
+                expect(response.body).to.be.a('array');
         });
         it('response error', function (done) {
             request(app)
@@ -81,7 +84,6 @@ describe(`COMPANY`, function () {
         //        });
     });
 
-
     describe(`PUT /company`, function () {
         it('request success with token', function (done) {
             request(app)
@@ -96,7 +98,7 @@ describe(`COMPANY`, function () {
                 .put(companiesUrl)
                 .send(company)
                 .set('Accept', 'application/json')
-                .expect(401, done);
+                .expect(401, done); 
         });
         it('request error with broken token', function (done) {
             request(app)
