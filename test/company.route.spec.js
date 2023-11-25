@@ -3,8 +3,8 @@ const mocha = require('mocha');
 const expect = require('expect.js');
 const app = require('../index.js');
 
-const {TOKEN_NAME} = require("../middleware/auth.middleware.js");
 const {TOKEN} = require("./utils.spec.js")
+const {TOKEN_NAME,  requestWithoutToken, requestWithBrokenToken } = require("../middleware/auth.middleware.js");
 
 describe(`COMPANY`, function () {
     describe(`GET /available-city-ids`, function () {
@@ -57,21 +57,10 @@ describe(`COMPANY`, function () {
                 .set(TOKEN_NAME, TOKEN.OWNER)
                 .expect(200, done);
         });
-        it('request error without token', function (done) {
-            request(app)
-                .post(companiesUrl)
-                .send(company)
-                .set('Accept', 'application/json')
-                .expect(401, done);
-        });
-        it('request error with broken token', function (done) {
-            request(app)
-                .post(companiesUrl)
-                .send(company)
-                .set('Accept', 'application/json')
-                .set(TOKEN_NAME, TOKEN.BROKEN)
-                .expect(401, done);
-        });
+
+        requestWithoutToken('post', companiesUrl)
+        requestWithBrokenToken('post', companiesUrl)
+
 
         //       TODO: CHECK LIMITED ABOUT OF CREATE COMPANY
         //        it('request error with wrong owner', function (done) {
@@ -93,21 +82,10 @@ describe(`COMPANY`, function () {
                 .set(TOKEN_NAME, TOKEN.OWNER)
                 .expect(200, done);
         });
-        it('request error without token', function (done) {
-            request(app)
-                .put(companiesUrl)
-                .send(company)
-                .set('Accept', 'application/json')
-                .expect(401, done); 
-        });
-        it('request error with broken token', function (done) {
-            request(app)
-                .put(companiesUrl)
-                .send(company)
-                .set('Accept', 'application/json')
-                .set(TOKEN_NAME, TOKEN.BROKEN)
-                .expect(401, done);
-        });
+
+        requestWithoutToken('put', companiesUrl)
+        requestWithBrokenToken('put', companiesUrl)
+
         it('request error with wrong owner', function (done) {
             request(app)
                 .put(companiesUrl)
