@@ -17,13 +17,10 @@ const checkCompanyOwner = (getCompanyId) => (req, res, next) => {
     const customerId = req.customer.id;
     const companyId = getCompanyId(req);
 
-
-
     if (!companyId) {
        return catchHandler({res, logger})(resolveError("COMPANY.COMPANY_ID_REQUIRED", req))
     }
 
-    console.log('ooo ni')
     dbRequest(logger.addQueryDB(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(companyId, customerId)))
         .then(res => {
             if (!res.length) {

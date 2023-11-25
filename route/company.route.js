@@ -136,9 +136,8 @@ const routes = {
                     logger.addLog(DESCRIPTION.COMPANY.CREATE)
 
                     const customerId = req.customer.id;
-                    const {name, cityId, street, phone1, phone2, phone3, schedule} = req.body;
                     const joinDate = '' + new Date().getTime();
-                    const company = {customerId, name, phone1, phone2, phone3, cityId, street, joinDate, schedule};
+                    const company = {...req.body, customerId, joinDate};
 
                     VALIDATOR.COMPANY.CREATE(company)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.INSERT(company))))
@@ -172,12 +171,12 @@ const routes = {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.COMPANY.UPDATE)
 
-                    const {id, name, phone1, phone2, phone3, cityId, street, schedule} = req.body;
-                    const company = {id, name, phone1, phone2, phone3, cityId, street, schedule};
+                    const company = req.body;
 
                     VALIDATOR.COMPANY.UPDATE(company)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.UPDATE(company))))
-                        .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id))))
+                        // We still need this select for FE
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_COMPANY_ID(req.body.id))))
                         .then(convertCompanyFields)
                         .then(sendHandler(res, logger))
                         .catch(catchHandler({res, logger, status: 400}))

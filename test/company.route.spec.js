@@ -8,11 +8,12 @@ const {TOKEN} = require("./utils.spec.js")
 
 describe(`COMPANY`, function () {
     describe(`GET /available-city-ids`, function () {
-        it('response success', function (done) {
-            request(app)
+        it.only('response success', async function (done) {
+            const response = await request(app)
                 .get('/available-city-ids')
                 .set('Accept', 'application/json')
-                .expect(200, done);
+
+                expect(response.status).toEqual(200);
         });
     })
 

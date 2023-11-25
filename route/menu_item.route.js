@@ -16,7 +16,7 @@ const {Logger} = require("../middleware/log.middleware");
  * @param value
  * @return {number}
  */
-const validateIsVisible = value => +(!!value);
+const convertIsVisible = value => +(!!value);
 
 const getParamMessageRequirements = (paramName, requiredType = 'number') => `Error: Param ${paramName} should be ${requiredType}`;
 
@@ -120,33 +120,7 @@ const routes = {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.MENU_ITEM.CREATE)
 
-                    const {
-                        categoryId,
-                        companyId,
-                        name,
-                        description,
-                        size_1,
-                        price_1,
-                        size_2,
-                        price_2,
-                        size_3,
-                        price_3,
-                        imageUrl,
-                    } = req.body;
-                    const menuItem = {
-                        categoryId,
-                        companyId,
-                        name,
-                        description,
-                        size_1,
-                        price_1,
-                        size_2,
-                        price_2,
-                        size_3,
-                        price_3,
-                        imageUrl,
-                        isVisible: 1
-                    };
+                    const menuItem = {...req.body, isVisible: 1};
 
                     VALIDATOR.MENU_ITEM.CREATE(menuItem)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.INSERT(menuItem))))
@@ -183,17 +157,12 @@ const routes = {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.MENU_ITEM.UPDATE)
 
-                    const {
-                        id, name, categoryId, description, size_1, price_1, size_2, price_2, size_3, price_3, imageUrl
-                    } = req.body;
-
-                    const menuItem = {
-                        id, name, categoryId, description, size_1, price_1, size_2, price_2, size_3, price_3, imageUrl
-                    };
+                    const menuItem = req.body;
 
                     VALIDATOR.MENU_ITEM.UPDATE(menuItem)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.UPDATE(menuItem))))
-                        .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.SELECT_BY_ID(id))))
+                        // We still need this select for FE
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.SELECT_BY_ID(req.body.id))))
                         .then(convertMenuItemFields)
                         .then(sendHandler(res, logger))
                         .catch(catchHandler({res, logger, status: 400}));
@@ -219,7 +188,7 @@ const routes = {
                     logger.addLog(DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE)
 
                     const {id, isVisible} = req.body;
-                    const menuItem = {id, isVisible: validateIsVisible(isVisible)};
+                    const menuItem = {id, isVisible: convertIsVisible(isVisible)};
 
                     VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem))))
