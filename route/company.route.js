@@ -121,6 +121,7 @@ const routes = {
                     logger.addLog(DESCRIPTION.COMPANY.GET_ALL_COMPANIES)
 
                     dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_ALL_COMPANIES()))
+                        .then(convertCompanyFields)
                         .then(sendHandler(res, logger))
                         .catch(catchHandler({res, logger, status: 400}));
                 }]
