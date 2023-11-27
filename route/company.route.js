@@ -111,6 +111,21 @@ const routes = {
                 }]
         },
         {
+            method: "get",
+            url: "/companies",
+            url_example: "/companies",
+            description: DESCRIPTION.COMPANY.GET_ALL_COMPANIES,
+            callbacks: [
+                function (req, res) {
+                    const logger = new Logger(req);
+                    logger.addLog(DESCRIPTION.COMPANY.GET_ALL_COMPANIES)
+
+                    dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_ALL_COMPANIES()))
+                        .then(sendHandler(res, logger))
+                        .catch(catchHandler({res, logger, status: 400}));
+                }]
+        },
+        {
             method: "post",
             url: "/companies",
             url_example: "/companies",
