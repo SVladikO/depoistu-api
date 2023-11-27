@@ -20,7 +20,7 @@ console.log(
         DB_PASSWORD,
         DB_DATABASE,
         DB_PORT,
-        DB_MODE
+        DB_MODE,
     },
 )
 
@@ -45,7 +45,7 @@ function dbRequest(query) {
             (err, results) => {
 
                 if (err) {
-                    reject({errorMessage: 'DB error: ' + err.message})
+                    reject({errorMessage: 'DB error: ' + err.message, status: 500})
                 }
 
                 resolve(results)

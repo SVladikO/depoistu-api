@@ -4,7 +4,6 @@ const logRequestDetails = (req, res, next) => {
 }
 
 
-
 /**
  * Generate standard of start request log.
  *
@@ -14,10 +13,16 @@ const logRequestDetails = (req, res, next) => {
 class Logger {
     constructor(req = {method: 'default', url: 'default', body: {}}) {
         this.marker = ' ----- '
+
+        const d = new Date();
+        const requestDate = `${d.getDate()}.${d.getMonth()}.${d.getFullYear()}`;
+        const requestTime = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+
         this.log = [
             '',
-            'start of request',
-            req.method + ' ' + req.url
+            'NEW REQUEST',
+            requestDate + ' ' + requestTime,
+            req.method + ' ' + req.url,
         ]
 
 
@@ -61,7 +66,7 @@ class Logger {
     writeLog() {
         let result = '';
         this.log.forEach(log => result += this.marker + log + ' \n ')
-        console.log( ' \n ' + ' \n ' + result);
+        console.log(' \n ' + ' \n ' + result);
     }
 }
 

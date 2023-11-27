@@ -5,7 +5,7 @@ const {catchHandler, sendHandler} = require("../utils/handler.utils");
 const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.utils");
 const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 const {Token, verifyToken} = require("../middleware/auth.middleware");
-const {TRANSLATION, resolve} = require("../utils/translations.utils");
+const {resolveError, throwError} = require("../utils/translations.utils");
 const {Logger} = require("../middleware/log.middleware");
 
 const addToken = customer => {
@@ -37,6 +37,8 @@ const routes = {
                     logger.addLog(DESCRIPTION.CUSTOMER.SING_IN)
 
                     const {email, password} = req.body;
+
+
 
                     dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password)))
                         .then(convertCustomerFields)
@@ -82,7 +84,7 @@ const routes = {
                         .then(() => dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SELECT_BY_EMAIL(email))))
                         .then(response => {
                                 if (response.length) {
-                                    throw new Error(resolve(TRANSLATION.CUSTOMER.EMAIL_USED, req))
+                                    throwError("CUSTOMER.EMAIL_USED", req)
                                 }
                             }
                         )
@@ -147,7 +149,7 @@ const routes = {
                         .then(() => dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_PASSWORD(email, password))))
                         .then(response => {
                                 if (!response.length) {
-                                    throw new Error(resolve(TRANSLATION.CUSTOMER.WRONG_OLD_PASSWORD, req))
+                                    throwError("CUSTOMER.WRONG_OLD_PASSWORD", req)
                                 }
                             }
                         )
@@ -174,7 +176,7 @@ const routes = {
                         .then(() => dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SELECT_BY_EMAIL_AND_EMAIL_VERIFICATION_CODE(email, emailVerificationCode))))
                         .then(response => {
                                 if (!response.length) {
-                                    throw new Error(resolve(TRANSLATION.CUSTOMER.WRONG_EMAIL_VERIFICATION_CODE, req))
+                                    throwError("CUSTOMER.WRONG_EMAIL_VERIFICATION_CODE", req)
                                 }
                             }
                         )

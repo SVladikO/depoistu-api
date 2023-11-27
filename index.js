@@ -22,8 +22,6 @@ app.use(logRequestDetails);
 connectRoutes(app, routes);
 provideApiDocRoute(app, routes);
 
-
-
 app.get('/api-list2', function (req, res) {
     res.sendFile(__dirname + '/public/api_list.html');
 })

@@ -46,6 +46,8 @@ const routes = {
                     const {id: customer_id} = req.customer;
                     const {company_id} = req.body;
 
+
+
                     dbRequest(logger.addQueryDB(QUERY.FAVORITE_COMPANY.ADD(customer_id, company_id)))
                         .then(sendHandler(res, logger))
                         .catch(catchHandler({res, logger, status: 400}));

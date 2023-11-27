@@ -7,7 +7,7 @@ const {checkAvailableCompany} = require("../middleware/company.middleware");
 
 const QUERY = require("../utils/query.utils");
 const {VALIDATOR, VALIDATION} = require("../utils/validation.utils")
-const {TRANSLATION, resolve} = require("../utils/translations.utils");
+const {resolveError, throwError} = require("../utils/translations.utils");
 const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 const {convertCompanyFields} = require("../utils/company.utils")
 
@@ -46,7 +46,7 @@ const routes = {
                 const {city_id} = req.params;
 
                 if (city_id === 'undefined') {
-                    return catchHandler({res, status: 400, logger})({errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)})
+                    return catchHandler({res, logger})(resolveError("COMPANY.CITY_ID_REQUIRED", req))
                 }
 
                 dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_CITY_ID(city_id)))
@@ -72,13 +72,13 @@ const routes = {
                         res,
                         status: 400,
                         logger
-                    })({errorMessage: resolve(TRANSLATION.COMPANY.COMPANY_ID_REQUIRED, req)})
+                    })(resolveError("COMPANY.COMPANY_ID_REQUIRED", req))
                 }
 
                 dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_COMPANY_ID(companyId)))
                     .then(res => {
                         if (!res.length) {
-                            throw new Error(resolve(TRANSLATION.COMPANY.DESNT_EXIST, req));
+                            throwError("COMPANY.DESNT_EXIST", req);
                         }
 
                         return res;
@@ -101,7 +101,7 @@ const routes = {
                     const {customerId} = req.params;
 
                     if (!customerId) {
-                        return catchHandler({res, status: 400, logger})({errorMessage: resolve(TRANSLATION.COMPANY.CITY_ID_REQUIRED, req)})
+                        return catchHandler({res, status: 400, logger})(resolveError("COMPANY.CITY_ID_REQUIRED", req))
                     }
 
                     dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId)))
@@ -136,9 +136,8 @@ const routes = {
                     logger.addLog(DESCRIPTION.COMPANY.CREATE)
 
                     const customerId = req.customer.id;
-                    const {name, cityId, street, phone1, phone2, phone3, schedule} = req.body;
                     const joinDate = '' + new Date().getTime();
-                    const company = {customerId, name, phone1, phone2, phone3, cityId, street, joinDate, schedule};
+                    const company = {...req.body, customerId, joinDate};
 
                     VALIDATOR.COMPANY.CREATE(company)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.INSERT(company))))
@@ -167,17 +166,17 @@ const routes = {
             },
             callbacks: [
                 verifyToken,
-                checkCompanyOwner,
+                checkCompanyOwner(req => req.body.id),
                 function (req, res) {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.COMPANY.UPDATE)
 
-                    const {id, name, phone1, phone2, phone3, cityId, street, schedule} = req.body;
-                    const company = {id, name, phone1, phone2, phone3, cityId, street, schedule};
+                    const company = req.body;
 
                     VALIDATOR.COMPANY.UPDATE(company)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.UPDATE(company))))
-                        .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_COMPANY_ID(id))))
+                        // We still need this select for FE
+                        .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_COMPANY_ID(req.body.id))))
                         .then(convertCompanyFields)
                         .then(sendHandler(res, logger))
                         .catch(catchHandler({res, logger, status: 400}))
@@ -196,12 +195,12 @@ const routes = {
             description: DESCRIPTION.COMPANY.DELETE,
             callbacks: [
                 verifyToken,
-                checkCompanyOwner,
+                checkCompanyOwner(req => req.body.id),
                 function (req, res) {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.COMPANY.DELETE)
 
-                    const {companyId} = req.body;
+                    const companyId = req.body.id;
 
                     dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.DELETE_BY_COMPANY_ID(companyId)))
                         .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId))))
