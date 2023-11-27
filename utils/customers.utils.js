@@ -1,4 +1,4 @@
-const {resolve, TRANSLATION} = require("./translations");
+const {throwError} = require("./translations.utils");
 
 function getFirstCustomer(req) {
     return customers => {
@@ -6,12 +6,11 @@ function getFirstCustomer(req) {
             return customers[0];
         }
 
-        throw new Error(resolve(TRANSLATION.CUSTOMER.WRONG_CREDENTIALS, req));
+        throwError("CUSTOMER.WRONG_CREDENTIALS", req);
     }
 }
 
 function convertCustomerFields(res) {
-    console.log(6000, 'convertCustomerFields: ', res);
     return res.map(customer => {
         const {
             ID: id,

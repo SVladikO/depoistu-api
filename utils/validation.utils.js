@@ -60,7 +60,7 @@ const FIELD_REQUIREMENTS_FOR = {
     }
 };
 
-const VALIDATION = {
+const ValidationUtils = {
     CUSTOMER: {
         name: Yup.string()
             .required(`Name is required!`)
@@ -142,18 +142,18 @@ const VALIDATION = {
 const VALIDATOR = {
     CUSTOMER: {
         SING_UP: customer => {
-            const {name, email, phone, password} = VALIDATION.CUSTOMER;
+            const {name, email, phone, password} = ValidationUtils.CUSTOMER;
             const validator = Yup.object().shape({name, email, phone, password})
             return validator.validate(customer)
         },
         CHANGE_PASSWORD: customer => {
-            const {password, email} = VALIDATION.CUSTOMER;
+            const {password, email} = ValidationUtils.CUSTOMER;
 
             const validator = Yup.object().shape({password, email, newPassword: password})
             return validator.validate(customer)
         },
         VALIDATE_EMAIL: customer => {
-            const {email, emailVerificationCode} = VALIDATION.CUSTOMER;
+            const {email, emailVerificationCode} = ValidationUtils.CUSTOMER;
 
             const validator = Yup.object().shape({email, emailVerificationCode})
             return validator.validate(customer)
@@ -161,12 +161,12 @@ const VALIDATOR = {
     },
     COMPANY: {
         CREATE: company => {
-            const {name, cityId, street, phone1, phone2, phone3, schedule} = VALIDATION.COMPANY;
+            const {name, cityId, street, phone1, phone2, phone3, schedule} = ValidationUtils.COMPANY;
             const validator = Yup.object().shape({name, cityId, street, phone1, phone2, phone3, schedule})
             return validator.validate(company)
         },
         UPDATE: company => {
-            const {id, name, cityId, street, phone1, phone2, phone3, schedule} = VALIDATION.COMPANY;
+            const {id, name, cityId, street, phone1, phone2, phone3, schedule} = ValidationUtils.COMPANY;
             const validator = Yup.object().shape({id, name, cityId, street, phone1, phone2, phone3, schedule});
 
             return validator.validate(company);
@@ -174,17 +174,17 @@ const VALIDATOR = {
     },
     MENU_ITEM: {
         CREATE: menuItem => {
-            const {categoryId, companyId, name, price, description, size, is_visible} = VALIDATION.MENU_ITEM;
+            const {categoryId, companyId, name, price, description, size, is_visible} = ValidationUtils.MENU_ITEM;
             const validator = Yup.object().shape({categoryId, companyId, name, price, description, size, is_visible});
             return validator.validate(menuItem);
         },
         UPDATE: menuItem => {
-            const {name, categoryId, price, description, size} = VALIDATION.MENU_ITEM;
+            const {name, categoryId, price, description, size} = ValidationUtils.MENU_ITEM;
             const validator = Yup.object().shape({name, categoryId, price, description, size});
             return validator.validate(menuItem);
         },
         UPDATE_IS_VISIBLE: menuItem => {
-            const {id, isVisible} = VALIDATION.MENU_ITEM;
+            const {id, isVisible} = ValidationUtils.MENU_ITEM;
             const validator = Yup.object().shape({id, isVisible});
             return validator.validate(menuItem);
         },
@@ -193,5 +193,5 @@ const VALIDATOR = {
 
 module.exports = {
     VALIDATOR,
-    VALIDATION,
+    VALIDATION: ValidationUtils,
 };

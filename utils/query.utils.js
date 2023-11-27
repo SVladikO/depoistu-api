@@ -1,4 +1,4 @@
-const QUERY = {
+const QueryUtils = {
     MENU_ITEM: {
         SELECT_BY_ID: companyId => `SELECT *
                                     from MENU_ITEM
@@ -79,7 +79,6 @@ const QUERY = {
                           ON CUSTOMER.ID = COMPANY.CUSTOMER_ID
             WHERE CUSTOMER.ID = ${customerId}
               AND MENU_ITEM.ID = ${menuItemId};
-
         `
     },
     HISTORY: {
@@ -205,7 +204,6 @@ const QUERY = {
                               '${+c.isBusinessOwner}',
                               '${c.can_create_companies}')
         ;`
-            console.log(5555, t);
         return t;
         },
         UPDATE_PASSWORD: c => `UPDATE CUSTOMER
@@ -218,4 +216,4 @@ const QUERY = {
     // DELETE: `DROP TABLE IF EXISTS COMPANY`,
 }
 
-module.exports = QUERY;
+module.exports = QueryUtils;
