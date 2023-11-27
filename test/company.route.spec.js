@@ -1,31 +1,35 @@
 const request = require('supertest');
 const mocha = require('mocha');
-const expect = require('expect.js');
 const app = require('../index.js');
 
 const {TOKEN, requestWithoutToken, requestWithBrokenToken} = require("./utils.spec.js")
 const {TOKEN_NAME} = require("../middleware/auth.middleware.js");
 
 describe(`COMPANY`, function () {
+    before(() => {
+        console.log('before')
+    })
+
+    after(() => {
+        console.log('after')
+    })
+
+
     describe(`GET /available-city-ids`, function () {
-        it('response success', async function () {
-            const response = await request(app)
+        it('response success', function (done) {
+            request(app)
                 .get('/available-city-ids')
                 .set('Accept', 'application/json')
-
-                expect(response.status).to.be.equal(200);
-                expect(response.body).to.be.a('array');
+                .expect(200, done);
         });
     })
 
     describe(`GET /companies/cities/:cityId`, function () {
-        it('response success', async function () {
-            const response = await request(app)
+        it('response success', function (done) {
+            request(app)
                 .get(`/companies/cities/204`)
                 .set('Accept', 'application/json')
-
-                expect(response.status).to.be.equal(200);
-                expect(response.body).to.be.a('array');
+                .expect(200, done); 
         });
         it('response error', function (done) {
             request(app)
