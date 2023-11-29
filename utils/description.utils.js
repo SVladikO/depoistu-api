@@ -20,6 +20,7 @@ const DescriptionUtils = {
         GET_BY_COMPANY_ID: "Get company by company_id.",
         GET_BY_CUSTOMER_ID: "Get companies by customer_id.",
         GET_AVAILABLE_CITIES: "Get city ids where are company with available menu.",
+        GET_ALL_COMPANIES: "Get all companies.",
         CREATE: "Create company. customer_id  took from token.",
         UPDATE: "Update company.",
         DELETE: "Delete company by company_id.",

@@ -29,7 +29,7 @@ describe(`COMPANY`, function () {
             request(app)
                 .get(`/companies/cities/204`)
                 .set('Accept', 'application/json')
-                .expect(200, done); 
+                .expect(200, done);
         });
         it('response error', function (done) {
             request(app)
@@ -47,7 +47,7 @@ describe(`COMPANY`, function () {
         phone3: '280970668830',
         cityId: 204,
         street: 'street Test 2',
-        schedule: ', , , , , , , , , ,,',
+        schedule: '09:00-21:00,09:00-21:00,09:00-21:00,09:00-21:00,09:00-21:00,09:00-21:00,09:00-21:00',
     }
 
     const companiesUrl = '/companies';
