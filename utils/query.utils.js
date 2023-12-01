@@ -1,4 +1,4 @@
-const QUERY = {
+const QueryUtils = {
     MENU_ITEM: {
         SELECT_BY_ID: companyId => `SELECT *
                                     from MENU_ITEM
@@ -79,7 +79,6 @@ const QUERY = {
                           ON CUSTOMER.ID = COMPANY.CUSTOMER_ID
             WHERE CUSTOMER.ID = ${customerId}
               AND MENU_ITEM.ID = ${menuItemId};
-
         `
     },
     HISTORY: {
@@ -126,6 +125,18 @@ const QUERY = {
                                                JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
                                       WHERE CITY_ID = '${cityId}'
                                         AND MENU_ITEM.IS_VISIBLE = 1;`,
+        SELECT_ALL_COMPANIES: cityId => `SELECT DISTINCT
+                                                      COMPANY.ID,
+                                                      COMPANY.NAME,
+                                                      COMPANY.PHONE1,
+                                                      COMPANY.PHONE2,
+                                                      COMPANY.PHONE3,
+                                                      COMPANY.CITY_ID,
+                                                      COMPANY.STREET,
+                                                      COMPANY.SCHEDULE
+                                               FROM COMPANY
+                                               JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
+                                               WHERE MENU_ITEM.IS_VISIBLE = 1;`,
         // CHECK OWNERSHIP...
         CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID: (company_id, customer_id) => `SELECT *
                                                                                             from COMPANY
@@ -205,7 +216,6 @@ const QUERY = {
                               '${+c.isBusinessOwner}',
                               '${c.can_create_companies}')
         ;`
-            console.log(5555, t);
         return t;
         },
         UPDATE_PASSWORD: c => `UPDATE CUSTOMER
@@ -218,4 +228,4 @@ const QUERY = {
     // DELETE: `DROP TABLE IF EXISTS COMPANY`,
 }
 
-module.exports = QUERY;
+module.exports = QueryUtils;

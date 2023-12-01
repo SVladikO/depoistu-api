@@ -1,8 +1,8 @@
 const express = require('express')
 const cors = require('cors');
 
-const {logRequestDetails} = require('./middleware/log')
-const {connectRoutes, provideApiDocRoute} = require('./utils/api_route_provider')
+const {logRequestDetails} = require('./middleware/log.middleware')
+const {connectRoutes, provideApiDocRoute} = require('./utils/api_route_provider.utils')
 const routes = require('./route/index');
 
 const app = express();
@@ -21,8 +21,6 @@ app.use(logRequestDetails);
 
 connectRoutes(app, routes);
 provideApiDocRoute(app, routes);
-
-
 
 app.get('/api-list2', function (req, res) {
     res.sendFile(__dirname + '/public/api_list.html');
