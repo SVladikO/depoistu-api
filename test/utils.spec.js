@@ -1,7 +1,13 @@
 const app = require("../index");
 const request = require('supertest');
+const packageJson = require('../package.json');
 
 const {TOKEN_NAME} = require("../middleware/auth.middleware");
+
+const REQUEST_HEADER_FIELD = {
+    CLIENT_VERSION: packageJson.version
+}
+
 const TOKEN = {
     // token from developDevelop@gmail.com
     OWNER: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJkZXZlbG9wRGV2ZWxvcEBnbWFpbC5jb20iLCJwYXNzd29yZCI6InBtYTExMTEiLCJpYXQiOjE3MDA3MjU4OTF9.m9BEw8SmFOJpyucIif-3SLoto4v0PRdNZq_GZSkZlWE`,
