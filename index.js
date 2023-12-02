@@ -5,13 +5,14 @@ const {connectRoutes, provideApiDocRoute} = require('./utils/api_route_provider.
 const {catchHandler} = require('./utils/handler.utils')
 const routes = require('./route/index');
 const packageJson = require('./package.json')
+const {resolveError} = require("./utils/translations.utils");
 const app = express();
 
 app.use(cors(corsOptionsDelegate));
 app.use(express.json());
 app.use((req, res, next) => {
     if (req.headers['client-version'] !== packageJson.version) {
-       catchHandler({res, status: 408})({message: 'old fe version'})
+       catchHandler({res})(resolveError('BROKEN_VERSION_CONSISTENCY', req))
     } else {
         next()
     }
@@ -55,7 +56,7 @@ function corsOptionsDelegate(req, callback) {
     ];
 
     let corsOptions;
-    
+
     if (allowlist.indexOf(req.header('Origin')) !== -1) {
     corsOptions = { origin: true } // reflect (enable) the requested origin in the CORS response
     } else {

@@ -100,6 +100,13 @@ const ERROR_TRANSLATION = {
         },
         code: 400,
     },
+    "BROKEN_VERSION_CONSISTENCY": {
+        message: {
+            en: "Reload page.",
+            ua: "Перезагрузіть сайт.",
+        },
+        code: 408,
+    },
     "COMPANY.CUSTOMER_ID_REQUIRED": {
         message: {
             en: "Bad request. Customer id is required",
