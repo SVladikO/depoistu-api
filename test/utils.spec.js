@@ -5,7 +5,7 @@ const packageJson = require('../package.json');
 const {TOKEN_NAME} = require("../middleware/auth.middleware");
 
 const REQUEST_HEADER_FIELD = {
-    CLIENT_VERSION: packageJson.version
+    CLIENT_VERSION: 'client-version'
 }
 
 const TOKEN = {
@@ -16,21 +16,23 @@ const TOKEN = {
     WRONG_OWNER: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjgsImVtYWlsIjoidmxhZC5zZWVoaXljaHVrQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiZWVlZWVlIiwiaWF0IjoxNzAwNzI1OTUwfQ.MiiNa15tFGkuDBj_FwqHM3JmQWZ4RFp94Gck5oKSA5c`,
 }
 
-function requestWithoutToken (method, url) {
+function requestWithoutToken(method, url) {
     it('request error without token 401', function (done) {
         request(app)[method](url)
             .send(url)
             .set('Accept', 'application/json')
+            .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
             .expect(401, done);
     });
 }
 
-function requestWithBrokenToken (method, url) {
+function requestWithBrokenToken(method, url) {
     it('request error with broken token 401', function (done) {
         request(app)[method](url)
             .send(url)
             .set('Accept', 'application/json')
             .set(TOKEN_NAME, TOKEN.BROKEN)
+            .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
             .expect(401, done);
     });
 }
@@ -38,5 +40,6 @@ function requestWithBrokenToken (method, url) {
 module.exports = {
     TOKEN,
     requestWithoutToken,
-    requestWithBrokenToken
+    requestWithBrokenToken,
+    REQUEST_HEADER_FIELD
 };
