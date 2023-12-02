@@ -1,8 +1,9 @@
 const request = require('supertest');
 const mocha = require('mocha');
 const app = require('../index.js');
-
-const {TOKEN, wrappedRequest, requestWithoutToken, requestWithBrokenToken} = require("./utils.spec.js")
+const packageJson = require('../package.json');
+const {REQUEST_HEADER_FIELD} = require("./utils.spec.js");
+const {TOKEN, requestWithoutToken, requestWithBrokenToken} = require("./utils.spec.js")
 const {TOKEN_NAME} = require("../middleware/auth.middleware.js");
 
 describe(`COMPANY`, function () {
@@ -17,22 +18,43 @@ describe(`COMPANY`, function () {
 
     describe(`GET /available-city-ids`, function () {
         it('response success', function (done) {
-            wrappedRequest
+            request(app)
                 .get('/available-city-ids')
+                .set('Accept', 'application/json')
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(200, done);
+        });
+
+
+        it('response error different versions', function (done) {
+            request(app)
+                .get('/available-city-ids')
+                .set('Accept', 'application/json')
+                .expect(408, done);
         });
     })
 
     describe(`GET /companies/cities/:cityId`, function () {
         it('response success', function (done) {
-            wrappedRequest
+            request(app)
                 .get(`/companies/cities/204`)
+                .set('Accept', 'application/json')
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(200, done);
         });
         it('response error', function (done) {
-            wrappedRequest
+            request(app)
                 .get(`/companies/cities/scr`)
+                .set('Accept', 'application/json')
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(200, done);
+        });
+
+        it('response error different versions', function (done) {
+            request(app)
+                .get(`/companies/cities/scr`)
+                .set('Accept', 'application/json')
+                .expect(408, done);
         });
     })
 
@@ -51,9 +73,12 @@ describe(`COMPANY`, function () {
 
     describe(`POST ${companiesUrl}`, function () {
         it('request success with token', function (done) {
-            wrappedRequest
+            request(app)
                 .post(companiesUrl)
                 .send(company)
+                .set('Accept', 'application/json')
+                .set(TOKEN_NAME, TOKEN.OWNER)
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(200, done);
         });
 
@@ -63,7 +88,7 @@ describe(`COMPANY`, function () {
 
         //       TODO: CHECK LIMITED ABOUT OF CREATE COMPANY
         //        it('request error with wrong owner', function (done) {
-        //            wrappedRequest
+        //            request(app)
         //                .post('/companies')
         //                .send(company)
         //                .set('Accept', 'application/json')
@@ -74,9 +99,12 @@ describe(`COMPANY`, function () {
 
     describe(`PUT /company`, function () {
         it('request success with token', function (done) {
-            wrappedRequest
+            request(app)
                 .put(companiesUrl)
                 .send(company)
+                .set('Accept', 'application/json')
+                .set(TOKEN_NAME, TOKEN.OWNER)
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(200, done);
         });
 
@@ -84,9 +112,12 @@ describe(`COMPANY`, function () {
         requestWithBrokenToken('put', companiesUrl)
 
         it('request error with wrong owner', function (done) {
-            wrappedRequest
+            request(app)
                 .put(companiesUrl)
                 .send(company)
+                .set('Accept', 'application/json')
+                .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(403, done);
         });
     });
@@ -94,7 +125,7 @@ describe(`COMPANY`, function () {
 
 //     describe(`DELETE company`, function () {
 //         it('request success with token', function (done) {
-//             wrappedRequest
+//             request(app)
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.OWNER)
@@ -102,14 +133,14 @@ describe(`COMPANY`, function () {
 //                 .expect(200, done);
 //         });
 //         it('request error without token', function (done) {
-//             wrappedRequest
+//             request(app)
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //
 //                 .expect(401, done);
 //         });
 //         it('request error with broken token', function (done) {
-//             wrappedRequest
+//             request(app)
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.BROKEN)
@@ -117,7 +148,7 @@ describe(`COMPANY`, function () {
 //                 .expect(401, done);
 //         });
 //         it('request error with wrong owner', function (done) {
-//             wrappedRequest
+//             request(app)
 //                 .delete(menuUrlDELETE)
 //                 .set('Accept', 'application/json')
 //                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)

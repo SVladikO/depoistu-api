@@ -2,6 +2,8 @@ const request = require('supertest');
 const assert = require('assert');
 const app = require('../index.js');
 const mocha = require('mocha');
+const packageJson = require('../package.json');
+const {REQUEST_HEADER_FIELD} = require("./utils.spec.js");
 const {TOKEN_NAME} = require("../middleware/auth.middleware.js");
 const {TOKEN, requestWithoutToken, requestWithBrokenToken} = require("./utils.spec.js")
 
@@ -12,12 +14,14 @@ describe(`CUSTOMER`, function () {
                 .post('/sign-in')
                 .send({email: 'vlad.serhiychuk@gmail.com', password: 'pma1111'})
                 .set('Accept', 'application/json')
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(200, done);
         });
         it('request broken validation', function (done) {
             request(app)
                 .post('/sign-in')
                 .set('Accept', 'application/json')
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(401, done);
         });
     })
@@ -39,6 +43,7 @@ describe(`CUSTOMER`, function () {
                 .send(customer)
                 .set('Accept', 'application/json')
                 .set(TOKEN_NAME, TOKEN.OWNER)
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(200, done);
         });
 
@@ -58,6 +63,7 @@ describe(`CUSTOMER`, function () {
                 .send({isBusinessOwner: true})
                 .set('Accept', 'application/json')
                 .set(TOKEN_NAME, TOKEN.OWNER)
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(200, done);
         });
         requestWithoutToken('post', '/edit-business-type')

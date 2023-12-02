@@ -8,12 +8,6 @@ const REQUEST_HEADER_FIELD = {
     CLIENT_VERSION: 'client-version'
 }
 
-const wrappedRequest =
-    request(app)
-        .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
-        .set('Accept', 'application/json')
-        .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
-
 const TOKEN = {
     // token from developDevelop@gmail.com
     OWNER: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJkZXZlbG9wRGV2ZWxvcEBnbWFpbC5jb20iLCJwYXNzd29yZCI6InBtYTExMTEiLCJpYXQiOjE3MDA3MjU4OTF9.m9BEw8SmFOJpyucIif-3SLoto4v0PRdNZq_GZSkZlWE`,
@@ -27,6 +21,7 @@ function requestWithoutToken(method, url) {
         request(app)[method](url)
             .send(url)
             .set('Accept', 'application/json')
+            .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
             .expect(401, done);
     });
 }
@@ -37,6 +32,7 @@ function requestWithBrokenToken(method, url) {
             .send(url)
             .set('Accept', 'application/json')
             .set(TOKEN_NAME, TOKEN.BROKEN)
+            .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
             .expect(401, done);
     });
 }
@@ -45,5 +41,5 @@ module.exports = {
     TOKEN,
     requestWithoutToken,
     requestWithBrokenToken,
-    wrappedRequest
+    REQUEST_HEADER_FIELD
 };
