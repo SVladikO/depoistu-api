@@ -85,7 +85,6 @@ describe(`COMPANY`, function () {
         requestWithoutToken('post', companiesUrl)
         requestWithBrokenToken('post', companiesUrl)
 
-
         //       TODO: CHECK LIMITED ABOUT OF CREATE COMPANY
         //        it('request error with wrong owner', function (done) {
         //            request(app)
