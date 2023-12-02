@@ -1,14 +1,21 @@
 const express = require('express')
 const cors = require('cors');
 
-const {logRequestDetails} = require('./middleware/log.middleware')
 const {connectRoutes, provideApiDocRoute} = require('./utils/api_route_provider.utils')
+const {catchHandler} = require('./utils/handler.utils')
 const routes = require('./route/index');
-
+const packageJson = require('./package.json')
 const app = express();
 
 app.use(cors(corsOptionsDelegate));
 app.use(express.json());
+app.use((req, res, next) => {
+    if (req.headers['client-version'] !== packageJson.version) {
+       catchHandler({res, status: 408})({message: 'old fe version'})
+    } else {
+        next()
+    }
+});
 app.use((err, req, res, next) => {
     if (err) {
         res.status(400).send('error parsing data')
@@ -17,11 +24,7 @@ app.use((err, req, res, next) => {
     }
 })
 app.use(express.static('public'));
-app.use(logRequestDetails);
-app.use((err, req, res, next) => {
-    res.setHeader('version', packageJson.version)
-    next();
-});
+
 
 connectRoutes(app, routes);
 provideApiDocRoute(app, routes);
