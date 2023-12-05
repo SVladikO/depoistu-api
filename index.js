@@ -52,6 +52,7 @@ function corsOptionsDelegate(req, callback) {
         'https://depoistu-develop.onrender.com',
         'https://depoistu-stage.onrender.com',
         'https://depoistu.com',
+        'https://www.depoistu.com',
         'http://localhost:3000'
     ];
 
