@@ -13,7 +13,7 @@ app.use(cors(corsOptionsDelegate));
 app.use(express.json());
 app.use((req, res, next) => {
     if (req.headers['client-version'] !== packageJson.version) {
-       catchHandler({res})(resolveError('BROKEN_VERSION_CONSISTENCY', req))
+        catchHandler({res})(resolveError('BROKEN_VERSION_CONSISTENCY', req))
     } else {
         next()
     }
@@ -42,27 +42,26 @@ app.get('/db-mode', function (req, res) {
 
 const PORT = process.env.PORT || 4000;
 
+
 app.listen(PORT, () => console.log(`app running on port ${PORT}`));
 // open('http://localhost:' + PORT)
 
 module.exports = app;
 
 function corsOptionsDelegate(req, callback) {
-    const allowlist = [
-        'https://depoistu-qa.onrender.com',
-        'https://depoistu-develop.onrender.com',
-        'https://depoistu-stage.onrender.com',
-        'https://depoistu.com',
-        'https://www.depoistu.com',
-        'http://localhost:3000'
-    ];
+    const CORS_URL1 = process.env.CORS_URL1;
+    const CORS_URL2 = process.env.CORS_URL2;
+
+    const allowlist = [];
+    CORS_URL1 && allowlist.push(CORS_URL1)
+    CORS_URL2 && allowlist.push(CORS_URL2)
 
     let corsOptions;
 
     if (allowlist.indexOf(req.header('Origin')) !== -1) {
-    corsOptions = { origin: true } // reflect (enable) the requested origin in the CORS response
+        corsOptions = {origin: true} // reflect (enable) the requested origin in the CORS response
     } else {
-    corsOptions = { origin: false } // disable CORS for this request
+        corsOptions = {origin: false} // disable CORS for this request
     }
     callback(null, corsOptions) // callback expects two parameters: error and options
 }
