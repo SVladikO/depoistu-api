@@ -1,4 +1,5 @@
 const mysql = require('mysql2');
+const packageJson = require('../package.json')
 
 const prefix = '---->'
 let log = (...rest) => console.log(prefix, ...rest);
@@ -9,7 +10,11 @@ const {
     DB_PASSWORD,
     DB_DATABASE,
     DB_PORT,
-    DB_MODE
+    DB_MODE,
+    IS_SHOW_ERROR_LOGS,
+    IS_SHOW_SUCCESS_LOGS,
+    CORS_URL1,
+    CORS_URL2, 
 } = process.env;
 
 console.log(
@@ -21,7 +26,16 @@ console.log(
         DB_DATABASE,
         DB_PORT,
         DB_MODE,
-    },
+        IS_SHOW_ERROR_LOGS,
+        IS_SHOW_SUCCESS_LOGS,
+        CORS_URL1,
+        CORS_URL2, 
+    }
+)
+console.log(
+    {
+        version: packageJson.version
+    }
 )
 
 const pool = mysql.createPool({
