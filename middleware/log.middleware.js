@@ -1,9 +1,3 @@
-const logRequestDetails = (req, res, next) => {
-
-    next();
-}
-
-
 /**
  * Generate standard of start request log.
  *
@@ -71,6 +65,5 @@ class Logger {
 }
 
 module.exports = {
-    logRequestDetails,
     Logger
 };

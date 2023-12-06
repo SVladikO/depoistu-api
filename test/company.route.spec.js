@@ -1,7 +1,8 @@
 const request = require('supertest');
 const mocha = require('mocha');
 const app = require('../index.js');
-
+const packageJson = require('../package.json');
+const {REQUEST_HEADER_FIELD} = require("./utils.spec.js");
 const {TOKEN, requestWithoutToken, requestWithBrokenToken} = require("./utils.spec.js")
 const {TOKEN_NAME} = require("../middleware/auth.middleware.js");
 
@@ -20,7 +21,16 @@ describe(`COMPANY`, function () {
             request(app)
                 .get('/available-city-ids')
                 .set('Accept', 'application/json')
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(200, done);
+        });
+
+
+        it('response error different versions', function (done) {
+            request(app)
+                .get('/available-city-ids')
+                .set('Accept', 'application/json')
+                .expect(408, done);
         });
     })
 
@@ -29,13 +39,22 @@ describe(`COMPANY`, function () {
             request(app)
                 .get(`/companies/cities/204`)
                 .set('Accept', 'application/json')
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(200, done);
         });
         it('response error', function (done) {
             request(app)
                 .get(`/companies/cities/scr`)
                 .set('Accept', 'application/json')
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(200, done);
+        });
+
+        it('response error different versions', function (done) {
+            request(app)
+                .get(`/companies/cities/scr`)
+                .set('Accept', 'application/json')
+                .expect(408, done);
         });
     })
 
@@ -59,12 +78,12 @@ describe(`COMPANY`, function () {
                 .send(company)
                 .set('Accept', 'application/json')
                 .set(TOKEN_NAME, TOKEN.OWNER)
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(200, done);
         });
 
         requestWithoutToken('post', companiesUrl)
         requestWithBrokenToken('post', companiesUrl)
-
 
         //       TODO: CHECK LIMITED ABOUT OF CREATE COMPANY
         //        it('request error with wrong owner', function (done) {
@@ -84,6 +103,7 @@ describe(`COMPANY`, function () {
                 .send(company)
                 .set('Accept', 'application/json')
                 .set(TOKEN_NAME, TOKEN.OWNER)
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(200, done);
         });
 
@@ -96,6 +116,7 @@ describe(`COMPANY`, function () {
                 .send(company)
                 .set('Accept', 'application/json')
                 .set(TOKEN_NAME, TOKEN.WRONG_OWNER)
+                .set(REQUEST_HEADER_FIELD.CLIENT_VERSION, packageJson.version)
                 .expect(403, done);
         });
     });

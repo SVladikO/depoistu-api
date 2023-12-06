@@ -1,22 +1,19 @@
 {
-  "name": "api",
-  "version": "1.0.1",
+  "name": "depoistu-api",
+  "version": "1.0.3.1",
   "private": true,
   "scripts": {
     "start": "node index.js",
     "test": "cross-env DB_HOST=mysql-152836-0.cloudclusters.net  DB_USER=admin  DB_PASSWORD=JJfZUF3R  DB_DATABASE=root  DB_PORT=19976  DB_MODE=develop IS_SHOW_SUCCESS_LOGS=0 IS_SHOW_ERROR_LOGS=0 mocha --timeout 10000  --exit",
-    "dev": "cross-env DB_HOST=mysql-152836-0.cloudclusters.net  DB_USER=admin  DB_PASSWORD=JJfZUF3R  DB_DATABASE=root  DB_PORT=19976  DB_MODE=develop  IS_SHOW_SUCCESS_LOGS=1 IS_SHOW_ERROR_LOGS=1 node index.js"
+    "dev": "cross-env DB_HOST=mysql-152836-0.cloudclusters.net  DB_USER=admin  DB_PASSWORD=JJfZUF3R  DB_DATABASE=root  DB_PORT=19976  DB_MODE=develop  IS_SHOW_SUCCESS_LOGS=1 IS_SHOW_ERROR_LOGS=1 CORS_URL1=http://localhost:3000 node index.js"
   },
   "dependencies": {
-    "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.1",
     "mysql2": "^3.2.0",
-    "node-tls": "^0.10.2",
-    "nodemailer": "^6.9.4",
+    "appoptics-apm": "10.2.2",
     "open": "^8.4.0",
-    "pg": "^8.8.0",
     "yup": "^1.1.1"
   },
   "devDependencies": {
