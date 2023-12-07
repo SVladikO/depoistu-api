@@ -66,6 +66,8 @@ describe(`COMPANY`, function () {
         phone3: '280970668830',
         cityId: 204,
         street: 'street Test 2',
+        latitude: 4.0000000,
+        longitude: 4.0000000,
         schedule: '09:00-21:00,09:00-21:00,09:00-21:00,09:00-21:00,09:00-21:00,09:00-21:00,09:00-21:00',
     }
 
