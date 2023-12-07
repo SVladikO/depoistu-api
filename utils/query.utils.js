@@ -153,8 +153,8 @@ const QueryUtils = {
                                             WHERE id = '${companyId}';`,
         SELECT_ALL: () => `SELECT *
                            FROM COMPANY;`,
-        INSERT: c => `INSERT INTO COMPANY (id, customer_id, name, phone1, phone2, phone3, city_id, street, latitude, longitude, join_date,
-                                           schedule)
+        INSERT: c => `INSERT INTO COMPANY 
+    (id, customer_id, name, phone1, phone2, phone3, city_id, street, latitude, longitude, join_date, schedule)
                       VALUES (DEFAULT,
                               '${c.customerId}',
                               '${c.name}',
@@ -165,7 +165,6 @@ const QueryUtils = {
                               '${c.street}',
                               '${c.latitude}',
                               '${c.longitude}',
-                              '${c.street}',
                               '${c.joinDate}',
                               '${c.schedule}')
         ;`,
