@@ -14,6 +14,9 @@ const DescriptionUtils = {
         DELETE: 'Delete company from favorite.',
     },
 
+    IMAGE: {
+        CREATE: "Add image to remote server",
+    },
     COMPANY: {
         GET_BY_CITY: "Get companies by city_id.",
         GET_BY_CITY_ID: "Get companies by city_id which have visible menu.",

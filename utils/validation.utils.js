@@ -133,6 +133,7 @@ const ValidationUtils = {
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Phone 2 Example: +380971234567`),
         phone3: Yup.string()
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Phone 3 Example: +380971234567`),
+        photos: Yup.string(),
         schedule: Yup.string()
             .required('Schedule is required')
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.SCHEDULE.MIN, 'Schedule should not be empty. Minimum one day should be scheduled.')

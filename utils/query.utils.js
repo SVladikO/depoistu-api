@@ -131,6 +131,7 @@ const QueryUtils = {
                                                       COMPANY.PHONE1,
                                                       COMPANY.PHONE2,
                                                       COMPANY.PHONE3,
+                                                      COMPANY.PHOTOS,
                                                       COMPANY.CITY_ID,
                                                       COMPANY.STREET,
                                                       COMPANY.SCHEDULE
@@ -147,7 +148,7 @@ const QueryUtils = {
                                             WHERE id = '${companyId}';`,
         SELECT_ALL: () => `SELECT *
                            FROM COMPANY;`,
-        INSERT: c => `INSERT INTO COMPANY (id, customer_id, name, phone1, phone2, phone3, city_id, street, join_date,
+        INSERT: c => `INSERT INTO COMPANY (id, customer_id, name, phone1, phone2, phone3, photos, city_id, street, join_date,
                                            schedule)
                       VALUES (DEFAULT,
                               '${c.customerId}',
@@ -155,6 +156,7 @@ const QueryUtils = {
                               '${c.phone1}',
                               '${c.phone2}',
                               '${c.phone3}',
+                              '${c.photos}',
                               '${c.cityId}',
                               '${c.street}',
                               '${c.joinDate}',
@@ -166,6 +168,7 @@ const QueryUtils = {
                           phone1   = '${c.phone1}',
                           phone2   = '${c.phone2}',
                           phone3   = '${c.phone3}',
+                          photos   = '${c.photos}',
                           city_id  = '${c.cityId}',
                           street   = '${c.street}',
                           schedule = '${c.schedule}'

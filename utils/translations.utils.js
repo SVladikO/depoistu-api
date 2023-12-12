@@ -86,6 +86,13 @@ const ERROR_TRANSLATION = {
         },
         code: 401,
     },
+    "IMAGE.CREATE.ERROR": {
+        message: {
+            en: "Create image error.",
+            ua: "Помилка при додаванні зображення."
+        },
+        code: 404,
+    },
     "COMPANY.CITY_ID_REQUIRED": {
         message: {
             en: "Bad request. City id is required",
