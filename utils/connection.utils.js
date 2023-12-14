@@ -58,16 +58,19 @@ log('DB environment credentials: ', DB_MODE, DB_HOST);
 
 pool.on('connection', () => log("DB CONNECTED"))
 pool.on('end', () => log("DB DISCONNECTED"))
+pool.on('error', () => log("## error"))
 
 function dbRequest(query) {
     return new Promise((resolve, reject) => {
         pool.query(
             query,
             (err, results) => {
-
                 if (err) {
-                    reject({errorMessage: 'DB error: ' + err.message, status: 500})
+                    console.log(1111, 'error: ', err)
+                    return reject({errorMessage: 'DB error: ' + err.message, status: 500})
                 }
+
+                console.log(222, 'success')
 
                 resolve(results)
             }
