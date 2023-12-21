@@ -125,6 +125,8 @@ const ValidationUtils = {
             .required('Street is required')
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN, `Street min length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX, `Street max length ${FIELD_REQUIREMENTS_FOR.COMPANY.STREET.MAX}`),
+        latitude: Yup.number().required('Latitude is required.'),
+        longitude: Yup.number().required('Longitude is required.'),
         phone1: Yup.string()
             .required()
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MIN, `Phone 1 Example: 0971234567`)
