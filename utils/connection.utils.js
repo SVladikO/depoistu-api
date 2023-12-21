@@ -15,9 +15,6 @@ const {
     IS_SHOW_SUCCESS_LOGS,
     CORS_URL1,
     CORS_URL2,
-    CLOUDINARY_CLOUD_NAME,
-    CLOUDINARY_API_KEY,
-    CLOUDINARY_API_SECRET,
 
 } = process.env;
 
@@ -34,9 +31,6 @@ console.log(
         IS_SHOW_SUCCESS_LOGS,
         CORS_URL1,
         CORS_URL2,
-        CLOUDINARY_CLOUD_NAME,
-        CLOUDINARY_API_KEY,
-        CLOUDINARY_API_SECRET,
     }
 )
 console.log(
