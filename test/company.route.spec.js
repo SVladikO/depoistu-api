@@ -59,11 +59,12 @@ describe(`COMPANY`, function () {
     })
 
     const company = {
-        id: 1,
-        name: 'testCompanyName',
+        id: 5,
+        name: 'post_put_test_company_name',
         phone1: '280970668830',
         phone2: '280970668830',
         phone3: '280970668830',
+        photos: 'https://res.cloudinary.com/dgdm0wb3u/image/upload/v1703180547/ytfk3u87h9cwvrugxvl3.jpg, https://res.cloudinary.com/dgdm0wb3u/image/upload/v1703180547/ytfk3u87h9cwvrugxvl3.jpg',
         cityId: 204,
         street: 'street Test 2',
         latitude: 4.0000000,
