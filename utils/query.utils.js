@@ -95,6 +95,8 @@ const QueryUtils = {
                                                   COMPANY.PHONE3,
                                                   COMPANY.CITY_ID,
                                                   COMPANY.STREET,
+                                                  COMPANY.LATITUDE,
+                                                  COMPANY.LONGITUDE,
                                                   COMPANY.SCHEDULE
                                               from FAVORITE_COMPANY
                                                        INNER JOIN COMPANY on FAVORITE_COMPANY.COMPANY_ID = COMPANY.ID
@@ -120,6 +122,8 @@ const QueryUtils = {
                                                       COMPANY.PHONE3,
                                                       COMPANY.CITY_ID,
                                                       COMPANY.STREET,
+                                                      COMPANY.LATITUDE,
+                                                      COMPANY.LONGITUDE,
                                                       COMPANY.SCHEDULE
                                       from COMPANY
                                                JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
@@ -133,6 +137,8 @@ const QueryUtils = {
                                                       COMPANY.PHONE3,
                                                       COMPANY.CITY_ID,
                                                       COMPANY.STREET,
+                                                      COMPANY.LATITUDE,
+                                                      COMPANY.LONGITUDE,
                                                       COMPANY.SCHEDULE
                                                FROM COMPANY
                                                JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
@@ -147,8 +153,8 @@ const QueryUtils = {
                                             WHERE id = '${companyId}';`,
         SELECT_ALL: () => `SELECT *
                            FROM COMPANY;`,
-        INSERT: c => `INSERT INTO COMPANY (id, customer_id, name, phone1, phone2, phone3, city_id, street, join_date,
-                                           schedule)
+        INSERT: c => `INSERT INTO COMPANY 
+    (id, customer_id, name, phone1, phone2, phone3, city_id, street, latitude, longitude, join_date, schedule)
                       VALUES (DEFAULT,
                               '${c.customerId}',
                               '${c.name}',
@@ -157,6 +163,8 @@ const QueryUtils = {
                               '${c.phone3}',
                               '${c.cityId}',
                               '${c.street}',
+                              '${c.latitude}',
+                              '${c.longitude}',
                               '${c.joinDate}',
                               '${c.schedule}')
         ;`,
@@ -168,13 +176,14 @@ const QueryUtils = {
                           phone3   = '${c.phone3}',
                           city_id  = '${c.cityId}',
                           street   = '${c.street}',
+                          latitude  = '${c.latitude}',
+                          longitude  = '${c.longitude}',
                           schedule = '${c.schedule}'
                       WHERE id = ${c.id}
         ;`,
         DELETE_BY_COMPANY_ID: id => `DELETE
                                      FROM COMPANY
                                      WHERE ID = ${id}`,
-
     },
     CUSTOMER: {
         SELECT_BY_EMAIL_AND_PASSWORD: (email, password) =>

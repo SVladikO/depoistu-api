@@ -10,6 +10,8 @@ function convertCompanyFields(companies) {
             PHOTOS: photos,
             CITY_ID: cityId,
             STREET: street,
+            LATITUDE: latitude,
+            LONGITUDE: longitude,
             JOIN_DATE: joinDate,
             SCHEDULE: schedule
         } = company;
@@ -23,6 +25,8 @@ function convertCompanyFields(companies) {
             photos,
             cityId,
             street,
+            latitude,
+            longitude,
             joinDate,
             schedule
         }

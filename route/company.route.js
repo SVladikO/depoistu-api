@@ -135,11 +135,13 @@ const routes = {
                 bodyValidation: true,
                 requestBody: {
                     name: VALIDATION.COMPANY.name.type,
-                    cityId: VALIDATION.COMPANY.cityId.type,
-                    street: VALIDATION.COMPANY.street.type,
                     phone1: VALIDATION.COMPANY.phone1.type,
                     phone2: VALIDATION.COMPANY.phone2.type,
                     phone3: VALIDATION.COMPANY.phone3.type,
+                    cityId: VALIDATION.COMPANY.cityId.type,
+                    street: VALIDATION.COMPANY.street.type,
+                    latitude: VALIDATION.COMPANY.latitude.type,
+                    longitude: VALIDATION.COMPANY.longitude.type,
                     schedule: VALIDATION.COMPANY.schedule.type,
                 },
             },
@@ -177,6 +179,8 @@ const routes = {
                     phone3: VALIDATION.COMPANY.phone3.type,
                     cityId: VALIDATION.COMPANY.cityId.type,
                     street: VALIDATION.COMPANY.street.type,
+                    latitude: VALIDATION.COMPANY.latitude.type,
+                    longitude: VALIDATION.COMPANY.longitude.type,
                     schedule: VALIDATION.COMPANY.schedule.type,
                 },
             },
@@ -205,7 +209,7 @@ const routes = {
             details: {
                 ...PERMISSION(['4. Check ownership.']),
                 requestBody: {
-                    companyId: VALIDATION.COMPANY.id.type
+                    id: VALIDATION.COMPANY.id.type
                 }
             },
             description: DESCRIPTION.COMPANY.DELETE,
