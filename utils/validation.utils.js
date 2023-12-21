@@ -164,13 +164,13 @@ const VALIDATOR = {
     },
     COMPANY: {
         CREATE: company => {
-            const {name, cityId, street, phone1, phone2, phone3, photos, schedule} = ValidationUtils.COMPANY;
-            const validator = Yup.object().shape({name, cityId, street, phone1, phone2, phone3, schedule})
+            const {name, phone1, phone2, phone3, photos, cityId, street,  latitude, longitude, schedule} = ValidationUtils.COMPANY;
+            const validator = Yup.object().shape({name, cityId, street, phone1, phone2, phone3, latitude, longitude, schedule})
             return validator.validate(company)
         },
         UPDATE: company => {
-            const {id, name, cityId, street, phone1, phone2, phone3, photos, schedule} = ValidationUtils.COMPANY;
-            const validator = Yup.object().shape({id, name, cityId, street, phone1, phone2, phone3, schedule});
+            const {id, name, phone1, phone2, phone3, photos, cityId, street, latitude, longitude, schedule} = ValidationUtils.COMPANY;
+            const validator = Yup.object().shape({id, name, cityId, street, phone1, phone2, phone3, latitude, longitude, schedule});
 
             return validator.validate(company);
         },
