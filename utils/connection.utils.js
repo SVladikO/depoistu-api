@@ -70,8 +70,6 @@ function dbRequest(query) {
                     return reject({errorMessage: 'DB error: ' + err.message, status: 500})
                 }
 
-                console.log(222, 'success')
-
                 resolve(results)
             }
         )
