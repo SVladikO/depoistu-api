@@ -135,6 +135,7 @@ const ValidationUtils = {
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Phone 2 Example: +380971234567`),
         phone3: Yup.string()
             .max(FIELD_REQUIREMENTS_FOR.COMPANY.PHONE.MAX, `Phone 3 Example: +380971234567`),
+        photos: Yup.string(),
         schedule: Yup.string()
             .required('Schedule is required')
             .min(FIELD_REQUIREMENTS_FOR.COMPANY.SCHEDULE.MIN, 'Schedule should not be empty. Minimum one day should be scheduled.')
@@ -163,13 +164,13 @@ const VALIDATOR = {
     },
     COMPANY: {
         CREATE: company => {
-            const {name, cityId, street, phone1, phone2, phone3, schedule} = ValidationUtils.COMPANY;
-            const validator = Yup.object().shape({name, cityId, street, phone1, phone2, phone3, schedule})
+            const {name, phone1, phone2, phone3, photos, cityId, street,  latitude, longitude, schedule} = ValidationUtils.COMPANY;
+            const validator = Yup.object().shape({name, cityId, street, phone1, phone2, phone3, latitude, longitude, schedule})
             return validator.validate(company)
         },
         UPDATE: company => {
-            const {id, name, cityId, street, phone1, phone2, phone3, schedule} = ValidationUtils.COMPANY;
-            const validator = Yup.object().shape({id, name, cityId, street, phone1, phone2, phone3, schedule});
+            const {id, name, phone1, phone2, phone3, photos, cityId, street, latitude, longitude, schedule} = ValidationUtils.COMPANY;
+            const validator = Yup.object().shape({id, name, cityId, street, phone1, phone2, phone3, latitude, longitude, schedule});
 
             return validator.validate(company);
         },

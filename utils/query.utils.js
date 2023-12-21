@@ -135,6 +135,7 @@ const QueryUtils = {
                                                       COMPANY.PHONE1,
                                                       COMPANY.PHONE2,
                                                       COMPANY.PHONE3,
+                                                      COMPANY.PHOTOS,
                                                       COMPANY.CITY_ID,
                                                       COMPANY.STREET,
                                                       COMPANY.LATITUDE,
@@ -154,13 +155,14 @@ const QueryUtils = {
         SELECT_ALL: () => `SELECT *
                            FROM COMPANY;`,
         INSERT: c => `INSERT INTO COMPANY 
-    (id, customer_id, name, phone1, phone2, phone3, city_id, street, latitude, longitude, join_date, schedule)
+    (id, customer_id, name, phone1, phone2, phone3, photos, city_id, street, latitude, longitude,  join_date, schedule)
                       VALUES (DEFAULT,
                               '${c.customerId}',
                               '${c.name}',
                               '${c.phone1}',
                               '${c.phone2}',
                               '${c.phone3}',
+                              '${c.photos}',
                               '${c.cityId}',
                               '${c.street}',
                               '${c.latitude}',
@@ -174,6 +176,7 @@ const QueryUtils = {
                           phone1   = '${c.phone1}',
                           phone2   = '${c.phone2}',
                           phone3   = '${c.phone3}',
+                          photos   = '${c.photos}',
                           city_id  = '${c.cityId}',
                           street   = '${c.street}',
                           latitude  = '${c.latitude}',

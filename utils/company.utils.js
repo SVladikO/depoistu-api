@@ -22,7 +22,7 @@ function convertCompanyFields(companies) {
             phone1,
             phone2,
             phone3,
-            photos,
+            photos: photos?.length ? photos.split(',') : [],
             cityId,
             street,
             latitude,

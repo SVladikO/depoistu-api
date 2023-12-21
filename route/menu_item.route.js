@@ -186,13 +186,12 @@ const routes = {
                 function (req, res) {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE)
-
                     const {id, isVisible} = req.body;
-                    const menuItem = {id, isVisible: convertIsVisible(isVisible)};
+                    const menuItem = {id, isVisible: convertIsVisible(!isVisible)};
 
                     VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem))))
-                        .then(() => ({success: true}))
+                        .then(() => ({isVisible: !isVisible}))
                         .then(sendHandler(res, logger))
                         .catch(catchHandler({res, logger, status: 400}));
                 }]
