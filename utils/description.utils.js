@@ -17,6 +17,11 @@ const DescriptionUtils = {
     IMAGE: {
         CREATE: "Add image to remote server",
     },
+    ORDER_HISTORY: {
+        CREATE: "Create order history and order history details. We take customer id from token.",
+        GET_ALL: "Get all order history by customer id. We take customer id from token.",
+        GET_ORDER_HISTORY_DETAILS_BY_ORDER_HISTORY_ID: "Get order history details by order history id.",
+    },
     COMPANY: {
         GET_BY_CITY: "Get companies by city_id.",
         GET_BY_CITY_ID: "Get companies by city_id which have visible menu.",
