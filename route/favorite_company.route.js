@@ -8,9 +8,9 @@ const {sendHandler, catchHandler} = require("../utils/handler.utils")
 const {Logger} = require("../middleware/log.middleware");
 
 const routes = {
-    "name": "Favorite company",
+    name: "Favorite company",
     description: "For favorite company data.",
-    "routes": [
+    routes: [
         {
             method: "get",
             url: "/favorite-companies/:customerId",
