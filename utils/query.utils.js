@@ -156,6 +156,7 @@ const QueryUtils = {
                                                      COMPANY.PHONE1,
                                                      COMPANY.PHONE2,
                                                      COMPANY.PHONE3,
+                                                     COMPANY.PHOTOS,
                                                      COMPANY.CITY_ID,
                                                      COMPANY.STREET,
                                                      COMPANY.LATITUDE,
