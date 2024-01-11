@@ -1,3 +1,4 @@
+const {VALIDATION} = require("./validation.utils");
 const QueryUtils = {
     MENU_ITEM: {
         SELECT_BY_ID: companyId => `SELECT *
@@ -83,53 +84,48 @@ const QueryUtils = {
     },
     ORDER_HISTORY_DETAILS: {
         INSERT: (order_items, order_history_id) =>
-            `INSERT INTO ORDER_HISTORY_DETAILS (ID,
-                                                ORDER_HISTORY_ID,
-                                                MENU_ITEM_ID,
-                                                AMOUNT_1,
-                                                AMOUNT_2,
-                                                AMOUNT_3,
-                                                PRICE_1,
-                                                PRICE_2,
-                                                PRICE_3)
-             VALUES
-                 ${
-                         order_items.reduce(
-                                 (
-                                         accumulator,
-                                         {
-                                             id,
-                                             amount1 = 0,
-                                             amount2 = 0,
-                                             amount3 = 0,
-                                             price1 = 0,
-                                             price2 = 0,
-                                             price3 = 0
-                                         },
-                                         index
-                                 ) =>
-                                         accumulator +
-                                         `(DEFAULT, ${order_history_id}, ${id}, ${amount1}, ${amount2}, ${amount3}, ${price1}, ${price2}, ${price3})${order_items.length !== index + 1 ? ', ' : ';'}`,
-                                 '')
-                 }`,
+            `INSERT INTO ORDER_HISTORY_DETAILS
+             (ORDER_HISTORY_ID, CATEGORY_ID, NAME, DESCRIPTION, SIZE_1, SIZE_2, SIZE_3, PRICE_1, PRICE_2, PRICE_3, AMOUNT_1,
+              AMOUNT_2, AMOUNT_3, IMAGE_URL)
+             VALUES ${
+                     order_items.reduce((accumulator, oi, index) =>
+                             accumulator + `(
+                                   '${order_history_id}',
+                                   '${oi.category_id}',
+                                   '${oi.name  || ''}',
+                                   '${oi.description  || ''}',
+                                   '${oi.size_1 || 0}',
+                                   '${oi.size_2 || 0}',
+                                   '${oi.size_3 || 0}',
+                                   '${oi.amount_1 || 0}',
+                                   '${oi.amount_2 || 0}',
+                                   '${oi.amount_3 || 0}',
+                                   '${oi.price_1 || 0}',
+                                   '${oi.price_2 || 0}',
+                                   '${oi.price_3 || 0}',
+                                   '${oi.imageUrl || ''}'
+                                   )${order_items.length !== index + 1 ? ', ' : ';'}`, ''
+                     )
+
+             }`
+        ,
         SELECT_ALL_BY_ORDER_HISTORY_ID: orderHistoryId => `
-            SELECT
-                ORDER_HISTORY_DETAILS.ID,
-                ORDER_HISTORY_DETAILS.AMOUNT_1,
-                ORDER_HISTORY_DETAILS.AMOUNT_2,
-                ORDER_HISTORY_DETAILS.AMOUNT_3,
-                ORDER_HISTORY_DETAILS.PRICE_1,
-                ORDER_HISTORY_DETAILS.PRICE_2,
-                ORDER_HISTORY_DETAILS.PRICE_3,
-                MENU_ITEM.SIZE_1,
-                MENU_ITEM.SIZE_2,
-                MENU_ITEM.SIZE_3,
-                MENU_ITEM.IMAGE_URL,
-                MENU_ITEM.DESCRIPTION,
-                MENU_ITEM.NAME
+            SELECT 
+                   ORDER_HISTORY_DETAILS.NAME,
+                   ORDER_HISTORY_DETAILS.DESCRIPTION,
+                   ORDER_HISTORY_DETAILS.CATEGORY_ID,
+                   ORDER_HISTORY_DETAILS.PRICE_1,
+                   ORDER_HISTORY_DETAILS.PRICE_2,
+                   ORDER_HISTORY_DETAILS.PRICE_3,
+                   ORDER_HISTORY_DETAILS.SIZE_1,
+                   ORDER_HISTORY_DETAILS.SIZE_2,
+                   ORDER_HISTORY_DETAILS.SIZE_3,
+                   ORDER_HISTORY_DETAILS.AMOUNT_1,
+                   ORDER_HISTORY_DETAILS.AMOUNT_2,
+                   ORDER_HISTORY_DETAILS.AMOUNT_3,
+                   ORDER_HISTORY_DETAILS.IMAGE_URL
             from ORDER_HISTORY_DETAILS
-                     JOIN MENU_ITEM on ORDER_HISTORY_DETAILS.MENU_ITEM_ID = MENU_ITEM.ID
-            WHERE ORDER_HISTORY_DETAILS.ORDER_HISTORY_ID = ${orderHistoryId};
+            WHERE ORDER_HISTORY_ID = ${orderHistoryId};
         `
     },
     ORDER_HISTORY: {

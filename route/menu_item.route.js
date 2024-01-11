@@ -229,8 +229,8 @@ function convertMenuItemFields(res) {
     return res.map(mi => {
         const {
             ID: id,
-            CATEGORY_ID: categoryId,
-            COMPANY_ID: companyId,
+            CATEGORY_ID: category_id,
+            COMPANY_ID: company_id,
             NAME: name,
             IS_VISIBLE: isVisible,
             DESCRIPTION: description,
@@ -244,8 +244,8 @@ function convertMenuItemFields(res) {
         } = mi;
         return {
             id,
-            categoryId,
-            companyId,
+            category_id,
+            company_id,
             name,
             isVisible,
             description,

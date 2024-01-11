@@ -47,6 +47,7 @@ const routes = {
                     const orderHistoryId = +req.params.orderHistoryId;
 
                     dbRequest(logger.addQueryDB(QUERY.ORDER_HISTORY_DETAILS.SELECT_ALL_BY_ORDER_HISTORY_ID(orderHistoryId)))
+                        .then(convertOrderItems)
                         .then(sendHandler(res, logger))
                         .catch(catchHandler({res, logger, status: 400}));
                 }
@@ -61,18 +62,23 @@ const routes = {
                 ...PERMISSION(['4. Check token to let place order.']),
                 bodyValidation: true,
                 requestBody: {
-                    // company_id: VALIDATION.COMPANY.company_id.type,
-                    // order_items: [
-                    //     {
-                    //         id: VALIDATION.COMPANY.id.type,
-                    //         amount1: VALIDATION.COMPANY.amount.type,
-                    //         amount2: VALIDATION.COMPANY.amount.type,
-                    //         amount3: VALIDATION.COMPANY.amount.type,
-                    //         price1: VALIDATION.COMPANY.price.type,
-                    //         price2: VALIDATION.COMPANY.price.type,
-                    //         price3: VALIDATION.COMPANY.price.type,
-                    //     }
-                    // ]
+                    order_items: [
+                        {
+                            categoryId: VALIDATION.MENU_ITEM.categoryId.type,
+                            name: VALIDATION.MENU_ITEM.name.type,
+                            description: VALIDATION.MENU_ITEM.description.type,
+                            size_1: VALIDATION.MENU_ITEM.size_1.type,
+                            size_2: VALIDATION.MENU_ITEM.size_2.type,
+                            size_3: VALIDATION.MENU_ITEM.size_3.type,
+                            price_1: VALIDATION.MENU_ITEM.price_1.type,
+                            price_2: VALIDATION.MENU_ITEM.price_2.type,
+                            price_3: VALIDATION.MENU_ITEM.price_3.type,
+                            amount_1: VALIDATION.COMPANY.amount.type,
+                            amount_2: VALIDATION.COMPANY.amount.type,
+                            amount_3: VALIDATION.COMPANY.amount.type,
+                            imageUrl: VALIDATION.MENU_ITEM.imageUrl.type,
+                        }
+                    ]
                 },
             },
             callbacks: [
@@ -82,27 +88,34 @@ const routes = {
                     logger.addLog(DESCRIPTION.ORDER_HISTORY.CREATE)
 
                     const customerId = req.customer.id;
-                    const {company_id, order_items} = req.body;
+                    const {order_items} = req.body;
+                    const company_id = order_items[0].company_id;
                     const orderHistory = {
                         customer_id: customerId,
                         company_id,
                         total: order_items.reduce(
-                            (accumulator, {amount1 = 0, amount2 = 0, amount3 = 0, price1 = 0, price2 = 0, price3 = 0}) =>
+                            (accumulator, {
+                                amount_1 = 0,
+                                amount_2 = 0,
+                                amount_3 = 0,
+                                price_1 = 0,
+                                price_2 = 0,
+                                price_3 = 0
+                            }) =>
                                 accumulator +
-                                (+amount1 * +price1) +
-                                (+amount2 * +price2) +
-                                (+amount3 * +price3),
+                                (+amount_1 * +price_1) +
+                                (+amount_2 * +price_2) +
+                                (+amount_3 * +price_3),
                             0
                         ),
                         date: '' + new Date().getTime(),
                     }
 
-                    // console.log(7777,
-                    //     QUERY.ORDER_HISTORY_DETAILS.INSERT(order_items, 1000)
-                    // )
-
                     dbRequest(logger.addQueryDB(QUERY.ORDER_HISTORY.INSERT(orderHistory)))
-                        .then(res => dbRequest(logger.addQueryDB(QUERY.ORDER_HISTORY_DETAILS.INSERT(order_items, res.insertId))))
+                        .then(res => {
+                            const orderHistoryId = res.insertId;
+                            return dbRequest(logger.addQueryDB(QUERY.ORDER_HISTORY_DETAILS.INSERT(order_items, orderHistoryId)))
+                        })
                         .then(sendHandler(res, logger))
                         .catch(catchHandler({res, logger, status: 400}));
                 }]
@@ -131,4 +144,40 @@ function convertOrderHistoryFields(orderHistories) {
     })
 }
 
-module.exports = routes;
+function convertOrderItems(orderItems) {
+    return orderItems.map(orderItem => {
+        const {
+            NAME: name,
+            DESCRIPTION: description,
+            CATEGORY_ID: category_id,
+            PRICE_1: price_1,
+            PRICE_2: price_2,
+            PRICE_3: price_3,
+            SIZE_1: size_1,
+            SIZE_2: size_2,
+            SIZE_3: size_3,
+            AMOUNT_1: amount_1,
+            AMOUNT_2: amount_2,
+            AMOUNT_3: amount_3,
+            IMAGE_URL: image_url
+        } = orderItem;
+
+        return {
+            name,
+            description,
+            category_id,
+            price_1,
+            price_2,
+            price_3,
+            size_1,
+            size_2,
+            size_3,
+            amount_1,
+            amount_2,
+            amount_3,
+            image_url
+        }
+    })
+}
+
+    module.exports = routes;
