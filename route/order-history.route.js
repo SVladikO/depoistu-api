@@ -63,21 +63,21 @@ const routes = {
                 bodyValidation: true,
                 requestBody: {
                     order_items: [
-                        {
-                            categoryId: VALIDATION.MENU_ITEM.categoryId.type,
-                            name: VALIDATION.MENU_ITEM.name.type,
-                            description: VALIDATION.MENU_ITEM.description.type,
-                            size_1: VALIDATION.MENU_ITEM.size_1.type,
-                            size_2: VALIDATION.MENU_ITEM.size_2.type,
-                            size_3: VALIDATION.MENU_ITEM.size_3.type,
-                            price_1: VALIDATION.MENU_ITEM.price_1.type,
-                            price_2: VALIDATION.MENU_ITEM.price_2.type,
-                            price_3: VALIDATION.MENU_ITEM.price_3.type,
-                            amount_1: VALIDATION.COMPANY.amount.type,
-                            amount_2: VALIDATION.COMPANY.amount.type,
-                            amount_3: VALIDATION.COMPANY.amount.type,
-                            imageUrl: VALIDATION.MENU_ITEM.imageUrl.type,
-                        }
+                        // {
+                        //     categoryId: VALIDATION.MENU_ITEM.categoryId.type,
+                        //     name: VALIDATION.MENU_ITEM.name.type,
+                        //     description: VALIDATION.MENU_ITEM.description.type,
+                        //     size_1: VALIDATION.MENU_ITEM.size_1.type,
+                        //     size_2: VALIDATION.MENU_ITEM.size_2.type,
+                        //     size_3: VALIDATION.MENU_ITEM.size_3.type,
+                        //     price_1: VALIDATION.MENU_ITEM.price_1.type,
+                        //     price_2: VALIDATION.MENU_ITEM.price_2.type,
+                        //     price_3: VALIDATION.MENU_ITEM.price_3.type,
+                        //     amount_1: VALIDATION.MENU_ITEM.amount.type,
+                        //     amount_2: VALIDATION.MENU_ITEM.amount.type,
+                        //     amount_3: VALIDATION.MENU_ITEM.amount.type,
+                        //     imageUrl: VALIDATION.MENU_ITEM.imageUrl.type,
+                        // }
                     ]
                 },
             },

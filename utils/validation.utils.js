@@ -105,6 +105,7 @@ const ValidationUtils = {
         price_2: Yup.string()
             .required(`Price is required!`)
             .min(FIELD_REQUIREMENTS_FOR.MENU_ITEM.PRICE.MIN, `Price 2 min length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.PRICE.MIN}`),
+        amount: Yup.number(),
         size_3: Yup.string()
             .min(FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MIN, `Size 3 min length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MIN}`)
             .max(FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MAX, `Size 3 max length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.MEAL_SIZE.MAX}`),
