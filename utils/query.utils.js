@@ -97,12 +97,12 @@ const QueryUtils = {
                                    '${oi.size_1 || 0}',
                                    '${oi.size_2 || 0}',
                                    '${oi.size_3 || 0}',
-                                   '${oi.amount_1 || 0}',
-                                   '${oi.amount_2 || 0}',
-                                   '${oi.amount_3 || 0}',
                                    '${oi.price_1 || 0}',
                                    '${oi.price_2 || 0}',
                                    '${oi.price_3 || 0}',
+                                   '${oi.amount_1 || 0}',
+                                   '${oi.amount_2 || 0}',
+                                   '${oi.amount_3 || 0}',
                                    '${oi.imageUrl || ''}'
                                    )${order_items.length !== index + 1 ? ', ' : ';'}`, ''
                      )
