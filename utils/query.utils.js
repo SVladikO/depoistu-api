@@ -36,8 +36,8 @@ const QueryUtils = {
                                               image_url,
                                               is_visible)
                        VALUES (default,
-                               '${mi.categoryId}',
-                               '${mi.companyId}',
+                               '${mi.category_id}',
+                               '${mi.company_id}',
                                '${mi.name}',
                                '${mi.description}',
                                '${mi.size_1}',
@@ -52,7 +52,7 @@ const QueryUtils = {
         UPDATE: mi => `UPDATE MENU_ITEM
                        SET name        = '${mi.name}',
                            description = '${mi.description}',
-                           category_id = '${mi.categoryId}',
+                           category_id = '${mi.category_id}',
                            size_1      = '${mi.size_1}',
                            price_1     = '${mi.price_1}',
                            size_2      = '${mi.size_2}',

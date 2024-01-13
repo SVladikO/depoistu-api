@@ -151,8 +151,8 @@ const ERROR_TRANSLATION = {
     },
     "MENU_ITEM.COMPANY_ID_REQUIRED": {
         message: {
-            en: "Bad request. Company id is required",
-            ua: "Не правильний запит. Company id обовязкове.",
+            en: "Bad request. company_id is required",
+            ua: "Не правильний запит. company_id обовязкове.",
         },
         code: 400,
     },

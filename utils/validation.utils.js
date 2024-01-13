@@ -85,8 +85,8 @@ const ValidationUtils = {
     MENU_ITEM: {
         id: Yup.string().required(`Id is required!`),
         isVisible: Yup.bool().required(`is_visible is required!`),
-        categoryId: Yup.string().required(`Category id is required!`),
-        companyId: Yup.string().required(`Company id is equired!`),
+        category_id: Yup.string().required(`category_id is required!`),
+        company_id: Yup.string().required(`company_id is equired!`),
         name: Yup.string()
             .required(`Name is required!`)
             .min(FIELD_REQUIREMENTS_FOR.MENU_ITEM.NAME.MIN, `Name min length ${FIELD_REQUIREMENTS_FOR.MENU_ITEM.NAME.MIN}`)
