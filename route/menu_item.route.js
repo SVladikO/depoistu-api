@@ -101,8 +101,8 @@ const routes = {
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
                     name: VALIDATION.MENU_ITEM.name.type,
-                    categoryId: VALIDATION.MENU_ITEM.categoryId.type,
-                    companyId: VALIDATION.MENU_ITEM.companyId.type,
+                    category_id: VALIDATION.MENU_ITEM.category_id.type,
+                    company_id: VALIDATION.MENU_ITEM.company_id.type,
                     description: VALIDATION.MENU_ITEM.description.type,
                     size_1: VALIDATION.MENU_ITEM.size_1.type,
                     price_1: VALIDATION.MENU_ITEM.price_1.type,
@@ -115,7 +115,7 @@ const routes = {
             },
             callbacks: [
                 verifyToken,
-                checkCompanyOwner(req => req.body.companyId),
+                checkCompanyOwner(req => req.body.company_id),
                 function (req, res) {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.MENU_ITEM.CREATE)
@@ -124,6 +124,10 @@ const routes = {
 
                     VALIDATOR.MENU_ITEM.CREATE(menuItem)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.INSERT(menuItem))))
+                        // We still need this select for FE
+                        .then(res => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.SELECT_BY_ID(res.insertId))))
+                        .then(convertMenuItemFields)
+                        .then(res => res[0])
                         .then(sendHandler(res, logger, 201))
                         .catch(catchHandler({res, logger, status: 400}));
                 }]
@@ -138,7 +142,7 @@ const routes = {
                 bodyValidation: true,
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
-                    categoryId: VALIDATION.MENU_ITEM.categoryId.type,
+                    category_id: VALIDATION.MENU_ITEM.category_id.type,
                     name: VALIDATION.MENU_ITEM.name.type,
                     description: VALIDATION.MENU_ITEM.description.type,
                     size_1: VALIDATION.MENU_ITEM.size_1.type,
@@ -152,7 +156,7 @@ const routes = {
             },
             callbacks: [
                 verifyToken,
-                checkCompanyOwner(req => req.body.companyId),
+                checkCompanyOwner(req => req.body.company_id),
                 function (req, res) {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.MENU_ITEM.UPDATE)
@@ -161,9 +165,6 @@ const routes = {
 
                     VALIDATOR.MENU_ITEM.UPDATE(menuItem)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.UPDATE(menuItem))))
-                        // We still need this select for FE
-                        .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.SELECT_BY_ID(req.body.id))))
-                        .then(convertMenuItemFields)
                         .then(sendHandler(res, logger))
                         .catch(catchHandler({res, logger, status: 400}));
                 }]
@@ -187,11 +188,11 @@ const routes = {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE)
                     const {id, isVisible} = req.body;
-                    const menuItem = {id, isVisible: convertIsVisible(!isVisible)};
+                    const menuItem = {id, isVisible: convertIsVisible(isVisible)};
 
                     VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem))))
-                        .then(() => ({isVisible: !isVisible}))
+                        .then(() => ({isVisible: +(!isVisible)}))
                         .then(sendHandler(res, logger))
                         .catch(catchHandler({res, logger, status: 400}));
                 }]
