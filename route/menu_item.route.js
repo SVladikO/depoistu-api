@@ -227,6 +227,7 @@ const routes = {
 
 
 function convertMenuItemFields(res) {
+
     return res.map(mi => {
         const {
             ID: id,
@@ -250,12 +251,12 @@ function convertMenuItemFields(res) {
             name,
             isVisible,
             description,
-            size_1,
-            price_1,
-            size_2,
-            price_2,
-            size_3,
-            price_3,
+            size_1: size_1,
+            size_2: size_2,
+            size_3: size_3,
+            price_1: +price_1,
+            price_2: +price_2,
+            price_3: +price_3,
             imageUrl,
         }
     })
