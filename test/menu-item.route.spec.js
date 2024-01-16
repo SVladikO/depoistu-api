@@ -1,5 +1,4 @@
 const request = require('supertest');
-const assert = require('assert');
 const app = require('../index.js');
 const mocha = require('mocha');
 const packageJson = require('../package.json');
@@ -46,7 +45,7 @@ describe('MENU', function () {
     });
 
     const menuItem = {
-        id: 1,
+        id: 1104,
         category_id: 1,
         company_id: 1,
         name: 'testFoodName',

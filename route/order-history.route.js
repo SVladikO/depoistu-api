@@ -3,7 +3,6 @@ const {dbRequest} = require("../utils/connection.utils");
 const {verifyToken} = require("../middleware/auth.middleware");
 
 const QUERY = require("../utils/query.utils");
-const {VALIDATION} = require("../utils/validation.utils")
 const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 
 const {sendHandler, catchHandler} = require("../utils/handler.utils")
@@ -30,7 +29,7 @@ const routes = {
                     dbRequest(logger.addQueryDB(QUERY.ORDER_HISTORY.SELECT_ALL_BY_CUSTOMER_ID(customerId)))
                         .then(convertOrderHistoryFields)
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }
             ]
         },
@@ -49,7 +48,7 @@ const routes = {
                     dbRequest(logger.addQueryDB(QUERY.ORDER_HISTORY_DETAILS.SELECT_ALL_BY_ORDER_HISTORY_ID(orderHistoryId)))
                         .then(convertOrderItems)
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }
             ]
         },
@@ -117,7 +116,7 @@ const routes = {
                             return dbRequest(logger.addQueryDB(QUERY.ORDER_HISTORY_DETAILS.INSERT(order_items, orderHistoryId)))
                         })
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
     ]

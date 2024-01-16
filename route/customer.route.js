@@ -5,7 +5,7 @@ const {catchHandler, sendHandler} = require("../utils/handler.utils");
 const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.utils");
 const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 const {Token, verifyToken} = require("../middleware/auth.middleware");
-const {resolveError, throwError} = require("../utils/translations.utils");
+const {throwError} = require("../utils/error.utils");
 const {Logger} = require("../middleware/log.middleware");
 
 const addToken = customer => {
@@ -45,7 +45,7 @@ const routes = {
                         .then(getFirstCustomer(req))
                         .then(addToken)
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
         {
@@ -94,7 +94,7 @@ const routes = {
                         .then(getFirstCustomer(req))
                         .then(addToken)
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
         {
@@ -120,7 +120,7 @@ const routes = {
 
                     dbRequest(logger.addQueryDB(QUERY.CUSTOMER.CHANGE_IS_BUSINESS_OWNER(customerId, isBusinessOwner)))
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
         {
@@ -158,7 +158,7 @@ const routes = {
                         .then(convertCustomerFields)
                         .then(getFirstCustomer(req))
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
         {
@@ -183,7 +183,7 @@ const routes = {
                         .then(() => dbRequest(logger.addQueryDB(QUERY.CUSTOMER.SET_IS_VERIFFIED_EMAIL_TRUE(email))))
                         .then(() => ({isEmailVerified: true}))
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         }
     ]

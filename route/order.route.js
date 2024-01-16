@@ -17,7 +17,7 @@ const routes = {
                 dbRequest(
                     QUERY.HISTORY.INSERT(customer_id, company_id, JSON.stringify(order_details), new Date().getTime()),
                     () => res.send(true),
-                    errorMessage => res.send(errorMessage)
+                    message => res.send(message)
                 );
             }]
         }

@@ -9,19 +9,21 @@ const sendHandler = (res, logger = new Logger(), status = 200) => data => {
     res.status(status).send(data);
 }
 
-const catchHandler = ({res, status, logger = new Logger()}) =>
+const catchHandler = ({res, status = 500, logger = new Logger()}) =>
     e => {
         logger.changeMarker()
-        const errorMessage = e.message;
-        const _status = e.code || status;
-        logger.addLog('ERROR STATUS:');
-        logger.addLog(_status);
-        logger.addLog('ERROR MESSAGE:');
-        logger.addLog(errorMessage);
+        const message = e.message;
+        // We take status from handled errors.
+        // But if we don't handle some cases we will get undefinde which broke BE.
+        // We don't need it
+        const _status = e.status === undefined ? (status || 500) : e.status;
+
+        logger.addLog('ERROR STATUS: ' + _status);
+        logger.addLog('ERROR MESSAGE: ' + message);
         logger.addLog('end of request');
         IS_SHOW_ERROR_LOGS && logger.writeLog();
 
-        res.status(_status).send(JSON.stringify({errorMessage}));
+        res.status(_status).send(JSON.stringify({message}));
     }
 
 module.exports = {

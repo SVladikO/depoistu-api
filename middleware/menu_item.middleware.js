@@ -1,7 +1,7 @@
 const {dbRequest} = require("../utils/connection.utils");
 const QUERY = require("../utils/query.utils");
 const {catchHandler} = require("../utils/handler.utils");
-const {throwError} = require("../utils/translations.utils");
+const {throwError} = require("../utils/error.utils");
 const {Logger} = require("./log.middleware");
 
 const checkMenuItemOwner = () => (req, res, next) => {
@@ -13,8 +13,8 @@ const checkMenuItemOwner = () => (req, res, next) => {
         )
     )
         .then(res => {
-            console.log(22, res.length);
             if (!res.length) {
+                logger.addLog(`Middleware`)
                 throwError("MENU_ITEM.ONLY_OWNER_CAN", req);
             }
         })

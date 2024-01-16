@@ -26,7 +26,7 @@ const routes = {
                     dbRequest(logger.addQueryDB(QUERY.FAVORITE_COMPANY.SELECT_BY_CUSTOMER_ID(customerId)))
                         .then(convertCompanyFields)
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
         {
@@ -50,7 +50,7 @@ const routes = {
 
                     dbRequest(logger.addQueryDB(QUERY.FAVORITE_COMPANY.ADD(customer_id, company_id)))
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
         {
@@ -72,7 +72,7 @@ const routes = {
 
                     dbRequest(logger.addQueryDB(QUERY.FAVORITE_COMPANY.DELETE(customer_id, company_id)))
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
     ]

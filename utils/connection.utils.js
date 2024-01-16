@@ -60,8 +60,8 @@ function dbRequest(query) {
             query,
             (err, results) => {
                 if (err) {
-                    console.log(1111, 'error: ', err)
-                    return reject({errorMessage: 'DB error: ' + err.message, status: 500})
+                    console.log(1111, 'DB ERROR: ', err)
+                    return reject({message: 'DB error: ' + err.message, status: 500})
                 }
 
                 resolve(results)
