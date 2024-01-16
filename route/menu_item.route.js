@@ -192,7 +192,7 @@ const routes = {
 
                     VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem))))
-                        .then(() => ({isVisible: +(!isVisible)}))
+                        .then(() => ({isVisible: isVisible}))
                         .then(sendHandler(res, logger))
                         .catch(catchHandler({res, logger, status: 400}));
                 }]
