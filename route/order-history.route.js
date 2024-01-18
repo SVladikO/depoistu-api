@@ -87,35 +87,46 @@ const routes = {
                     logger.addLog(DESCRIPTION.ORDER_HISTORY.CREATE)
 
                     const customerId = req.customer.id;
-                    const {order_items} = req.body;
+                    const order_items = (req.body.order_items || []).map(oi => {
+                             const size_1 =  +oi.size_1 || 0
+                             const size_2 =  +oi.size_2 || 0
+                             const size_3 =  +oi.size_3 || 0
+                             const amount_1 =  +oi.amount_1 || 0
+                             const amount_2 =  +oi.amount_2 || 0
+                             const amount_3 =  +oi.amount_3 || 0
+                             const price_1 = +oi.price_1  || 0
+                             const price_2 = +oi.price_2  || 0
+                             const price_3 =   +oi.price_3  || 0
+
+                         return {...oi, amount_1, amount_2, amount_3, price_1, price_2, price_3, size_1, size_2, size_3 }
+                    });
+
+                    console.log(1, req.body.order_items)
+                    console.log(2, order_items)
+
                     const company_id = order_items[0].company_id;
                     const orderHistory = {
                         customer_id: customerId,
                         company_id,
                         total: order_items.reduce(
-                            (accumulator, {
-                                amount_1 = 0,
-                                amount_2 = 0,
-                                amount_3 = 0,
-                                price_1 = 0,
-                                price_2 = 0,
-                                price_3 = 0
-                            }) =>
+                            (accumulator, cur) =>
                                 accumulator +
-                                (+amount_1 * +price_1) +
-                                (+amount_2 * +price_2) +
-                                (+amount_3 * +price_3),
+                                (cur.amount_1 * cur.price_1 || 0) +
+                                (cur.amount_2 * cur.price_2 || 0) +
+                                (cur.amount_3 * cur.price_3 || 0),
                             0
                         ),
                         date: '' + new Date().getTime(),
                     }
 
+                    let orderHistoryId;
+
                     dbRequest(logger.addQueryDB(QUERY.ORDER_HISTORY.INSERT(orderHistory)))
                         .then(res => {
-                            const orderHistoryId = res.insertId;
+                            orderHistoryId = res.insertId;
                             return dbRequest(logger.addQueryDB(QUERY.ORDER_HISTORY_DETAILS.INSERT(order_items, orderHistoryId)))
                         })
-                        .then(sendHandler(res, logger))
+                        .then(() => sendHandler(res, logger)({orderHistoryId}))
                         .catch(catchHandler({res, logger}));
                 }]
         },
