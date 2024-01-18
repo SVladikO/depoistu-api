@@ -88,9 +88,6 @@ const routes = {
 
                     const customerId = req.customer.id;
                     const order_items = (req.body.order_items || []).map(oi => {
-                             const size_1 =  +oi.size_1 || 0
-                             const size_2 =  +oi.size_2 || 0
-                             const size_3 =  +oi.size_3 || 0
                              const amount_1 =  +oi.amount_1 || 0
                              const amount_2 =  +oi.amount_2 || 0
                              const amount_3 =  +oi.amount_3 || 0
@@ -98,7 +95,7 @@ const routes = {
                              const price_2 = +oi.price_2  || 0
                              const price_3 =   +oi.price_3  || 0
 
-                         return {...oi, amount_1, amount_2, amount_3, price_1, price_2, price_3, size_1, size_2, size_3 }
+                         return {...oi, amount_1, amount_2, amount_3, price_1, price_2, price_3}
                     });
 
                     console.log(1, req.body.order_items)
