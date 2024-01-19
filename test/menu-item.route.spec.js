@@ -47,7 +47,7 @@ describe('MENU', function () {
     const menuItem = {
         id: 1104,
         category_id: 1,
-        company_id: 1,
+        company_id: 5,
         name: 'testFoodName',
         description: 'testFood description',
         size_1: 300,

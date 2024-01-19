@@ -155,8 +155,6 @@ const QueryUtils = {
                                                      COMPANY.PHOTOS,
                                                      COMPANY.CITY_ID,
                                                      COMPANY.STREET,
-                                                     COMPANY.LATITUDE,
-                                                     COMPANY.LONGITUDE,
                                                      COMPANY.SCHEDULE
                                               from FAVORITE_COMPANY
                                                        INNER JOIN COMPANY on FAVORITE_COMPANY.COMPANY_ID = COMPANY.ID
@@ -184,8 +182,6 @@ const QueryUtils = {
                                                       COMPANY.PHOTOS,
                                                       COMPANY.CITY_ID,
                                                       COMPANY.STREET,
-                                                      COMPANY.LATITUDE,
-                                                      COMPANY.LONGITUDE,
                                                       COMPANY.SCHEDULE
                                       from COMPANY
                                                JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
@@ -199,8 +195,6 @@ const QueryUtils = {
                                                          COMPANY.PHOTOS,
                                                          COMPANY.CITY_ID,
                                                          COMPANY.STREET,
-                                                         COMPANY.LATITUDE,
-                                                         COMPANY.LONGITUDE,
                                                          COMPANY.SCHEDULE
                                          FROM COMPANY
                                                   JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
@@ -216,8 +210,7 @@ const QueryUtils = {
         SELECT_ALL: () => `SELECT *
                            FROM COMPANY;`,
         INSERT: c => `INSERT INTO COMPANY
-                      (id, customer_id, name, phone1, phone2, phone3, photos, city_id, street, latitude, longitude,
-                       join_date, schedule)
+                      (id, customer_id, name, phone1, phone2, phone3, photos, city_id, street, join_date, schedule)
                       VALUES (DEFAULT,
                               '${c.customerId}',
                               '${c.name}',
@@ -227,8 +220,6 @@ const QueryUtils = {
                               '${c.photos}',
                               '${c.cityId}',
                               '${c.street}',
-                              '${c.latitude}',
-                              '${c.longitude}',
                               '${c.joinDate}',
                               '${c.schedule}')
         ;`,
@@ -241,8 +232,6 @@ const QueryUtils = {
                           photos    = '${c.photos}',
                           city_id   = '${c.cityId}',
                           street    = '${c.street}',
-                          latitude  = '${c.latitude}',
-                          longitude = '${c.longitude}',
                           schedule  = '${c.schedule}'
                       WHERE id = ${c.id}
         ;`,
