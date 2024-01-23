@@ -13,7 +13,8 @@ function convertCompanyFields(companies) {
             LATITUDE: latitude,
             LONGITUDE: longitude,
             JOIN_DATE: joinDate,
-            SCHEDULE: schedule
+            SCHEDULE: schedule,
+            IS_VERIFIED: is_verified
         } = company;
 
         return {
@@ -28,7 +29,8 @@ function convertCompanyFields(companies) {
             latitude,
             longitude,
             joinDate,
-            schedule
+            schedule,
+            is_verified: !!is_verified
         }
     })
 }

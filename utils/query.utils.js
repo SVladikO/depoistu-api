@@ -1,4 +1,3 @@
-const {VALIDATION} = require("./validation.utils");
 const QueryUtils = {
     MENU_ITEM: {
         SELECT_BY_ID: companyId => `SELECT *
@@ -155,7 +154,8 @@ const QueryUtils = {
                                                      COMPANY.PHOTOS,
                                                      COMPANY.CITY_ID,
                                                      COMPANY.STREET,
-                                                     COMPANY.SCHEDULE
+                                                     COMPANY.SCHEDULE,
+                                                     COMPANY.IS_VERIFIED
                                               from FAVORITE_COMPANY
                                                        INNER JOIN COMPANY on FAVORITE_COMPANY.COMPANY_ID = COMPANY.ID
                                               WHERE FAVORITE_COMPANY.customer_id = '${customerId}';`,
@@ -182,12 +182,13 @@ const QueryUtils = {
                                                       COMPANY.PHOTOS,
                                                       COMPANY.CITY_ID,
                                                       COMPANY.STREET,
-                                                      COMPANY.SCHEDULE
+                                                      COMPANY.SCHEDULE,
+                                                      COMPANY.IS_VERIFIED
                                       from COMPANY
                                                JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
                                       WHERE CITY_ID = '${cityId}'
                                         AND MENU_ITEM.IS_VISIBLE = 1;`,
-        SELECT_ALL_COMPANIES: cityId => `SELECT DISTINCT COMPANY.ID,
+        SELECT_ALL_COMPANIES: () => `SELECT DISTINCT COMPANY.ID,
                                                          COMPANY.NAME,
                                                          COMPANY.PHONE1,
                                                          COMPANY.PHONE2,
@@ -195,7 +196,8 @@ const QueryUtils = {
                                                          COMPANY.PHOTOS,
                                                          COMPANY.CITY_ID,
                                                          COMPANY.STREET,
-                                                         COMPANY.SCHEDULE
+                                                         COMPANY.SCHEDULE,
+                                                         COMPANY.IS_VERIFIED
                                          FROM COMPANY
                                                   JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
                                          WHERE MENU_ITEM.IS_VISIBLE = 1;`,
@@ -210,7 +212,7 @@ const QueryUtils = {
         SELECT_ALL: () => `SELECT *
                            FROM COMPANY;`,
         INSERT: c => `INSERT INTO COMPANY
-                      (id, customer_id, name, phone1, phone2, phone3, photos, city_id, street, join_date, schedule)
+                      (id, customer_id, name, phone1, phone2, phone3, photos, city_id, street, join_date, schedule, is_verified)
                       VALUES (DEFAULT,
                               '${c.customerId}',
                               '${c.name}',
@@ -221,7 +223,9 @@ const QueryUtils = {
                               '${c.cityId}',
                               '${c.street}',
                               '${c.joinDate}',
-                              '${c.schedule}')
+                              '${c.schedule}',
+                              0
+                             )
         ;`,
 
         UPDATE: c => `UPDATE COMPANY
@@ -269,7 +273,7 @@ const QueryUtils = {
                                    where email = '${email}';`,
 
         INSERT: c => {
-            const t = `INSERT INTO CUSTOMER (id, name, phone, password, email, join_date, is_business_owner,
+            return `INSERT INTO CUSTOMER (id, name, phone, password, email, join_date, is_business_owner,
                                              can_create_companies)
                        VALUES (DEFAULT,
                                '${c.name}',
@@ -280,7 +284,6 @@ const QueryUtils = {
                                '${+c.isBusinessOwner}',
                                '${c.can_create_companies}')
             ;`
-            return t;
         },
         UPDATE_PASSWORD: c => `UPDATE CUSTOMER
                                SET password = '${c.newPassword}'
