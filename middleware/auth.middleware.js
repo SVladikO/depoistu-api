@@ -4,7 +4,7 @@ const {getFirstCustomer, convertCustomerFields} = require("../utils/customers.ut
 const {dbRequest} = require("../utils/connection.utils");
 const QUERY = require("../utils/query.utils");
 const {Logger} = require("./log.middleware");
-const {resolveError} = require("../utils/translations.utils")
+const {resolveError} = require("../utils/error.utils")
 
 const X_ACCESS_TOKEN_NAME = "x-access-token";
 const TOKEN_SECRET_KEY = process.env.TOKEN_KEY || 'secret-key'
@@ -23,10 +23,9 @@ const verifyToken = (req, res, next) => {
     const token = req.headers[X_ACCESS_TOKEN_NAME];
 
     if (!token) {
+        logger.addLog(`auth middleware`)
         logger.addLog(`TOKEN: ${token}`)
-        return catchHandler(
-            {res, logger}
-        )(resolveError("CUSTOMER.TOKEN.REQUIRED", req))
+        return catchHandler({res, logger})(resolveError("CUSTOMER.TOKEN.REQUIRED", req))
     }
 
     let customer;

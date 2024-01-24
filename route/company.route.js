@@ -7,7 +7,7 @@ const {checkAvailableCompany} = require("../middleware/company.middleware");
 
 const QUERY = require("../utils/query.utils");
 const {VALIDATOR, VALIDATION} = require("../utils/validation.utils")
-const {resolveError, throwError} = require("../utils/translations.utils");
+const {resolveError, throwError} = require("../utils/error.utils");
 const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 const {convertCompanyFields} = require("../utils/company.utils")
 
@@ -31,7 +31,7 @@ const routes = {
                     .then(convertCompanyFields)
                     .then(r => r.map(o => o.cityId) || [])
                     .then(sendHandler(res, logger))
-                    .catch(catchHandler({res, logger, status: 400}));
+                    .catch(catchHandler({res, logger}));
             }]
         },
         {
@@ -46,13 +46,13 @@ const routes = {
                 const {city_id} = req.params;
 
                 if (city_id === 'undefined') {
-                    return catchHandler({res, logger})(resolveError("COMPANY.CITY_ID_REQUIRED", req))
+                    return catchHandler({res, logger, status: 400})(resolveError("COMPANY.CITY_ID_REQUIRED", req))
                 }
 
                 dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_CITY_ID(city_id)))
                     .then(convertCompanyFields)
                     .then(sendHandler(res, logger))
-                    .catch(catchHandler({res, logger, status: 400}))
+                    .catch(catchHandler({res, logger}))
             }]
         },
         {
@@ -70,8 +70,8 @@ const routes = {
                 if (!companyId) {
                     return catchHandler({
                         res,
-                        status: 400,
-                        logger
+                        logger,
+                        status: 400
                     })(resolveError("COMPANY.COMPANY_ID_REQUIRED", req))
                 }
 
@@ -85,7 +85,7 @@ const routes = {
                     })
                     .then(convertCompanyFields)
                     .then(sendHandler(res, logger))
-                    .catch(catchHandler({res, logger, status: 400}));
+                    .catch(catchHandler({res, logger}));
             }]
         },
         {
@@ -101,13 +101,13 @@ const routes = {
                     const {customerId} = req.params;
 
                     if (!customerId) {
-                        return catchHandler({res, status: 400, logger})(resolveError("COMPANY.CITY_ID_REQUIRED", req))
+                        return catchHandler({res, logger, status: 400})(resolveError("COMPANY.CITY_ID_REQUIRED", req))
                     }
 
                     dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_CUSTOMER_ID(customerId)))
                         .then(convertCompanyFields)
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
         {
@@ -123,7 +123,7 @@ const routes = {
                     dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_ALL_COMPANIES()))
                         .then(convertCompanyFields)
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
         {
@@ -135,11 +135,14 @@ const routes = {
                 bodyValidation: true,
                 requestBody: {
                     name: VALIDATION.COMPANY.name.type,
-                    cityId: VALIDATION.COMPANY.cityId.type,
-                    street: VALIDATION.COMPANY.street.type,
                     phone1: VALIDATION.COMPANY.phone1.type,
                     phone2: VALIDATION.COMPANY.phone2.type,
                     phone3: VALIDATION.COMPANY.phone3.type,
+                    cityId: VALIDATION.COMPANY.cityId.type,
+                    street: VALIDATION.COMPANY.street.type,
+                    // latitude: VALIDATION.COMPANY.latitude.type,
+                    // longitude: VALIDATION.COMPANY.longitude.type,
+                    photos: VALIDATION.COMPANY.photos.type,
                     schedule: VALIDATION.COMPANY.schedule.type,
                 },
             },
@@ -158,7 +161,7 @@ const routes = {
                     VALIDATOR.COMPANY.CREATE(company)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.INSERT(company))))
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
         {
@@ -177,6 +180,9 @@ const routes = {
                     phone3: VALIDATION.COMPANY.phone3.type,
                     cityId: VALIDATION.COMPANY.cityId.type,
                     street: VALIDATION.COMPANY.street.type,
+                    latitude: VALIDATION.COMPANY.latitude.type,
+                    longitude: VALIDATION.COMPANY.longitude.type,
+                    photos: VALIDATION.COMPANY.photos.type,
                     schedule: VALIDATION.COMPANY.schedule.type,
                 },
             },
@@ -195,7 +201,7 @@ const routes = {
                         .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.SELECT_BY_COMPANY_ID(req.body.id))))
                         .then(convertCompanyFields)
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}))
+                        .catch(catchHandler({res, logger}))
                 }]
         },
         {
@@ -205,7 +211,7 @@ const routes = {
             details: {
                 ...PERMISSION(['4. Check ownership.']),
                 requestBody: {
-                    companyId: VALIDATION.COMPANY.id.type
+                    id: VALIDATION.COMPANY.id.type
                 }
             },
             description: DESCRIPTION.COMPANY.DELETE,
@@ -221,7 +227,7 @@ const routes = {
                     dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.DELETE_BY_COMPANY_ID(companyId)))
                         .then(() => dbRequest(logger.addQueryDB(QUERY.COMPANY.DELETE_BY_COMPANY_ID(companyId))))
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
     ]

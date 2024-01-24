@@ -14,8 +14,7 @@ class Logger {
 
         this.log = [
             '',
-            'NEW REQUEST',
-            requestDate + ' ' + requestTime,
+            'NEW REQUEST - ' + requestTime + ' ' + requestDate,
             req.method + ' ' + req.url,
         ]
 

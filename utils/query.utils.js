@@ -35,8 +35,8 @@ const QueryUtils = {
                                               image_url,
                                               is_visible)
                        VALUES (default,
-                               '${mi.categoryId}',
-                               '${mi.companyId}',
+                               '${mi.category_id}',
+                               '${mi.company_id}',
                                '${mi.name}',
                                '${mi.description}',
                                '${mi.size_1}',
@@ -49,16 +49,16 @@ const QueryUtils = {
                                '${mi.isVisible}
                                ');`,
         UPDATE: mi => `UPDATE MENU_ITEM
-                       SET name         = '${mi.name}',
-                           description  = '${mi.description}',
-                           category_id  = '${mi.categoryId}',
-                           size_1         = '${mi.size_1}',
-                           price_1        = '${mi.price_1}',
-                           size_2         = '${mi.size_2}',
-                           price_2        = '${mi.price_2}',
-                           size_3         = '${mi.size_3}',
-                           price_3        = '${mi.price_3}',
-                           image_url    = '${mi.imageUrl}'
+                       SET name        = '${mi.name}',
+                           description = '${mi.description}',
+                           category_id = '${mi.category_id}',
+                           size_1      = '${mi.size_1}',
+                           price_1     = '${mi.price_1}',
+                           size_2      = '${mi.size_2}',
+                           price_2     = '${mi.price_2}',
+                           size_3      = '${mi.size_3}',
+                           price_3     = '${mi.price_3}',
+                           image_url   = '${mi.imageUrl}'
                        WHERE id = ${mi.id}
         `,
         UPDATE_IS_VISIBLE: mi => `UPDATE MENU_ITEM
@@ -81,25 +81,86 @@ const QueryUtils = {
               AND MENU_ITEM.ID = ${menuItemId};
         `
     },
-    HISTORY: {
-        INSERT: (customer_id, company_id, order_details, date_time) =>
-            `INSERT INTO HISTORY (id, CUSTOMER_ID, COMPANY_ID, ORDER_DETAILS, DATE_TIME, is_paid, is_prepared)
-             VALUES (DEFAULT, ${customer_id}, ${company_id}, '${order_details}', ${date_time}, true, true);`
+    ORDER_HISTORY_DETAILS: {
+        INSERT: (order_items, order_history_id) =>
+            `INSERT INTO ORDER_HISTORY_DETAILS
+             (ORDER_HISTORY_ID, CATEGORY_ID, NAME, DESCRIPTION, SIZE_1, SIZE_2, SIZE_3, PRICE_1, PRICE_2, PRICE_3, AMOUNT_1,
+              AMOUNT_2, AMOUNT_3, IMAGE_URL)
+             VALUES ${
+                     order_items.reduce((accumulator, oi, index) =>
+                             accumulator + `(
+                                   '${order_history_id}',
+                                   '${oi.category_id}',
+                                   '${oi.name  || ''}',
+                                   '${oi.description  || ''}',
+                                   '${oi.size_1 || 0}',
+                                   '${oi.size_2 || 0}',
+                                   '${oi.size_3 || 0}',
+                                   '${oi.price_1 || 0}',
+                                   '${oi.price_2 || 0}',
+                                   '${oi.price_3 || 0}',
+                                   '${oi.amount_1 || 0}',
+                                   '${oi.amount_2 || 0}',
+                                   '${oi.amount_3 || 0}',
+                                   '${oi.imageUrl || ''}'
+                                   )${order_items.length !== index + 1 ? ', ' : ';'}`, ''
+                     )
+
+             }`
+        ,
+        SELECT_ALL_BY_ORDER_HISTORY_ID: orderHistoryId => `
+            SELECT 
+                   ORDER_HISTORY_DETAILS.NAME,
+                   ORDER_HISTORY_DETAILS.DESCRIPTION,
+                   ORDER_HISTORY_DETAILS.CATEGORY_ID,
+                   ORDER_HISTORY_DETAILS.PRICE_1,
+                   ORDER_HISTORY_DETAILS.PRICE_2,
+                   ORDER_HISTORY_DETAILS.PRICE_3,
+                   ORDER_HISTORY_DETAILS.SIZE_1,
+                   ORDER_HISTORY_DETAILS.SIZE_2,
+                   ORDER_HISTORY_DETAILS.SIZE_3,
+                   ORDER_HISTORY_DETAILS.AMOUNT_1,
+                   ORDER_HISTORY_DETAILS.AMOUNT_2,
+                   ORDER_HISTORY_DETAILS.AMOUNT_3,
+                   ORDER_HISTORY_DETAILS.IMAGE_URL
+            from ORDER_HISTORY_DETAILS
+            WHERE ORDER_HISTORY_ID = ${orderHistoryId};
+        `
+    },
+    ORDER_HISTORY: {
+        SELECT_ALL_BY_CUSTOMER_ID: customer_id => `
+            SELECT ORDER_HISTORY.ID,
+                   ORDER_HISTORY.CUSTOMER_ID,
+                   ORDER_HISTORY.COMPANY_ID,
+                   ORDER_HISTORY.DATE,
+                   ORDER_HISTORY.TOTAL,
+                   COMPANY.CITY_ID,
+                   COMPANY.NAME
+            from ORDER_HISTORY
+                     JOIN COMPANY on ORDER_HISTORY.COMPANY_ID = COMPANY.ID
+            WHERE ORDER_HISTORY.CUSTOMER_ID = ${customer_id};
+        `,
+        INSERT: (orderHistory) =>
+            `INSERT INTO ORDER_HISTORY (ID, CUSTOMER_ID, COMPANY_ID, TOTAL, DATE)
+             VALUES (DEFAULT, ${orderHistory.customer_id}, ${orderHistory.company_id}, '${orderHistory.total}',
+                     ${orderHistory.date});`
     },
     FAVORITE_COMPANY: {
-        SELECT_BY_CUSTOMER_ID: customerId => `SELECT
-                                                  COMPANY.ID,
-                                                  COMPANY.NAME,
-                                                  COMPANY.PHONE1,
-                                                  COMPANY.PHONE2,
-                                                  COMPANY.PHONE3,
-                                                  COMPANY.CITY_ID,
-                                                  COMPANY.STREET,
-                                                  COMPANY.SCHEDULE
+        SELECT_BY_CUSTOMER_ID: customerId => `SELECT COMPANY.ID,
+                                                     COMPANY.NAME,
+                                                     COMPANY.PHONE1,
+                                                     COMPANY.PHONE2,
+                                                     COMPANY.PHONE3,
+                                                     COMPANY.PHOTOS,
+                                                     COMPANY.CITY_ID,
+                                                     COMPANY.STREET,
+                                                     COMPANY.SCHEDULE,
+                                                     COMPANY.IS_VERIFIED
                                               from FAVORITE_COMPANY
                                                        INNER JOIN COMPANY on FAVORITE_COMPANY.COMPANY_ID = COMPANY.ID
                                               WHERE FAVORITE_COMPANY.customer_id = '${customerId}';`,
-        ADD: (customer_id, company_id) => `INSERT INTO FAVORITE_COMPANY (customer_id, company_id) values (${customer_id}, ${company_id})`,
+        ADD: (customer_id, company_id) => `INSERT INTO FAVORITE_COMPANY (customer_id, company_id)
+                                           values (${customer_id}, ${company_id})`,
         DELETE: (customer_id, company_id) => `DELETE
                                               FROM FAVORITE_COMPANY
                                               WHERE customer_id = ${customer_id}
@@ -118,25 +179,28 @@ const QueryUtils = {
                                                       COMPANY.PHONE1,
                                                       COMPANY.PHONE2,
                                                       COMPANY.PHONE3,
+                                                      COMPANY.PHOTOS,
                                                       COMPANY.CITY_ID,
                                                       COMPANY.STREET,
-                                                      COMPANY.SCHEDULE
+                                                      COMPANY.SCHEDULE,
+                                                      COMPANY.IS_VERIFIED
                                       from COMPANY
                                                JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
                                       WHERE CITY_ID = '${cityId}'
                                         AND MENU_ITEM.IS_VISIBLE = 1;`,
-        SELECT_ALL_COMPANIES: cityId => `SELECT DISTINCT
-                                                      COMPANY.ID,
-                                                      COMPANY.NAME,
-                                                      COMPANY.PHONE1,
-                                                      COMPANY.PHONE2,
-                                                      COMPANY.PHONE3,
-                                                      COMPANY.CITY_ID,
-                                                      COMPANY.STREET,
-                                                      COMPANY.SCHEDULE
-                                               FROM COMPANY
-                                               JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
-                                               WHERE MENU_ITEM.IS_VISIBLE = 1;`,
+        SELECT_ALL_COMPANIES: () => `SELECT DISTINCT COMPANY.ID,
+                                                         COMPANY.NAME,
+                                                         COMPANY.PHONE1,
+                                                         COMPANY.PHONE2,
+                                                         COMPANY.PHONE3,
+                                                         COMPANY.PHOTOS,
+                                                         COMPANY.CITY_ID,
+                                                         COMPANY.STREET,
+                                                         COMPANY.SCHEDULE,
+                                                         COMPANY.IS_VERIFIED
+                                         FROM COMPANY
+                                                  JOIN MENU_ITEM on COMPANY.ID = MENU_ITEM.COMPANY_ID
+                                         WHERE MENU_ITEM.IS_VISIBLE = 1;`,
         // CHECK OWNERSHIP...
         CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID: (company_id, customer_id) => `SELECT *
                                                                                             from COMPANY
@@ -147,34 +211,37 @@ const QueryUtils = {
                                             WHERE id = '${companyId}';`,
         SELECT_ALL: () => `SELECT *
                            FROM COMPANY;`,
-        INSERT: c => `INSERT INTO COMPANY (id, customer_id, name, phone1, phone2, phone3, city_id, street, join_date,
-                                           schedule)
+        INSERT: c => `INSERT INTO COMPANY
+                      (id, customer_id, name, phone1, phone2, phone3, photos, city_id, street, join_date, schedule, is_verified)
                       VALUES (DEFAULT,
                               '${c.customerId}',
                               '${c.name}',
                               '${c.phone1}',
                               '${c.phone2}',
                               '${c.phone3}',
+                              '${c.photos}',
                               '${c.cityId}',
                               '${c.street}',
                               '${c.joinDate}',
-                              '${c.schedule}')
+                              '${c.schedule}',
+                              0
+                             )
         ;`,
 
         UPDATE: c => `UPDATE COMPANY
-                      SET name     = '${c.name}',
-                          phone1   = '${c.phone1}',
-                          phone2   = '${c.phone2}',
-                          phone3   = '${c.phone3}',
-                          city_id  = '${c.cityId}',
-                          street   = '${c.street}',
-                          schedule = '${c.schedule}'
+                      SET name      = '${c.name}',
+                          phone1    = '${c.phone1}',
+                          phone2    = '${c.phone2}',
+                          phone3    = '${c.phone3}',
+                          photos    = '${c.photos}',
+                          city_id   = '${c.cityId}',
+                          street    = '${c.street}',
+                          schedule  = '${c.schedule}'
                       WHERE id = ${c.id}
         ;`,
         DELETE_BY_COMPANY_ID: id => `DELETE
                                      FROM COMPANY
                                      WHERE ID = ${id}`,
-
     },
     CUSTOMER: {
         SELECT_BY_EMAIL_AND_PASSWORD: (email, password) =>
@@ -206,17 +273,17 @@ const QueryUtils = {
                                    where email = '${email}';`,
 
         INSERT: c => {
-        const t = `INSERT INTO CUSTOMER (id, name, phone, password, email, join_date, is_business_owner, can_create_companies)
-                      VALUES (DEFAULT,
-                              '${c.name}',
-                              '${c.phone}',
-                              '${c.password}',
-                              '${c.email}',
-                              '${c.join_date}',
-                              '${+c.isBusinessOwner}',
-                              '${c.can_create_companies}')
-        ;`
-        return t;
+            return `INSERT INTO CUSTOMER (id, name, phone, password, email, join_date, is_business_owner,
+                                             can_create_companies)
+                       VALUES (DEFAULT,
+                               '${c.name}',
+                               '${c.phone}',
+                               '${c.password}',
+                               '${c.email}',
+                               '${c.join_date}',
+                               '${+c.isBusinessOwner}',
+                               '${c.can_create_companies}')
+            ;`
         },
         UPDATE_PASSWORD: c => `UPDATE CUSTOMER
                                SET password = '${c.newPassword}'

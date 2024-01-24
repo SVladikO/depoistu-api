@@ -1,7 +1,7 @@
 const {dbRequest} = require("../utils/connection.utils");
 const QUERY = require("../utils/query.utils");
 const {catchHandler} = require("../utils/handler.utils");
-const {throwError, resolveError} = require("../utils/translations.utils");
+const {throwError, resolveError} = require("../utils/error.utils");
 const {Logger} = require("./log.middleware");
 
 /**
@@ -18,7 +18,8 @@ const checkCompanyOwner = (getCompanyId) => (req, res, next) => {
     const companyId = getCompanyId(req);
 
     if (!companyId) {
-       return catchHandler({res, logger})(resolveError("COMPANY.COMPANY_ID_REQUIRED", req))
+       logger.addLog(`company middleware`)
+       return catchHandler({res, logger, status: 400})(resolveError("COMPANY.COMPANY_ID_REQUIRED", req))
     }
 
     dbRequest(logger.addQueryDB(QUERY.COMPANY.CHECK_OWNERSHIP_SELECT_BY_COMPANY_ID_AND_CUSTOMER_ID(companyId, customerId)))

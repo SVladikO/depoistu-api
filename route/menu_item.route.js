@@ -5,7 +5,7 @@ const {checkMenuItemOwner} = require("../middleware/menu_item.middleware");
 const QUERY = require("../utils/query.utils");
 const {dbRequest} = require("../utils/connection.utils");
 const {VALIDATOR, VALIDATION} = require("../utils/validation.utils");
-const {resolveError, throwError} = require("../utils/translations.utils");
+const {resolveError, throwError} = require("../utils/error.utils");
 const {catchHandler, sendHandler} = require("../utils/handler.utils");
 const {DESCRIPTION, PERMISSION} = require("../utils/description.utils");
 const {Logger} = require("../middleware/log.middleware");
@@ -48,13 +48,13 @@ const routes = {
                         res,
                         logger,
                         status: 400,
-                    })({errorMessage: getParamMessageRequirements('companyId')})
+                    })({message: getParamMessageRequirements('companyId')})
                 }
 
                 dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.SELECT_ALL_BY_COMPANY_ID(companyId)))
                     .then(convertMenuItemFields)
                     .then(sendHandler(res, logger))
-                    .catch(catchHandler({res, logger, status: 400}));
+                    .catch(catchHandler({res, logger}));
             }]
         },
         {
@@ -70,11 +70,11 @@ const routes = {
                     const companyId = +req.params.companyId;
 
                     if (!companyId) {
-                        return catchHandler({res, status: 400, logger})(resolveError("MENU_ITEM.COMPANY_ID_REQUIRED", req))
+                        return catchHandler({res, logger, status: 400})(resolveError("MENU_ITEM.COMPANY_ID_REQUIRED", req))
                     }
 
                     if (isNaN(companyId)) {
-                        return catchHandler({res, status: 400, logger})({errorMessage: getParamMessageRequirements('companyId')})
+                        return catchHandler({res, logger, status: 400})({message: getParamMessageRequirements('companyId')})
                     }
 
                     dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.SELECT_ALL_ONLY_VISIABLE_BY_COMPANY_ID(companyId)))
@@ -87,7 +87,7 @@ const routes = {
                         })
                         .then(convertMenuItemFields)
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
         {
@@ -101,8 +101,8 @@ const routes = {
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
                     name: VALIDATION.MENU_ITEM.name.type,
-                    categoryId: VALIDATION.MENU_ITEM.categoryId.type,
-                    companyId: VALIDATION.MENU_ITEM.companyId.type,
+                    category_id: VALIDATION.MENU_ITEM.category_id.type,
+                    company_id: VALIDATION.MENU_ITEM.company_id.type,
                     description: VALIDATION.MENU_ITEM.description.type,
                     size_1: VALIDATION.MENU_ITEM.size_1.type,
                     price_1: VALIDATION.MENU_ITEM.price_1.type,
@@ -115,7 +115,7 @@ const routes = {
             },
             callbacks: [
                 verifyToken,
-                checkCompanyOwner(req => req.body.companyId),
+                checkCompanyOwner(req => req.body.company_id),
                 function (req, res) {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.MENU_ITEM.CREATE)
@@ -124,8 +124,12 @@ const routes = {
 
                     VALIDATOR.MENU_ITEM.CREATE(menuItem)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.INSERT(menuItem))))
+                        // We still need this select for FE
+                        .then(res => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.SELECT_BY_ID(res.insertId))))
+                        .then(convertMenuItemFields)
+                        .then(res => res[0])
                         .then(sendHandler(res, logger, 201))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
         {
@@ -138,7 +142,7 @@ const routes = {
                 bodyValidation: true,
                 requestBody: {
                     id: VALIDATION.MENU_ITEM.id.type,
-                    categoryId: VALIDATION.MENU_ITEM.categoryId.type,
+                    category_id: VALIDATION.MENU_ITEM.category_id.type,
                     name: VALIDATION.MENU_ITEM.name.type,
                     description: VALIDATION.MENU_ITEM.description.type,
                     size_1: VALIDATION.MENU_ITEM.size_1.type,
@@ -152,7 +156,7 @@ const routes = {
             },
             callbacks: [
                 verifyToken,
-                checkCompanyOwner(req => req.body.companyId),
+                checkCompanyOwner(req => req.body.company_id),
                 function (req, res) {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.MENU_ITEM.UPDATE)
@@ -161,11 +165,8 @@ const routes = {
 
                     VALIDATOR.MENU_ITEM.UPDATE(menuItem)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.UPDATE(menuItem))))
-                        // We still need this select for FE
-                        .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.SELECT_BY_ID(req.body.id))))
-                        .then(convertMenuItemFields)
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
         {
@@ -186,15 +187,14 @@ const routes = {
                 function (req, res) {
                     const logger = new Logger(req);
                     logger.addLog(DESCRIPTION.MENU_ITEM.UPDATE_IS_VISIBLE)
-
                     const {id, isVisible} = req.body;
                     const menuItem = {id, isVisible: convertIsVisible(isVisible)};
 
                     VALIDATOR.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem)
                         .then(() => dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.UPDATE_IS_VISIBLE(menuItem))))
-                        .then(() => ({success: true}))
+                        .then(() => ({isVisible: isVisible}))
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}));
+                        .catch(catchHandler({res, logger}));
                 }]
         },
         {
@@ -219,7 +219,7 @@ const routes = {
 
                     dbRequest(logger.addQueryDB(QUERY.MENU_ITEM.DELETE_BY_MENU_ITEM_ID(id)))
                         .then(sendHandler(res, logger))
-                        .catch(catchHandler({res, logger, status: 400}))
+                        .catch(catchHandler({res, logger}))
                 }]
         }
     ]
@@ -227,11 +227,12 @@ const routes = {
 
 
 function convertMenuItemFields(res) {
+
     return res.map(mi => {
         const {
             ID: id,
-            CATEGORY_ID: categoryId,
-            COMPANY_ID: companyId,
+            CATEGORY_ID: category_id,
+            COMPANY_ID: company_id,
             NAME: name,
             IS_VISIBLE: isVisible,
             DESCRIPTION: description,
@@ -245,17 +246,17 @@ function convertMenuItemFields(res) {
         } = mi;
         return {
             id,
-            categoryId,
-            companyId,
+            category_id,
+            company_id,
             name,
             isVisible,
             description,
-            size_1,
-            price_1,
-            size_2,
-            price_2,
-            size_3,
-            price_3,
+            size_1: size_1,
+            size_2: size_2,
+            size_3: size_3,
+            price_1: +price_1,
+            price_2: +price_2,
+            price_3: +price_3,
             imageUrl,
         }
     })
