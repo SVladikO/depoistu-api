@@ -14,7 +14,8 @@ const {
     IS_SHOW_ERROR_LOGS,
     IS_SHOW_SUCCESS_LOGS,
     CORS_URL1,
-    CORS_URL2, 
+    CORS_URL2,
+
 } = process.env;
 
 console.log(
@@ -29,7 +30,7 @@ console.log(
         IS_SHOW_ERROR_LOGS,
         IS_SHOW_SUCCESS_LOGS,
         CORS_URL1,
-        CORS_URL2, 
+        CORS_URL2,
     }
 )
 console.log(
@@ -51,15 +52,16 @@ log('DB environment credentials: ', DB_MODE, DB_HOST);
 
 pool.on('connection', () => log("DB CONNECTED"))
 pool.on('end', () => log("DB DISCONNECTED"))
+pool.on('error', () => log("## error"))
 
 function dbRequest(query) {
     return new Promise((resolve, reject) => {
         pool.query(
             query,
             (err, results) => {
-
                 if (err) {
-                    reject({errorMessage: 'DB error: ' + err.message, status: 500})
+                    console.log(1111, 'DB ERROR: ', err)
+                    return reject({message: 'DB error: ' + err.message, status: 500})
                 }
 
                 resolve(results)

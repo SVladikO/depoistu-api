@@ -1,4 +1,4 @@
-const {throwError} = require("./translations.utils");
+const {throwError} = require("./error.utils");
 
 function getFirstCustomer(req) {
     return customers => {

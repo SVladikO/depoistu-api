@@ -6,14 +6,14 @@ const {connectRoutes, provideApiDocRoute} = require('./utils/api_route_provider.
 const {catchHandler} = require('./utils/handler.utils')
 const routes = require('./route/index');
 const packageJson = require('./package.json')
-const {resolveError} = require("./utils/translations.utils");
+const {resolveError} = require("./utils/error.utils");
 const app = express();
 
 app.use(cors(corsOptionsDelegate));
 app.use(express.json());
 app.use((req, res, next) => {
     if (req.headers['client-version'] !== packageJson.version) {
-        catchHandler({res})(resolveError('BROKEN_VERSION_CONSISTENCY', req))
+        catchHandler({res, status: 400})(resolveError('BROKEN_VERSION_CONSISTENCY', req))
     } else {
         next()
     }
